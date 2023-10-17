@@ -1,4 +1,3 @@
-import { sql } from '@vercel/postgres';
 import { pgTable, text } from 'drizzle-orm/pg-core';
 import { drizzle } from 'drizzle-orm/vercel-postgres';
 import { NextResponse } from 'next/server';
@@ -15,12 +14,8 @@ export async function GET(request: Request) {
   //   return NextResponse.json({ error }, { status: 500 });
   // }
  
-  const pets = pgTable('pets', {
-    petName: text('name'),
-    ownerName: text('owner'),
-  });
-  const db = drizzle(sql);
-  const result = await db.select().from(pets);
+  // const db = drizzle(sql);
+  // const result = await db.select().from(pets);
   // const pets = await sql`SELECT * FROM Pets;`;
   return NextResponse.json({ result }, { status: 200 });
 }
