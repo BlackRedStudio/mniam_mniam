@@ -4,3 +4,5 @@ export const users = mysqlTable("users", {
   id: int("id").primaryKey().autoincrement(),
   name: text("name"),
 });
+
+export type User = typeof users.$inferSelect;
