@@ -1,8 +1,8 @@
 import '/global.css';
 
-import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Providers from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,16 +34,16 @@ export const metadata: Metadata = {
     keywords: ['nextjs', 'pwa', 'next-pwa'],
 };
 
-type TRootLayoutProps = {
-    children: ReactNode;
-};
-
-export default function RootLayout({ children }: TRootLayoutProps) {
+export default function RootLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
-        <html lang="pl">
+        <html lang="en">
             <body className={inter.className}>
-                {children}
-            </body>
+					{children}
+			</body>
         </html>
     );
 }

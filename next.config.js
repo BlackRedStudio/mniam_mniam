@@ -30,10 +30,11 @@ const nextConfig = {
     // },
 };
 
-const withPWA = require('@imbios/next-pwa')({
-    dest: 'public',
-    runtimeCaching,
-    buildExcludes: [/app-build-manifest\.json$/]
-});
+// const withPWA = require('@imbios/next-pwa')({
+//     dest: 'public',
+//     runtimeCaching,
+//     buildExcludes: [/app-build-manifest\.json$/]
+// });
 
-module.exports = withPWA(nextConfig);
+// module.exports = withPWA(nextConfig);
+module.exports = nextConfig;
