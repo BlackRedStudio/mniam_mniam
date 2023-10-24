@@ -10,6 +10,9 @@ import { drizzleAdapter } from '@/lib/drizzle-adapter';
 
 const handler = NextAuth({
     adapter: drizzleAdapter(db as any) as Adapter,
+    pages: {
+        signIn: '/',
+    },
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_ID as string,
@@ -36,28 +39,20 @@ const handler = NextAuth({
             name: 'Credentials',
             type: 'credentials',
             credentials: {
-                username: {
-                    label: 'Username:',
-                    type: 'text',
-                    placeholder: 'Your name',
-                },
-                password: {
-                    label: 'Password:',
-                    type: 'password',
-                    placeholder: 'Your password',
-                },
+                email: {},
+                password: {},
             },
             async authorize(credentials) {
                 const user = {
                     id: '42',
-                    name: 'test',
+                    email: 'sebex142@gmail.com',
                     password: 'Test123PL',
                 };
 
                 // await db.select().from(users).where(eq(users.id, data));
 
                 if (
-                    credentials?.username === user.name &&
+                    credentials?.email === user.email &&
                     credentials?.password === user.password
                 ) {
                     return user;
@@ -69,8 +64,8 @@ const handler = NextAuth({
     ],
     callbacks: {
         async jwt({ token, trigger, session }) {
-            if (trigger === 'update' && session?.name) {
-                token.name = session.name;
+            if (trigger === 'update' && session?.email) {
+                token.email = session.email;
             }
 
             return token;

@@ -1,5 +1,3 @@
-const runtimeCaching = require('@imbios/next-pwa/cache.js');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
@@ -30,11 +28,4 @@ const nextConfig = {
     // },
 };
 
-// const withPWA = require('@imbios/next-pwa')({
-//     dest: 'public',
-//     runtimeCaching,
-//     buildExcludes: [/app-build-manifest\.json$/]
-// });
-
-// module.exports = withPWA(nextConfig);
 module.exports = nextConfig;
