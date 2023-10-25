@@ -4,9 +4,7 @@ import { PlanetScaleDatabase } from 'drizzle-orm/planetscale-serverless';
 
 import { accounts, sessions, users, verificationTokens } from '@/types/schema';
 
-export function drizzleAdapter(
-    client: PlanetScaleDatabase,
-): Adapter {
+export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
     return {
         async createUser(data) {
             const id = crypto.randomUUID();

@@ -1,4 +1,6 @@
 import NextAuth from 'next-auth';
+import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
 import { Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
@@ -23,6 +25,7 @@ const handler = NextAuth({
                     id: profile.sub,
                 };
             },
+            allowDangerousEmailAccountLinking: true,
         }),
         GithubProvider({
             clientId: process.env.GITHUB_ID as string,
@@ -33,6 +36,7 @@ const handler = NextAuth({
                     id: profile.id.toString(),
                 };
             },
+            allowDangerousEmailAccountLinking: true,
         }),
         CredentialsProvider({
             id: 'credentials',
@@ -43,18 +47,18 @@ const handler = NextAuth({
                 password: {},
             },
             async authorize(credentials) {
-                const user = {
-                    id: '42',
-                    email: 'sebex142@gmail.com',
-                    password: 'Test123PL',
-                };
+                if (!credentials) return null;
 
-                // await db.select().from(users).where(eq(users.id, data));
+                const user = await db.query.users.findFirst({
+                    where: eq(users.email, credentials.email),
+                });
 
-                if (
-                    credentials?.email === user.email &&
-                    credentials?.password === user.password
-                ) {
+                if (user && user.password) {
+
+                    const passwordMatch = await bcrypt.compare(credentials.password, user.password);
+
+                    if(!passwordMatch) return null;
+
                     return user;
                 } else {
                     return null;

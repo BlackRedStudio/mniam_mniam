@@ -28,7 +28,7 @@ export default function RootLayout({ children }: TRootLayoutProps) {
         <html lang="pl">
             <body
                 className={cn(
-                    'min-h-screen bg-background font-sans antialiased',
+                    'min-h-screen bg-background font-sans antialiased mx-auto max-w-[700px]',
                     fontSans.variable,
                 )}>
                 {children}

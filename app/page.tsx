@@ -1,12 +1,24 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import LoginTab from './LoginTab';
+import H1 from '@/components/ui/H1';
+import RegisterTab from './RegisterTab';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 export default async function HomePage() {
+
+    const session = await getServerSession();
+    
+    if(session) {
+        redirect('/dashboard');
+    }
+
     return (
         <main className="flex min-h-screen flex-col items-center justify-start p-4">
+            <H1>Mniam Mniam</H1>
             <Tabs defaultValue="login" className="w-full">
-                <TabsList className='w-full mb-10'>
+                <TabsList className='w-full mb-5'>
                     <TabsTrigger className='w-1/2' value="login">Logowanie</TabsTrigger>
                     <TabsTrigger className='w-1/2' value="register">Rejestracja</TabsTrigger>
                 </TabsList>
@@ -14,7 +26,7 @@ export default async function HomePage() {
                     <LoginTab />
                 </TabsContent>
                 <TabsContent value="register">
-                    Change your password here.
+                    <RegisterTab />
                 </TabsContent>
             </Tabs>
         </main>

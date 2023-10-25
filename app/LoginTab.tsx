@@ -3,18 +3,51 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
+import { useRouter } from 'next/navigation';
+
+export type loginType = 'credentials' | 'google' | 'github';
 
 function LoginTab() {
-
     const { toast } = useToast();
+    const router = useRouter();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const handleLogin = async (type: loginType) => {
+        setLoading(true);
+        if (type === 'credentials') {
+            const res = await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+            });
+            if (res?.error) {
+                toast({
+                    title: 'Nie poprawne dane, spróbuj jeszcze raz lub skontaktuj się z Administratorem',
+                    variant: 'destructive',
+                });
+            } else {
+                toast({
+                    title: 'Zalogowano pomyślnie',
+                    variant: 'success',
+                });
+                router.push('/dashboard');
+            }
+        } else {
+            signIn(type, {
+                callbackUrl: '/dashboard',
+            });
+        }
+
+        setLoading(false);
+    };
 
     return (
         <div className="login-tab">
@@ -30,7 +63,7 @@ function LoginTab() {
                     disabled={loading}
                 />
             </div>
-            <div className="">
+            <div>
                 <Label htmlFor="password">Hasło</Label>
                 <Input
                     type="password"
@@ -43,30 +76,37 @@ function LoginTab() {
                 />
             </div>
             <Button
-                className="mt-2"
+                className="mt-6 py-7 w-full"
                 disabled={loading}
-                onClick={async () => {
-                    setLoading(true);
-                    const res = await signIn('credentials', {
-                        email,
-                        password,
-                        redirect: false,
-                        callbackUrl: '/',
-                    });
-                    if(res?.error) {
-                        toast({
-                            title: 'Nie poprawne dane, spróbuj jeszcze raz lub skontaktuj się z Administratorem',
-                            variant: 'destructive',
-                        });
-                    } else {
-                        toast({
-                            title: 'Zalogowano pomyślnie',
-                            variant: 'success',
-                        });
-                    }
-                    setLoading(false);
-                }}>
+                onClick={() => handleLogin('credentials')}>
                 Zaloguj się
+            </Button>
+            <Separator className="my-8" />
+            <Button
+                className="py-7 w-full bg-white text-primary border-2 mb-6"
+                onClick={() => handleLogin('google')}>
+                <img
+                    loading="lazy"
+                    height={24}
+                    width={24}
+                    className="mr-4"
+                    id="provider-logo"
+                    src="/google.svg"
+                />
+                Zaloguj się przez Google
+            </Button>
+            <Button
+                className="py-7 w-full border-2 mb-6"
+                onClick={() => handleLogin('github')}>
+                <img
+                    loading="lazy"
+                    height={24}
+                    width={24}
+                    className="mr-4"
+                    id="provider-logo"
+                    src="/github.svg"
+                />
+                Zaloguj się przez Github
             </Button>
         </div>
     );

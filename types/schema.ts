@@ -1,4 +1,5 @@
 import type { AdapterAccount } from '@auth/core/adapters';
+import { relations } from 'drizzle-orm';
 import {
     int,
     mysqlTable,
@@ -11,6 +12,7 @@ export const users = mysqlTable('users', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     name: varchar('name', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull(),
+    password: varchar('password', { length: 255 }),
     emailVerified: timestamp('emailVerified', {
         mode: 'date',
         fsp: 3,
@@ -41,6 +43,17 @@ export const accounts = mysqlTable(
         session_state: varchar('session_state', { length: 255 }),
     }
 );
+
+export const usersRelations = relations(users, ({ one, many }) => ({
+    accounts: many(accounts),
+}));
+
+export const accountsRelations = relations(accounts, ({ one, many }) => ({
+	user: one(users, {
+		fields: [accounts.userId],
+		references: [users.id],
+	}),
+}));
 
 export const sessions = mysqlTable('sessions', {
     sessionToken: varchar('sessionToken', { length: 255 })
