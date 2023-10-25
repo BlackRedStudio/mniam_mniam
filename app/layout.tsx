@@ -23,12 +23,12 @@ type TRootLayoutProps = {
     children: ReactNode;
 };
 
-export default function RootLayout({ children }: TRootLayoutProps) {
+async function RootLayout({ children }: TRootLayoutProps) {
     return (
-        <html lang="pl">
+        <html lang="pl" className='max-w-screen-sm mx-auto'>
             <body
                 className={cn(
-                    'min-h-screen bg-background font-sans antialiased mx-auto max-w-[700px]',
+                    'min-h-screen bg-background font-sans antialiased mx-auto max-w-[700px] overflow-hidden',
                     fontSans.variable,
                 )}>
                 {children}
@@ -37,3 +37,5 @@ export default function RootLayout({ children }: TRootLayoutProps) {
         </html>
     );
 }
+
+export default RootLayout;

@@ -7,10 +7,12 @@ type TProviderLayoutProps = {
     children: ReactNode;
 };
 
-export default function Providers({ children }: TProviderLayoutProps) {
+function Providers({ children }: TProviderLayoutProps) {
     return (
         <SessionProvider>
             {children}
         </SessionProvider>
     );
 }
+
+export default Providers;

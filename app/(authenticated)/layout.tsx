@@ -1,15 +1,25 @@
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+
+import { getServerSession } from 'next-auth';
+import Header from '@/components/layout/Header';
 
 type TAuthenticatedLayoutProps = {
     children: ReactNode;
 };
 
-function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
+async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
+
+    const session = await getServerSession();
+    if(!session) return null;
+
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            {children}
-        </main>
-    )
+        <>
+            <Header session={session} />
+            <main className="flex min-h-screen flex-col items-center justify-start p-4">
+                {children}
+            </main>
+        </>
+    );
 }
 
 export default AuthenticatedLayout;

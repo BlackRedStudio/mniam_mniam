@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
-import { accounts, users } from '@/types/schema';
+import { users } from '@/types/schema';
 import { userRegistrationSchema } from '@/types/validation';
 import { db } from '@/lib/db';
 
@@ -43,6 +43,7 @@ export async function registerUser(formData: FormData) {
 
         const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
 
+        // user and password exist
         if (existingUser && existingUser.password !== null) {
             return {
                 success: false,
@@ -50,7 +51,7 @@ export async function registerUser(formData: FormData) {
                     'Użytkownik z danym adresem email już istnieje w bazie danych',
             };
         } else if (existingUser) {
-            
+            // user exist but without password, user was created by OAuth
             await db.update(users).set({
                 name: parsed.data.name,
                 password: hashedPassword
@@ -59,10 +60,11 @@ export async function registerUser(formData: FormData) {
             return {
                 success: true,
                 message:
-                    'Wykryliśmy że logowałeś się poprzednio z danym adresem Email przez Google lub Github, nazwa użytkownika oraz hasło zostały zapisane',
+                    'Wykryliśmy że logowałeś się poprzednio z podanym adresem Email przez Google lub Github, nazwa użytkownika oraz hasło zostały zapisane',
             };
         }
 
+        // user not exist before
         await db.insert(users).values({
             id,
             name: parsed.data.name,

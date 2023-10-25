@@ -6,7 +6,7 @@ import RegisterTab from './RegisterTab';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-export default async function HomePage() {
+async function HomePage() {
 
     const session = await getServerSession();
     
@@ -32,3 +32,5 @@ export default async function HomePage() {
         </main>
     );
 }
+
+export default HomePage;
