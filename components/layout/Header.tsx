@@ -14,9 +14,13 @@ function Header({ session }: THeader) {
     const nameInitials = session.user?.name ? getNameInitials(session.user.name) : 'MM';
 
     return (
-        <header className="py-4 mb-6 border-b-2 flex items-center justify-between">
+        <header className="py-4 px-2 border-b-2 flex items-center justify-between">
             <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                {
+                    session.user?.image ?
+                    <AvatarImage src={session.user.image} /> :
+                    null
+                }
                 <AvatarFallback>{nameInitials}</AvatarFallback>
             </Avatar>
             <Link href="/dashboard">
