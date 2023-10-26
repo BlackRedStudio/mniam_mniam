@@ -9,8 +9,6 @@ import { users } from '@/types/schema';
 import { userRegistrationSchema } from '@/types/validation';
 import { db } from '@/lib/db';
 
-export type TUserRegistrationType = z.infer<typeof userRegistrationSchema>;
-
 export type TRegisterUserReturn = Awaited<ReturnType<typeof registerUser>>;
 
 export async function registerUser(formData: FormData) {

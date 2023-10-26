@@ -1,5 +1,7 @@
-export type TFormState = {
-    success: boolean,
-    message?: string
-    errors?: any[]
-}
+export type THTTPMethod =
+    | 'GET'
+    | 'OPTIONS'
+    | 'POST'
+    | 'PUT'
+    | 'PATCH'
+    | 'DELETE';

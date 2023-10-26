@@ -1,5 +1,6 @@
 import H2 from "@/components/ui/H2";
 import { getServerSession } from "next-auth";
+import ProductTest from "./ProductTest";
 
 async function DashboardPage() {
 
@@ -12,6 +13,7 @@ async function DashboardPage() {
     return (
         <section className="dashboard-page">
             <H2 className="text-center">Witaj {userName},<br/>co dzisiaj smakujemy?</H2>
+            <ProductTest />
         </section>
     );
 }

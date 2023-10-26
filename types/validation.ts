@@ -46,3 +46,5 @@ export const userRegistrationSchema = z
         message: 'Hasła nie pasują do siebie',
         path: ['passwordConfirm'],
     });
+
+export type TUserRegistrationType = z.infer<typeof userRegistrationSchema>;
