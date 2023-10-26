@@ -18,7 +18,7 @@ export function getNameInitials(userName: string) {
     return nameInitials.toUpperCase();
 }
 
-export async function api(url: string, method: THTTPMethod = 'GET', body?: any) {
+export async function api<Res>(url: string, method: THTTPMethod = 'GET', body?: any) {
 	
     const headers = {
         'User-Agent': 'Mniam App',
@@ -39,7 +39,7 @@ export async function api(url: string, method: THTTPMethod = 'GET', body?: any) 
         },
     );
 
-    let data = await response.json();
+    let data = await response.json() as Res;
 
 	return data;
 }
