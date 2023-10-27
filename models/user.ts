@@ -11,6 +11,10 @@ export const users = mysqlTable('users', {
     name: varchar('name', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull(),
     password: varchar('password', { length: 255 }),
+    emailVerified: timestamp('emailVerified', {
+        mode: 'date',
+        fsp: 3,
+    }).defaultNow(),
     image: varchar('image', { length: 255 }),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
