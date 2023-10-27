@@ -10,6 +10,7 @@ export async function getProductsByBarcode(barcode: string) {
     const data = await api<TOpenFoodFactsProductRes>(`${urlV2}/product/${barcode}`, 'GET', {
         fields: 'product_name,brands'
     });
+    console.log(data);
 
     return data;
 }

@@ -6,7 +6,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
-import { users } from '@/types/schema';
+import { users } from '@/models/user';
 import { db } from '@/lib/db';
 import { drizzleAdapter } from '@/lib/drizzle-adapter';
 

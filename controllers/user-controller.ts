@@ -3,10 +3,9 @@
 import bcrypt from 'bcrypt'
 
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 
-import { users } from '@/types/schema';
-import { userRegistrationSchema } from '@/types/validation';
+import { users } from '@/models/user';
+import { userRegistrationSchema } from '@/validation/user-validation';
 import { db } from '@/lib/db';
 
 export type TRegisterUserReturn = Awaited<ReturnType<typeof registerUser>>;
@@ -36,7 +35,7 @@ export async function registerUser(formData: FormData) {
             where: eq(users.email, parsed.data.email),
             with: {
                 accounts: true,
-            },
+            }
         });
 
         const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
@@ -71,6 +70,7 @@ export async function registerUser(formData: FormData) {
         });
         return { success: true, message: 'Rejestracja przebiegła pomyślnie' };
     } catch (e) {
+        console.log(e);
         return {
             success: false,
             message: 'Błąd aplikacji skontaktuj się z administratorem',

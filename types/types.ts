@@ -14,7 +14,7 @@ export type TOpenFoodFactsProduct = {
 
 export type TOpenFoodFactsProductRes = {
     code: string;
-    product: TOpenFoodFactsProduct;
+    product?: TOpenFoodFactsProduct;
     status: number;
     status_verbose: string;
 } | null;

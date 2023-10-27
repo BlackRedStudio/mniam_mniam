@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { eq } from 'drizzle-orm';
 
-import { users } from '@/types/schema';
+import { users } from '@/models/user';
 import { db } from '@/lib/db';
 
 // export async function addUser() {

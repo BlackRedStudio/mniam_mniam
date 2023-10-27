@@ -12,8 +12,9 @@
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
-    "studio": "npx drizzle-kit studio",
-    "generate": "npx drizzle-kit push:mysql"
+    "db:studio": "npx drizzle-kit studio --host 127.0.0.1",
+    "db:push": "npx drizzle-kit generate:mysql && npx drizzle-kit push:mysql",
+    "db:drop": "npx drizzle-kit drop"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.4",

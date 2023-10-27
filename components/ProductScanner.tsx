@@ -39,7 +39,7 @@ function ProductScanner() {
             className='w-full mt-5'
                 onClick={async () => {
                     const res = await getProductsByBarcode(code);
-                    if(res) {
+                    if(res?.product) {
                         setProduct(res.product);
                     }
                 }}>

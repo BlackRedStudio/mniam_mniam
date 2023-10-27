@@ -2,7 +2,8 @@ import type { Adapter } from '@auth/core/adapters';
 import { and, eq } from 'drizzle-orm';
 import { PlanetScaleDatabase } from 'drizzle-orm/planetscale-serverless';
 
-import { accounts, sessions, users, verificationTokens } from '@/types/schema';
+import { users } from '@/models/user';
+import { accounts } from '@/models/account';
 
 export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
     return {
@@ -37,29 +38,6 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
 
             return user;
         },
-        async createSession(data) {
-            await client.insert(sessions).values(data);
-
-            return await client
-                .select()
-                .from(sessions)
-                .where(eq(sessions.sessionToken, data.sessionToken))
-                .then(res => res[0]);
-        },
-        async getSessionAndUser(data) {
-            const sessionAndUser =
-                (await client
-                    .select({
-                        session: sessions,
-                        user: users,
-                    })
-                    .from(sessions)
-                    .where(eq(sessions.sessionToken, data))
-                    .innerJoin(users, eq(users.id, sessions.userId))
-                    .then(res => res[0])) ?? null;
-
-            return sessionAndUser;
-        },
         async updateUser(data) {
             if (!data.id) {
                 throw new Error('No user id.');
@@ -71,18 +49,6 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
                 .select()
                 .from(users)
                 .where(eq(users.id, data.id))
-                .then(res => res[0]);
-        },
-        async updateSession(data) {
-            await client
-                .update(sessions)
-                .set(data)
-                .where(eq(sessions.sessionToken, data.sessionToken));
-
-            return await client
-                .select()
-                .from(sessions)
-                .where(eq(sessions.sessionToken, data.sessionToken))
                 .then(res => res[0]);
         },
         async linkAccount(rawAccount) {
@@ -110,60 +76,6 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
             }
 
             return dbAccount.users;
-        },
-        async deleteSession(sessionToken) {
-            const session =
-                (await client
-                    .select()
-                    .from(sessions)
-                    .where(eq(sessions.sessionToken, sessionToken))
-                    .then(res => res[0])) ?? null;
-
-            await client
-                .delete(sessions)
-                .where(eq(sessions.sessionToken, sessionToken));
-
-            return session;
-        },
-        async createVerificationToken(token) {
-            await client.insert(verificationTokens).values(token);
-
-            return await client
-                .select()
-                .from(verificationTokens)
-                .where(eq(verificationTokens.identifier, token.identifier))
-                .then(res => res[0]);
-        },
-        async useVerificationToken(token) {
-            try {
-                const deletedToken =
-                    (await client
-                        .select()
-                        .from(verificationTokens)
-                        .where(
-                            and(
-                                eq(
-                                    verificationTokens.identifier,
-                                    token.identifier,
-                                ),
-                                eq(verificationTokens.token, token.token),
-                            ),
-                        )
-                        .then(res => res[0])) ?? null;
-
-                await client
-                    .delete(verificationTokens)
-                    .where(
-                        and(
-                            eq(verificationTokens.identifier, token.identifier),
-                            eq(verificationTokens.token, token.token),
-                        ),
-                    );
-
-                return deletedToken;
-            } catch (err) {
-                throw new Error('No verification token found.');
-            }
         },
         async deleteUser(id) {
             const user = await client
