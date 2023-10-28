@@ -8,13 +8,15 @@ export type THTTPMethod =
 
 
 export type TOpenFoodFactsProduct = {
-    brands: string;
-    product_name: string;
+    brands?: string;
+    product_name?: string;
+    image_url?: string;
+    image_small_url?: string;
 } | null;
 
 export type TOpenFoodFactsProductRes = {
-    code: string;
+    code: string | null;
     product?: TOpenFoodFactsProduct;
-    status: number;
+    status: 0 | 1;
     status_verbose: string;
 } | null;

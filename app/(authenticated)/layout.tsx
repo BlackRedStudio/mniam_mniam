@@ -15,7 +15,7 @@ async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
     return (
         <>
             <Header session={session} />
-            <main className="flex min-h-screen flex-col items-center justify-start p-4">
+            <main className="min-h-screen p-4">
                 {children}
             </main>
         </>
