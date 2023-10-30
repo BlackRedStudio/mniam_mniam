@@ -35,6 +35,18 @@ module.exports = {
         success: {
             DEFAULT: 'hsl(var(--green))',
         },
+        yellow: {
+            DEFAULT: 'hsl(var(--yellow))',
+        },
+        blue: {
+            DEFAULT: 'hsl(var(--blue))',
+        },
+        orange: {
+            DEFAULT: 'hsl(var(--orange))',
+        },
+        violet: {
+            DEFAULT: 'hsl(var(--violet))',
+        },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",

@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -35,6 +35,14 @@
     --radius: 0.5rem;
 
     --green: 142 64% 45%;
+
+    --yellow: 52 100% 50%;
+    
+    --violet: 282 100% 41%;
+
+    --blue: 210 100% 50%;
+
+    --orange: 37 100% 50%;
   }
  
   .dark {

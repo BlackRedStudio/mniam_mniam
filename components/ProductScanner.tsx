@@ -11,28 +11,31 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useSetAtom } from 'jotai';
 import { openFoodFactsProductStore } from '@/store/products-store';
+import { useRouter } from 'next/navigation';
+import Loader from './ui/Loader';
 
 function ProductScanner() {
     const [code, setCode] = useState('');
-    const [productResponse, setProductResponse] =
-        useState<TOpenFoodFactsProductRes>(null);
+    const [loading, setLoading] = useState(false);
+    const [productResponse, setProductResponse] = useState<TOpenFoodFactsProductRes>(null);
+    const router = useRouter();
 
     const setOpenFoodFactsProductStore = useSetAtom(openFoodFactsProductStore);
 
     let searchResults = <div></div>;
 
     if (productResponse?.product) {
-        searchResults = (
-            <div>
-                <strong>Znaleziony produkt:</strong>
-                <br />
-                {productResponse.product.product_name} z firmy{' '}
-                {productResponse.product.brands}
-                <Link href="/rate-product">
-                    <Button>Oceń produkt</Button>
-                </Link>
-            </div>
-        );
+        // searchResults = (
+        //     <div>
+        //         <strong>Znaleziony produkt:</strong>
+        //         <br />
+        //         {productResponse.product.product_name} z firmy{' '}
+        //         {productResponse.product.brands}
+        //         <Link href="/rate-product">
+        //             <Button>Oceń produkt</Button>
+        //         </Link>
+        //     </div>
+        // );
     } else if (productResponse?.code === null) {
         searchResults = (
             <div className="text-destructive">Wprowadź numer EAN</div>
@@ -70,15 +73,21 @@ function ProductScanner() {
             <Button
                 className="w-full mt-5"
                 onClick={async () => {
+                    setLoading(true);
                     const res = await getProductsByBarcode(code);
                     setProductResponse(res || null);
                     
                     if(res?.product) {
                         setOpenFoodFactsProductStore(res?.product);
+                        router.push('/rate-product');
                     }
+                    setLoading(false);
                 }}>
                 Wyszukaj produkt
             </Button>
+            {
+                loading && <Loader className='mt-4' />
+            }
             <div className="mt-5">{searchResults}</div>
         </>
     );

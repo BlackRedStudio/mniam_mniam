@@ -1,6 +1,7 @@
-import { THTTPMethod } from '@/types/types';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+
+import { THTTPMethod } from '@/types/types';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -18,28 +19,28 @@ export function getNameInitials(userName: string) {
     return nameInitials.toUpperCase();
 }
 
-export async function api<Res>(url: string, method: THTTPMethod = 'GET', body?: any) {
-	
+export async function api<Res>(
+    url: string,
+    method: THTTPMethod = 'GET',
+    body?: any,
+) {
     const headers = {
         'User-Agent': 'Mniam App',
         Accept: 'application/json',
     };
 
-	if(method === 'GET' && body) {
-		url += '?' + new URLSearchParams(body);
-		body = null;
-	}
+    if (method === 'GET' && body) {
+        url += '?' + new URLSearchParams(body);
+        body = null;
+    }
 
-    let response = await fetch(
-        url,
-        {
-            method,
-            body,
-            headers,
-        },
-    );
+    let response = await fetch(url, {
+        method,
+        body,
+        headers,
+    });
 
-    let data = await response.json() as Res;
+    let data = (await response.json()) as Res;
 
-	return data;
+    return data;
 }

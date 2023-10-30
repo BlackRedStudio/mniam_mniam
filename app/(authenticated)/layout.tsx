@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 
 import { getServerSession } from 'next-auth';
 import Header from '@/components/layout/Header';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type TAuthenticatedLayoutProps = {
     children: ReactNode;
@@ -15,8 +16,10 @@ async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
     return (
         <>
             <Header session={session} />
-            <main className="min-h-screen p-4">
-                {children}
+            <main className="min-h-screen">
+                <ScrollArea className='h-[calc(100vh-90px)]'>
+                    {children}
+                </ScrollArea>
             </main>
         </>
     );

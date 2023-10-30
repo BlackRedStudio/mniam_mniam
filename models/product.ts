@@ -1,8 +1,11 @@
-import { bigint, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
-export const products = mysqlTable('users', {
+export const products = mysqlTable('products', {
     id: bigint('id', { mode: 'number' }).primaryKey().autoincrement(),
     name: varchar('name', { length: 512 }).notNull(),
+    brand: varchar('brand', { length: 512 }).notNull(),
+    img: text('img').default(''),
+    imgOpenFoodFacts: text('imgOpenFoodFacts').default(''),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3

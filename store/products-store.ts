@@ -1,4 +1,5 @@
 import { TOpenFoodFactsProduct } from '@/types/types';
-import { atom } from 'jotai';
+import { atomWithLocalStorage } from './store-helpers';
 
-export const openFoodFactsProductStore = atom<TOpenFoodFactsProduct | null>(null);
+// helper for store atoms in session storage
+export const openFoodFactsProductStore = atomWithLocalStorage<TOpenFoodFactsProduct>('openFoodFactsProductStore', null);
