@@ -1,3 +1,5 @@
+import { categories } from "@/lib/config";
+
 export type THTTPMethod =
     | 'GET'
     | 'OPTIONS'
@@ -20,3 +22,6 @@ export type TOpenFoodFactsProductRes = {
     status: 0 | 1;
     status_verbose: string;
 } | null;
+
+export type TCategories = typeof categories;
+export type TCategoriesIds = TCategories[number]['id'];
