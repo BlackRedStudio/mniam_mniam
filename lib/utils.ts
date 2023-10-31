@@ -44,3 +44,18 @@ export async function api<Res>(
 
     return data;
 }
+
+export function handleCurrencyInput(value: string) {
+
+    if( value.match(/[^0-9\.]/g) ) return null;
+
+    const splittedVal = value.split('.');
+
+    if (splittedVal.length < 3) {
+        if (splittedVal.length > 1 && splittedVal[1].length > 2) {
+            return null;
+        }
+        return value;
+    }
+    return null;
+}

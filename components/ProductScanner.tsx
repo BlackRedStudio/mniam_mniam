@@ -78,7 +78,7 @@ function ProductScanner() {
                     setProductResponse(res || null);
                     
                     if(res?.product) {
-                        setOpenFoodFactsProductStore(res?.product);
+                        await setOpenFoodFactsProductStore(res.product);
                         router.push('/rate-product');
                     }
                     setLoading(false);

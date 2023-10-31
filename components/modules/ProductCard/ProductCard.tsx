@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { openFoodFactsProductStore } from '@/store/products-store';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -25,9 +25,9 @@ function ProductCard() {
 
     const [rating, setRating] = useState(0);
     const [category, setCategory] = useState<TCategoriesIds | ''>('');
-    const [price, setPrice] = useState<number|''>(0.00);
+    const [price, setPrice] = useState('');
 
-    const openFoodFactsProduct = useAtomValue(openFoodFactsProductStore);
+    const [openFoodFactsProduct] = useAtom(openFoodFactsProductStore);
 
     if (openFoodFactsProduct === null) {
         return redirect('/dashboard');

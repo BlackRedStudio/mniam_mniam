@@ -6,6 +6,7 @@ import { Inter as FontSans } from 'next/font/google';
 
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
+import Providers from './providers';
 
 const fontSans = FontSans({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -31,7 +32,9 @@ async function RootLayout({ children }: TRootLayoutProps) {
                     'min-h-screen bg-background font-sans antialiased mx-auto max-w-[700px] overflow-hidden',
                     fontSans.variable,
                 )}>
-                {children}
+                <Providers>
+                    {children}
+                </Providers>
                 <Toaster />
             </body>
         </html>
