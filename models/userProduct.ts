@@ -1,9 +1,9 @@
-import { bigint, float, mysqlEnum, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import { bigint, mysqlEnum, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
 
 export const userProducts = mysqlTable('userProducts', {
     id: bigint('id', { mode: 'number' }).primaryKey().autoincrement(),
     rating: tinyint('rating').notNull(),
-    price: float('price').notNull(),
+    price: varchar('price', {length: 256}).notNull(),
     category: varchar('category', {
         length: 256
     }).notNull(),

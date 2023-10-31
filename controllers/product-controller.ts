@@ -1,6 +1,8 @@
 'use server';
 
-import { imageUploadSchema } from '@/validation/product-validation';
+import { db } from '@/lib/db';
+import { userProducts } from '@/models/userProduct';
+import { imageUploadSchema, userProductSchema } from '@/validation/product-validation';
 import { CompleteMultipartUploadCommandOutput, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
@@ -45,4 +47,30 @@ export async function uploadProductPhoto(formData: FormData) {
             message: 'Błąd aplikacji skontaktuj się z administratorem',
         };
     }
+}
+
+export async function addProductToUserList(rating, price, category, status) {
+
+    const parsed = userProductSchema.safeParse({
+        rating,
+        price,
+        category,
+        status,
+    });
+
+    if (!parsed.success) {
+        return {
+            success: false,
+            message:
+                'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
+            errors: parsed.error.formErrors.fieldErrors,
+        };
+    }
+
+    await db.insert(userProducts).values({
+        rating: parsed.data.rating,
+        price: parsed.data.price,
+        category: parsed.data.category,
+        status: 'visible',
+    });
 }

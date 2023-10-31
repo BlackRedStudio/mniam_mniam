@@ -20,6 +20,7 @@ import CategorySelector from './CategorySelector';
 import PriceInput from './PriceInput';
 import { useState } from 'react';
 import { TCategoriesIds } from '@/types/types';
+import { addProductToUserList } from '@/controllers/product-controller';
 
 function ProductCard() {
 
@@ -65,8 +66,8 @@ function ProductCard() {
                     <CategorySelector category={category} setCategory={setCategory} />
                     <PriceInput price={price} setPrice={setPrice} />
                     <div className="mt-8">
-                        <Button className="mb-4 w-full">Zapisz ocenę</Button>
-                        <Button className="w-full" variant={'outline'}>
+                        <Button className="mb-4 w-full" onClick={() => addProductToUserList(rating, price, category, 'visible')}>Zapisz ocenę</Button>
+                        <Button className="w-full" onClick={() => addProductToUserList(rating, price, category, 'invisible')} variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>
                     </div>
