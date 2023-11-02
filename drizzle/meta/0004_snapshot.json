@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ffb37ad8-dd4a-4c41-b09c-646eb9aa8dd8",
-  "prevId": "896daefc-ec55-4e84-af17-40859d615a57",
+  "id": "d10e36ee-4c47-4d6d-a289-56c05ee297b1",
+  "prevId": "ffb37ad8-dd4a-4c41-b09c-646eb9aa8dd8",
   "tables": {
     "accounts": {
       "name": "accounts",
@@ -235,6 +235,13 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": true
+        },
+        "productId": {
+          "name": "productId",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "rating": {
           "name": "rating",

@@ -10,6 +10,7 @@ export type THTTPMethod =
 
 
 export type TOpenFoodFactsProduct = {
+    _id: string;
     brands?: string;
     product_name?: string;
     image_url?: string;

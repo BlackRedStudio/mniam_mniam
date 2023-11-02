@@ -1,6 +1,8 @@
 import ProductCard from "@/components/modules/ProductCard/ProductCard";
+import { db } from "@/lib/db";
 
-function rateProductPage() {
+async function rateProductPage() {
+
     return (
         <div className="page">
             <ProductCard />

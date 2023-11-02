@@ -9,7 +9,7 @@ const urlV2 = 'https://world.openfoodfacts.org/api/v2';
 export async function getProductsByBarcode(barcode: string) {
 
     const data = await api<TOpenFoodFactsProductRes>(`${urlV2}/product/${barcode}`, 'GET', {
-        fields: 'product_name,brands,image_url,image_small_url'
+        fields: 'product_name,brands,image_url,image_small_url,_id'
     });
 
     return data;

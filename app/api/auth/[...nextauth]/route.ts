@@ -1,16 +1,16 @@
-import NextAuth from 'next-auth';
+import { users } from '@/models/user';
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
+import NextAuth, { AuthOptions } from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
-import { users } from '@/models/user';
 import { db } from '@/lib/db';
 import { drizzleAdapter } from '@/lib/drizzle-adapter';
 
-const handler = NextAuth({
+export const authOptions = {
     adapter: drizzleAdapter(db as any) as Adapter,
     pages: {
         signIn: '/',
@@ -54,10 +54,12 @@ const handler = NextAuth({
                 });
 
                 if (user && user.password) {
+                    const passwordMatch = await bcrypt.compare(
+                        credentials.password,
+                        user.password,
+                    );
 
-                    const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-
-                    if(!passwordMatch) return null;
+                    if (!passwordMatch) return null;
 
                     return user;
                 } else {
@@ -67,9 +69,18 @@ const handler = NextAuth({
         }),
     ],
     callbacks: {
-        async jwt({ token, trigger, session }) {
+        session: async ({ session, token }) => {
+            if (session?.user) {
+                session.user.id = token.uid;
+            }
+            return session;
+        },
+        async jwt({ token, trigger, session, user }) {
             if (trigger === 'update' && session?.email) {
                 token.email = session.email;
+            }
+            if (user) {
+                token.uid = user.id;
             }
 
             return token;
@@ -78,6 +89,8 @@ const handler = NextAuth({
     session: {
         strategy: 'jwt',
     },
-});
+} as AuthOptions;
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

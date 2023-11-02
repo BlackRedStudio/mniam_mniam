@@ -5,10 +5,11 @@ import H1 from '@/components/ui/H1';
 import RegisterTab from './RegisterTab';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
+import { authOptions } from './api/auth/[...nextauth]/route';
 
 async function HomePage() {
 
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if(session) {
         redirect('/dashboard');

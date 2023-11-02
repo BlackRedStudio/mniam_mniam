@@ -1,0 +1,1 @@
+ALTER TABLE `userProducts` MODIFY COLUMN `price` float NOT NULL;

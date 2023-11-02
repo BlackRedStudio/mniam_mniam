@@ -1,33 +1,26 @@
-'use client';
-
 import { uploadProductPhoto } from '@/controllers/product-controller';
 
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { userProductSchema } from '@/validation/user-product-validation';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-export default function Upload() {
-    const { toast } = useToast();
+export default async function Upload() {
 
-    async function sendUploadForm(formData: FormData) {
-        const res = await uploadProductPhoto(formData);
+    const session = await getServerSession(authOptions);
 
-        toast({
-            title: res.message,
-            variant: res.success ? 'success' : 'destructive',
-        });
-    }
+    // const test = userProductSchema.safeParse({
+    //     rating: 2,
+    //     price: '1301.24',
+    //     category: 'jelly',
+    //     status: 'visible'
+    // });
+    // console.log(test);
 
     return (
         <>
-            <form action={formData => sendUploadForm(formData)}>
-                <p>Upload a .png or .jpg image (max 1MB).</p>
-                <input
-                    type="file"
-                    name="image"
-                    accept="image/png, image/jpeg"
-                />
-                <Button type="submit">Wyślij</Button>
-            </form>
+           adsasd
         </>
     );
 }

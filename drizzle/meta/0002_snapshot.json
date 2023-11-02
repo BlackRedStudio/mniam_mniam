@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "45ff1e9a-8599-4d32-ab05-330e4f444591",
+  "id": "896daefc-ec55-4e84-af17-40859d615a57",
   "prevId": "fd4e0f50-27ad-4270-8248-d21c2c869994",
   "tables": {
     "accounts": {
@@ -243,9 +243,9 @@
           "notNull": true,
           "autoincrement": false
         },
-        "priceRating": {
-          "name": "priceRating",
-          "type": "tinyint",
+        "price": {
+          "name": "price",
+          "type": "decimal",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

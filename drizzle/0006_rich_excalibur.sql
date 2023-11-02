@@ -1,0 +1,1 @@
+ALTER TABLE `userProducts` ADD `userId` varchar(255) NOT NULL;

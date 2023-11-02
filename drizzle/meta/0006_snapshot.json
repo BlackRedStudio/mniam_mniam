@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ffb37ad8-dd4a-4c41-b09c-646eb9aa8dd8",
-  "prevId": "896daefc-ec55-4e84-af17-40859d615a57",
+  "id": "461a6b5b-1198-482d-adaa-35950d61cb92",
+  "prevId": "ac5fcfae-baea-4f03-9eaf-f2167b070d13",
   "tables": {
     "accounts": {
       "name": "accounts",
@@ -162,10 +162,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "bigint",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "name": {
           "name": "name",
@@ -231,10 +231,24 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "bigint",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "productId": {
+          "name": "productId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
         "rating": {
           "name": "rating",

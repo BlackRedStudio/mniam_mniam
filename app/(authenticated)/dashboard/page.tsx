@@ -1,10 +1,11 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ProductScanner from "@/components/ProductScanner";
 import H2 from "@/components/ui/H2";
 import { getServerSession } from "next-auth";
 
 async function DashboardPage() {
 
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if(!session) return null;
 

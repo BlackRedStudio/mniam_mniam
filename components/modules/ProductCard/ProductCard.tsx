@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { openFoodFactsProductStore } from '@/store/products-store';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,7 +20,7 @@ import CategorySelector from './CategorySelector';
 import PriceInput from './PriceInput';
 import { useState } from 'react';
 import { TCategoriesIds } from '@/types/types';
-import { addProductToUserList } from '@/controllers/product-controller';
+import { addProductToUserList } from '@/controllers/user-product-controller';
 
 function ProductCard() {
 
@@ -28,7 +28,7 @@ function ProductCard() {
     const [category, setCategory] = useState<TCategoriesIds | ''>('');
     const [price, setPrice] = useState('');
 
-    const [openFoodFactsProduct] = useAtom(openFoodFactsProductStore);
+    const openFoodFactsProduct = useAtomValue(openFoodFactsProductStore);
 
     if (openFoodFactsProduct === null) {
         return redirect('/dashboard');
@@ -66,8 +66,8 @@ function ProductCard() {
                     <CategorySelector category={category} setCategory={setCategory} />
                     <PriceInput price={price} setPrice={setPrice} />
                     <div className="mt-8">
-                        <Button className="mb-4 w-full" onClick={() => addProductToUserList(rating, price, category, 'visible')}>Zapisz ocenę</Button>
-                        <Button className="w-full" onClick={() => addProductToUserList(rating, price, category, 'invisible')} variant={'outline'}>
+                        <Button className="mb-4 w-full" onClick={() => addProductToUserList(openFoodFactsProduct, rating, price, category, 'invisible')}>Zapisz ocenę</Button>
+                        <Button className="w-full" onClick={() => addProductToUserList(openFoodFactsProduct, rating, price, category, 'visible')} variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>
                     </div>

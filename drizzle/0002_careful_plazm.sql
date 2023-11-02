@@ -12,7 +12,7 @@ CREATE TABLE `products` (
 CREATE TABLE `userProducts` (
 	`id` bigint AUTO_INCREMENT NOT NULL,
 	`rating` tinyint NOT NULL,
-	`priceRating` tinyint NOT NULL,
+	`price` decimal NOT NULL,
 	`category` varchar(256) NOT NULL,
 	`status` enum('visible','invisible','draft') NOT NULL,
 	`dateCreated` timestamp(3) DEFAULT (now()),
