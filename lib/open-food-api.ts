@@ -1,5 +1,3 @@
-'use server'
-
 import { TOpenFoodFactsProductRes } from "@/types/types";
 import { api } from "./utils";
 
@@ -12,7 +10,11 @@ export async function getProductsByBarcode(barcode: string) {
         fields: 'product_name,brands,image_url,image_small_url,_id'
     });
 
-    return data;
+    if(!data?.product) {
+        return null;
+    }
+
+    return data.product;
 }
 // https://openfoodfacts.github.io/openfoodfacts-server/api/ref-v2/#get-/api/v2/search
 export async function searchProduct() {

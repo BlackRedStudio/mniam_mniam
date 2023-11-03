@@ -14,6 +14,11 @@ const nextConfig = {
                 hostname: 'images.openfoodfacts.org',
                 pathname: '/images/products/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'mniam-app.s3.eu-central-1.amazonaws.com',
+                pathname: '/**',
+            },
             // {
             //     protocol: 'http',
             //     hostname: '185.72.198.19',

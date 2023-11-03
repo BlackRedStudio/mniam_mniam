@@ -11,6 +11,40 @@ import { Upload } from '@aws-sdk/lib-storage';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
+import { getProductsByBarcode } from '@/lib/open-food-api';
+import { eq } from 'drizzle-orm';
+
+export async function getProduct(ean: string) {
+    try {
+
+        let finalProduct = null;
+
+        const existingProduct = await db.query.products.findFirst({
+            where: eq(products.ean, ean)
+        });
+        if(existingProduct) {
+            finalProduct = {
+                _id: existingProduct.ean,
+                brands: existingProduct.brand,
+                product_name: existingProduct.name,
+                image_url: existingProduct.img,
+            }
+        } else {
+            finalProduct = await getProductsByBarcode(ean);
+        }
+
+        return {
+            success: true,
+            message: 'Pobrano produkt.',
+            product: finalProduct,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
 
 export async function uploadProductPhoto(src: string, ean: string) {
     try {
