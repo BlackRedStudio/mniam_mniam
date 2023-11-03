@@ -1,4 +1,4 @@
-import { userProducts } from '@/models/userProduct';
+import { userProducts } from '@/schema/userProducts';
 import { z } from 'zod';
 
 import { TCategoriesIds } from '@/types/types';
@@ -7,15 +7,14 @@ import { handleCurrencyInput } from '@/lib/utils';
 
 export const userProductSchema = z.object({
     rating: z.number().min(1).max(5),
-    price: z.coerce.
-        number().refine(field => {
-            return handleCurrencyInput( String(field) );
-        }),
-        
-    category: z
-        .string()
-        .refine(field =>
-            categories.map(cat => cat.id).includes(field as TCategoriesIds),
-        ),
+    price: z.coerce.number().refine(field => {
+        return handleCurrencyInput(String(field));
+    }),
+
+    category: z.enum(
+        categories.map(cat => cat.id) as [TCategoriesIds, ...TCategoriesIds[]],
+    ),
     status: z.enum(userProducts.status.enumValues),
 });
+
+export type TUserProductSchema = z.infer<typeof userProductSchema>;

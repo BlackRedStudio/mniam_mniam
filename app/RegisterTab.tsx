@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { registerUser, TRegisterUserReturn } from '@/controllers/user-controller';
+import { registerUser, TRegisterUserReturn } from '@/actions/user-actions';
 
 import { useToast } from '@/hooks/use-toast';
 import FormError from '@/components/ui/FormError';

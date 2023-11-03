@@ -2,8 +2,8 @@ import type { Adapter } from '@auth/core/adapters';
 import { and, eq } from 'drizzle-orm';
 import { PlanetScaleDatabase } from 'drizzle-orm/planetscale-serverless';
 
-import { users } from '@/models/user';
-import { accounts } from '@/models/account';
+import { users } from '@/schema/users';
+import { accounts } from '@/schema/accounts';
 
 export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
     return {

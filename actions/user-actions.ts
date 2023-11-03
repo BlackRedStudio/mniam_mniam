@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 
 import { eq } from 'drizzle-orm';
 
-import { users } from '@/models/user';
+import { users } from '@/schema/users';
 import { userRegistrationSchema } from '@/validation/user-validation';
 import { db } from '@/lib/db';
 

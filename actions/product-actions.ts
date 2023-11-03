@@ -1,6 +1,6 @@
 'use server';
 
-import { products } from '@/models';
+import { products } from '@/schema';
 import { Readable } from 'stream';
 
 import {

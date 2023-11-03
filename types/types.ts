@@ -26,3 +26,6 @@ export type TOpenFoodFactsProductRes = {
 
 export type TCategories = typeof categories;
 export type TCategoriesIds = TCategories[number]['id'];
+
+export type TLogin = 'credentials' | 'google' | 'github';
+

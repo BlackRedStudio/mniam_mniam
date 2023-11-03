@@ -20,7 +20,7 @@ import CategorySelector from './CategorySelector';
 import PriceInput from './PriceInput';
 import { useState } from 'react';
 import { TCategoriesIds } from '@/types/types';
-import { addProductToUserList } from '@/controllers/user-product-controller';
+import { addProductToUserList } from '@/actions/user-product-actions';
 
 function ProductCard() {
 

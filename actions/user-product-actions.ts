@@ -1,6 +1,6 @@
 'use server'
 
-import { products, TUserProduct, userProducts } from '@/models';
+import { products, TUserProduct, userProducts } from '@/schema';
 import { userProductSchema } from '@/validation/user-product-validation';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
@@ -9,7 +9,7 @@ import { TCategoriesIds, TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-import { addProductDB } from './product-controller';
+import { addProductDB } from './product-actions';
 
 export async function addProductToUserList(
     openFoodFactsProduct: TOpenFoodFactsProduct,

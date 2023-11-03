@@ -9,8 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
-
-export type loginType = 'credentials' | 'google' | 'github';
+import { TLogin } from '@/types/types';
 
 function LoginTab() {
     const { toast } = useToast();
@@ -20,7 +19,7 @@ function LoginTab() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async (type: loginType) => {
+    const handleLogin = async (type: TLogin) => {
         setLoading(true);
         if (type === 'credentials') {
             const res = await signIn('credentials', {
