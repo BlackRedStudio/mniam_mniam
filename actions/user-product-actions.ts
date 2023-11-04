@@ -10,6 +10,7 @@ import { db } from '@/lib/db';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import { addProductDB } from './product-actions';
+import { revalidatePath } from 'next/cache';
 
 export async function addProductToUserList(
     openFoodFactsProduct: TOpenFoodFactsProduct,
@@ -81,6 +82,8 @@ export async function addProductToUserList(
         } else {
             await db.insert(userProducts).values(userProductsValues);
         }
+
+        revalidatePath('/product/[ean]/page');
 
         return {
             success: true,

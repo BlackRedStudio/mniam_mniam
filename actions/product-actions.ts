@@ -1,27 +1,75 @@
 'use server';
 
-import { products } from '@/schema';
 import { Readable } from 'stream';
-
+import { products, userProducts } from '@/schema';
 import {
     CompleteMultipartUploadCommandOutput,
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import { eq, like } from 'drizzle-orm';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
-import { getProductsByBarcode } from '@/lib/open-food-api';
-import { eq } from 'drizzle-orm';
+import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+
+export async function searchProductByName(name: string) {
+    try {
+        let finalProducts = null;
+
+        const existingProducts = await db.query.products.findMany({
+            where: like(products.name, `%${name}%`),
+        });
+
+        if (existingProducts.length < 1) {
+            return {
+                success: false,
+                message: 'Nie znaleziono produktów',
+            };
+        }
+        finalProducts = existingProducts.map(product => ({
+            _id: product.ean,
+            brands: product.brand,
+            product_name: product.name,
+            image_url: product.img,
+        }));
+        // else {
+        //     finalProduct = await searchProduct(name);
+        // }
+
+        return {
+            success: true,
+            message: 'Pobrano produkt.',
+            products: finalProducts,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
 
 export async function getProduct(ean: string) {
     try {
+        const session = await getServerSession(authOptions);
+
+        if(!session) return null;
 
         let finalProduct = null;
 
         const existingProduct = await db.query.products.findFirst({
-            where: eq(products.ean, ean)
-        });
+            where: eq(products.ean, ean),
+            with: {
+                userProducts: {
+                    limit: 1,
+                    where: eq(userProducts.userId, session.user.id)
+                }
+            }
+        })
+
         if(existingProduct) {
             finalProduct = {
                 _id: existingProduct.ean,
@@ -36,6 +84,7 @@ export async function getProduct(ean: string) {
         return {
             success: true,
             message: 'Pobrano produkt.',
+            existingProduct,
             product: finalProduct,
         };
     } catch (e) {
@@ -63,7 +112,9 @@ export async function uploadProductPhoto(src: string, ean: string) {
         //     };
         // }
 
-        const readableStream = await fetch(src).then(r => Readable.fromWeb(r.body as any));
+        const readableStream = await fetch(src).then(r =>
+            Readable.fromWeb(r.body as any),
+        );
 
         const upload = new Upload({
             client: s3Client,
@@ -77,7 +128,6 @@ export async function uploadProductPhoto(src: string, ean: string) {
 
         const res =
             (await upload.done()) as CompleteMultipartUploadCommandOutput;
-
 
         return {
             success: true,
@@ -97,7 +147,10 @@ export async function addProductDB(product: TOpenFoodFactsProduct) {
         let imgLocation = '';
 
         if (product?.image_url) {
-            const resUpload = await uploadProductPhoto(product.image_url, product._id);
+            const resUpload = await uploadProductPhoto(
+                product.image_url,
+                product._id,
+            );
             if (resUpload.success) {
                 imgLocation = resUpload.location || '';
             }

@@ -17,10 +17,10 @@ export async function getProductsByBarcode(barcode: string) {
     return data.product;
 }
 // https://openfoodfacts.github.io/openfoodfacts-server/api/ref-v2/#get-/api/v2/search
-export async function searchProduct() {
+export async function searchProduct(name: string) {
 
     const data = await api<TOpenFoodFactsProductRes>(`${urlV2}/search`, 'GET', {
-        fields: 'product_name,brands'
+        fields: 'product_name,brands,image_url,image_small_url,_id',
     });
 
     console.log(data);

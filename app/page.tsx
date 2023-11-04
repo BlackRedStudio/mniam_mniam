@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import LoginTab from './LoginTab';
+import LoginTab from '../components/LoginTab';
 import H1 from '@/components/ui/H1';
-import RegisterTab from './RegisterTab';
+import RegisterTab from '../components/RegisterTab';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from './api/auth/[...nextauth]/route';

@@ -8,7 +8,7 @@ import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import SignUpButton from './SignUpButton';
+import SignUpButton from './ui/SignUpButton';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 

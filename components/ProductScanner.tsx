@@ -32,11 +32,13 @@ function ProductScanner() {
                 </Button>
             </div>
             <div className="mb-4">
-                <Label htmlFor="name">
+                <Label htmlFor="code">
                     Zeskanowany lub wpisany ręcznie kod kreskowy
                 </Label>
                 <Input
                     type="number"
+                    id="code"
+                    name="code"
                     className="mt-1"
                     placeholder="Miejsce na kod kreskowy"
                     value={code}
@@ -45,7 +47,7 @@ function ProductScanner() {
             </div>
             <Button
                 className="w-full mt-5"
-                onClick={async () => {
+                onClick={() => {
                     // setLoading(true);
                     // const res = await getProduct(code);
 

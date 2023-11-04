@@ -1,11 +1,6 @@
 import { getProduct } from "@/actions/product-actions";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ProductCard from "@/components/modules/ProductCard/ProductCard";
-import { db } from "@/lib/db";
-import { getProductsByBarcode } from "@/lib/open-food-api";
-import { products, userProducts } from "@/schema";
-import { eq } from "drizzle-orm";
-import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
 type TRateProductPage = {
     params: {
@@ -15,36 +10,15 @@ type TRateProductPage = {
 
 async function rateProductPage({params}: TRateProductPage) {
 
-    const session = await getServerSession(authOptions);
+    const res = await getProduct(params.ean);
 
-    if(!session) return null;
-
-    let finalProduct = null;
-
-    const existingProduct = await db.query.products.findFirst({
-        where: eq(products.ean, params.ean),
-        with: {
-            userProducts: {
-                limit: 1,
-                where: eq(userProducts.userId, session.user.id)
-            }
-        }
-    })
-
-    if(existingProduct) {
-        finalProduct = {
-            _id: existingProduct.ean,
-            brands: existingProduct.brand,
-            product_name: existingProduct.name,
-            image_url: existingProduct.img,
-        }
-    } else {
-        finalProduct = await getProductsByBarcode(params.ean);
+    if(!res || !res.success || !res.product) {
+        redirect('/dashboard');
     }
 
     return (
         <div className="page">
-            <ProductCard product={finalProduct} userProduct={existingProduct?.userProducts[0]} />
+            <ProductCard product={res.product} userProduct={res.existingProduct?.userProducts[0]} />
         </div>
     );
 }

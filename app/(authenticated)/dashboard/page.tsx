@@ -1,6 +1,8 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import ProductScanner from "@/components/ProductScanner";
+import ProductSearch from "@/components/ProductSearch";
 import H2 from "@/components/ui/H2";
+import { Separator } from "@/components/ui/separator";
 import { getServerSession } from "next-auth";
 
 async function DashboardPage() {
@@ -15,6 +17,8 @@ async function DashboardPage() {
         <section className="dashboard-page">
             <H2 className="text-center mb-6">Witaj {userName},<br/>co dzisiaj smakujemy?</H2>
             <ProductScanner />
+            <Separator className="my-8" />
+            <ProductSearch />
         </section>
     );
 }

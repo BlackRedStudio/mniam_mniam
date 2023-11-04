@@ -14,9 +14,6 @@ export const metadata: Metadata = {
     title: 'Mniam Mniam',
     description: 'Food Rating App',
     applicationName: 'Mniam Mniam',
-    themeColor: '#FFFFFF',
-    viewport:
-        'minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, viewport-fit=cover',
     keywords: ['mniam_mniam'],
 };
 
