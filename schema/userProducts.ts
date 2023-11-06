@@ -1,4 +1,4 @@
-import { float, mysqlEnum, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
+import { decimal, mysqlEnum, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
 import { products, users } from '.';
 import { relations } from 'drizzle-orm';
 
@@ -7,7 +7,7 @@ export const userProducts = mysqlTable('userProducts', {
     userId: varchar('userId', { length: 255 }).notNull(),
     productId: varchar('productId', { length: 255 }).notNull(),
     rating: tinyint('rating').notNull(),
-    price: float('price').notNull(),
+    price: decimal('price', { precision: 7, scale: 2 }).notNull(),
     category: varchar('category', {
         length: 256
     }).notNull(),

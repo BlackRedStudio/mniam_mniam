@@ -17,9 +17,9 @@ async function rateProductPage({params}: TRateProductPage) {
     }
 
     return (
-        <div className="page">
+        <section className="product-page">
             <ProductCard product={res.product} userProduct={res.existingProduct?.userProducts[0]} />
-        </div>
+        </section>
     );
 }
 

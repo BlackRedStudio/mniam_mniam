@@ -7,6 +7,7 @@ export const products = mysqlTable('products', {
     ean: varchar('ean', { length: 128 }).notNull(),
     name: varchar('name', { length: 512 }).notNull(),
     brand: varchar('brand', { length: 512 }).notNull(),
+    quantity: varchar('quantity', { length: 256 }).default(''),
     img: text('img').notNull(),
     imgOpenFoodFacts: text('imgOpenFoodFacts').default(''),
     dateCreated: timestamp('dateCreated', {

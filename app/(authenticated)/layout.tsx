@@ -17,7 +17,7 @@ async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
     return (
         <>
             <Header session={session} />
-            <main className="min-h-screen">
+            <main>
                 <ScrollArea className='h-[calc(100vh-90px)]'>
                     {children}
                 </ScrollArea>

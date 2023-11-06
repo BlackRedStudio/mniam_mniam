@@ -7,37 +7,78 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { eq, like } from 'drizzle-orm';
+import { eq, like, sql } from 'drizzle-orm';
+import { getServerSession } from 'next-auth';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
-import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export async function searchProductByName(name: string) {
     try {
-        let finalProducts = null;
+        let finalProducts: TOpenFoodFactsProduct[] | undefined = [];
+        let extendedSearch = false;
 
         const existingProducts = await db.query.products.findMany({
             where: like(products.name, `%${name}%`),
         });
 
-        if (existingProducts.length < 1) {
+        if (existingProducts.length > 0) {
+            finalProducts = existingProducts.map(product => ({
+                _id: product.ean,
+                brands: product.brand,
+                product_name: product.name,
+                image_url: product.img,
+                quantity: product.quantity,
+            }));
+            extendedSearch = true;
+        } else {
+            const productsPL = (await searchProduct(name, 'pl')) ?? [];
+            const productsEN = (await searchProduct(name, 'en')) ?? [];
+
+            finalProducts = [...productsPL, ...productsEN];
+        }
+
+        if (!finalProducts || finalProducts.length === 0) {
             return {
                 success: false,
                 message: 'Nie znaleziono produktów',
             };
         }
-        finalProducts = existingProducts.map(product => ({
-            _id: product.ean,
-            brands: product.brand,
-            product_name: product.name,
-            image_url: product.img,
-        }));
-        // else {
-        //     finalProduct = await searchProduct(name);
-        // }
+
+        return {
+            success: true,
+            extendedSearch,
+            message: 'Pobrano produkt.',
+            products: finalProducts,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
+export async function searchProductByNameExtended(name: string) {
+    try {
+        const productsPL = (await searchProduct(name, 'pl')) ?? [];
+        const EANs = productsPL.map(product => product?._id);
+        const productsEN = (await searchProduct(name, 'en')) ?? [];
+
+        const finalProducts = [
+            ...productsPL,
+            // filter products with same EAN as in PL
+            ...productsEN?.filter(product => EANs.indexOf(product?._id) === -1),
+        ];
+
+        if (!finalProducts || finalProducts.length === 0) {
+            return {
+                success: false,
+                message: 'Nie znaleziono produktów',
+            };
+        }
 
         return {
             success: true,
@@ -56,29 +97,40 @@ export async function getProduct(ean: string) {
     try {
         const session = await getServerSession(authOptions);
 
-        if(!session) return null;
+        if (!session) return null;
 
-        let finalProduct = null;
+        let finalProduct: TOpenFoodFactsProduct | undefined;
 
         const existingProduct = await db.query.products.findFirst({
             where: eq(products.ean, ean),
             with: {
                 userProducts: {
                     limit: 1,
-                    where: eq(userProducts.userId, session.user.id)
-                }
-            }
-        })
+                    where: eq(userProducts.userId, session.user.id),
+                    extras: {
+                        price: sql<string>`cast(${userProducts.price} as CHAR)`.as('price')
+                    }
+                },
+            },
+        });
 
-        if(existingProduct) {
+        if (existingProduct) {
             finalProduct = {
                 _id: existingProduct.ean,
                 brands: existingProduct.brand,
                 product_name: existingProduct.name,
                 image_url: existingProduct.img,
-            }
+                quantity: existingProduct.quantity,
+            };
         } else {
             finalProduct = await getProductsByBarcode(ean);
+        }
+
+        if (!finalProduct) {
+            return {
+                success: false,
+                message: 'Nie znaleziono produktu.',
+            };
         }
 
         return {
@@ -144,6 +196,9 @@ export async function uploadProductPhoto(src: string, ean: string) {
 
 export async function addProductDB(product: TOpenFoodFactsProduct) {
     try {
+
+        if(!product) throw Error('Brak produktu');
+
         let imgLocation = '';
 
         if (product?.image_url) {
@@ -160,9 +215,10 @@ export async function addProductDB(product: TOpenFoodFactsProduct) {
 
         await db.insert(products).values({
             id: productId,
-            ean: product?._id ?? '',
-            name: product?.product_name ?? '',
-            brand: product?.brands ?? '',
+            ean: product._id ?? '',
+            name: product.product_name ?? '',
+            brand: product.brands ?? '',
+            quantity: product.quantity ?? '',
             img: imgLocation,
             imgOpenFoodFacts: product?.image_url,
         });

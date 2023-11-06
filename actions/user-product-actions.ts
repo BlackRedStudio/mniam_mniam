@@ -5,25 +5,24 @@ import { userProductSchema } from '@/validation/user-product-validation';
 import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
-import { TCategoriesIds, TOpenFoodFactsProduct } from '@/types/types';
+import { TCategoriesIds } from '@/types/types';
 import { db } from '@/lib/db';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import { addProductDB } from './product-actions';
 import { revalidatePath } from 'next/cache';
+import { getProductsByBarcode } from '@/lib/open-food-api';
 
 export async function addProductToUserList(
-    openFoodFactsProduct: TOpenFoodFactsProduct,
+    ean: string,
     rating: number,
     price: string,
     category: TCategoriesIds | '',
     status: TUserProduct['status'],
 ) {
     try {
-        if (!openFoodFactsProduct) throw new Error();
-
         const existingProduct = await db.query.products.findFirst({
-            where: eq(products.ean, openFoodFactsProduct._id),
+            where: eq(products.ean, ean),
         });
         let productId = '';
         let existingUserProduct = null;
@@ -34,6 +33,10 @@ export async function addProductToUserList(
                 where: eq(userProducts.productId, productId),
             });
         } else {
+            const openFoodFactsProduct = await getProductsByBarcode(ean);
+
+            if(!openFoodFactsProduct) throw Error('Produkt o podanym Barcode nie istnieje');
+
             const res = await addProductDB(openFoodFactsProduct);
 
             if (!res.success || !res.productId) {

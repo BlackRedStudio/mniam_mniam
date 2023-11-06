@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, SyntheticEvent } from 'react';
 
 import { cn } from '@/lib/utils';
-import { Icons } from '@/components/Icons';
+import { Icons } from '@/components/modules/Icons';
 import H3 from '@/components/ui/H3';
 
 type TStarRatingProps = {

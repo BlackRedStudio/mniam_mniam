@@ -1,4 +1,3 @@
-import { userProducts } from '@/schema/userProducts';
 import { z } from 'zod';
 
 import { TCategoriesIds } from '@/types/types';
@@ -10,11 +9,10 @@ export const userProductSchema = z.object({
     price: z.coerce.number().refine(field => {
         return handleCurrencyInput(String(field));
     }),
-
     category: z.enum(
         categories.map(cat => cat.id) as [TCategoriesIds, ...TCategoriesIds[]],
     ),
-    status: z.enum(userProducts.status.enumValues),
+    status: z.enum(['visible', 'invisible']),
 });
 
 export type TUserProductSchema = z.infer<typeof userProductSchema>;

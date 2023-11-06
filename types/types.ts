@@ -15,6 +15,7 @@ export type TOpenFoodFactsProduct = {
     product_name?: string;
     image_url?: string;
     image_small_url?: string;
+    quantity?: string | null;
 } | null;
 
 export type TOpenFoodFactsProductRes = {
@@ -22,6 +23,15 @@ export type TOpenFoodFactsProductRes = {
     product?: TOpenFoodFactsProduct;
     status: 0 | 1;
     status_verbose: string;
+} | null;
+
+export type TOpenFoodFactsProductSearchRes = {
+    count: number;
+    page_count: number;
+    page: number;
+    page_size: number;
+    skip: number;
+    products: TOpenFoodFactsProduct[] | [];
 } | null;
 
 export type TCategories = typeof categories;

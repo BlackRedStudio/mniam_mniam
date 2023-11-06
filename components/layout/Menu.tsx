@@ -13,7 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Icons } from '@/components/Icons';
+import { Icons } from '@/components/modules/Icons';
 
 import AlertModal from '../modules/Modal';
 

@@ -22,36 +22,45 @@ import PriceInput from './PriceInput';
 import StarRating from './StarRating';
 
 type TProductCard = {
-    product: TOpenFoodFactsProduct;
+    product: NonNullable<TOpenFoodFactsProduct>;
     userProduct: TUserProduct | undefined;
 };
 
-function ProductCard({ product, userProduct }: TProductCard) {
+function ProductCard({
+    product: { product_name, quantity, brands, _id, image_url },
+    userProduct,
+}: TProductCard) {
     const [rating, setRating] = useState(userProduct?.rating ?? 0);
     const [category, setCategory] = useState<TCategoriesIds | ''>(
         (userProduct?.category as TCategoriesIds) ?? '',
     );
-    const [price, setPrice] = useState(String(userProduct?.price) || '');
+    const [price, setPrice] = useState(userProduct?.price || '');
 
     return (
         <>
             <Card>
                 <CardHeader>
                     <CardTitle>
-                        {product?.product_name ?? 'Brak tytułu'}
+                        {product_name ?? 'Brak tytułu'}
+                        <small className="text-sm ml-3">
+                            ({quantity})
+                        </small>
                     </CardTitle>
                     <CardDescription>
-                        {product?.brands ?? 'Brak przypisanych firm'}
+                        {brands ?? 'Brak przypisanych firm'}
+                        <small className="block">
+                            Numer EAN: {_id}
+                        </small>
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="h-[200px] relative w-full">
-                        {product?.image_url ? (
+                        {image_url ? (
                             <Image
-                                src={product?.image_url ?? ''}
+                                src={image_url ?? ''}
                                 fill
                                 className="object-contain"
-                                alt={product?.product_name ?? ''}
+                                alt={product_name ?? ''}
                             />
                         ) : (
                             <div className="text-destructive">Brak obrazka</div>
@@ -71,7 +80,7 @@ function ProductCard({ product, userProduct }: TProductCard) {
                             className="mb-4 w-full"
                             onClick={() =>
                                 addProductToUserList(
-                                    product,
+                                    _id,
                                     rating,
                                     price,
                                     category,
@@ -84,7 +93,7 @@ function ProductCard({ product, userProduct }: TProductCard) {
                             className="w-full"
                             onClick={() =>
                                 addProductToUserList(
-                                    product,
+                                    _id,
                                     rating,
                                     price,
                                     category,

@@ -1,0 +1,1 @@
+ALTER TABLE `userProducts` MODIFY COLUMN `price` double(7,4) NOT NULL;
