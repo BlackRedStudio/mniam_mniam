@@ -11,14 +11,14 @@ type TRateProductPage = {
 async function rateProductPage({params}: TRateProductPage) {
 
     const res = await getProduct(params.ean);
-
+    
     if(!res || !res.success || !res.product) {
         redirect('/dashboard');
     }
-
+    
     return (
         <section className="product-page">
-            <ProductCard product={res.product} userProduct={res.existingProduct?.userProducts[0]} />
+            <ProductCard product={res.product} currentUserProduct={res.currentUserProduct} productStatistics={res.productStatistics} />
         </section>
     );
 }

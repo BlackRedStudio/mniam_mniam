@@ -6,8 +6,8 @@ import { handleCurrencyInput } from '@/lib/utils';
 
 export const userProductSchema = z.object({
     rating: z.number().min(1).max(5),
-    price: z.coerce.number().refine(field => {
-        return handleCurrencyInput(String(field));
+    price: z.string().refine(field => {
+        return handleCurrencyInput(field);
     }),
     category: z.enum(
         categories.map(cat => cat.id) as [TCategoriesIds, ...TCategoriesIds[]],

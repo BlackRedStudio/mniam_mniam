@@ -59,3 +59,18 @@ export function handleCurrencyInput(value: string) {
     }
     return null;
 }
+
+export function handleMultiplePersonText(persons: number) {
+    let textVariant = 2;
+
+    if (persons === 1) {
+        textVariant = 0;
+    } else if (persons > 1) {
+        const lastNumber = parseInt( String(persons).slice(-1) );
+        if(lastNumber > 1 && lastNumber < 5) {
+            textVariant = 1;
+        }
+    }
+
+    return textVariant;
+}

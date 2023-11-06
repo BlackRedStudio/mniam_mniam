@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { addProductToUserList } from '@/actions/user-product-actions';
 import { TUserProduct } from '@/schema';
 
-import { TCategoriesIds, TOpenFoodFactsProduct } from '@/types/types';
+import { TCategoriesIds, TOpenFoodFactsProduct, TProductStatistics } from '@/types/types';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -20,21 +20,51 @@ import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
 import StarRating from './StarRating';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/ui/Loader';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
-    userProduct: TUserProduct | undefined;
+    currentUserProduct: TUserProduct | null;
+    productStatistics: TProductStatistics;
 };
 
 function ProductCard({
     product: { product_name, quantity, brands, _id, image_url },
-    userProduct,
+    currentUserProduct,
+    productStatistics
 }: TProductCard) {
-    const [rating, setRating] = useState(userProduct?.rating ?? 0);
+    const { toast } = useToast();
+    const router = useRouter();
+    const [rating, setRating] = useState(currentUserProduct?.rating ?? 0);
     const [category, setCategory] = useState<TCategoriesIds | ''>(
-        (userProduct?.category as TCategoriesIds) ?? '',
+        (currentUserProduct?.category as TCategoriesIds) ?? '',
     );
-    const [price, setPrice] = useState(userProduct?.price || '');
+    const [price, setPrice] = useState(currentUserProduct?.price || '');
+    const [loading, setLoading] = useState(false);
+
+    const handleAddProduct = async (status: 'visible' | 'invisible') => {
+        setLoading(true);
+        const res = await addProductToUserList(
+            _id,
+            rating,
+            price,
+            category,
+            status,
+        );
+
+        toast({
+            title: res.message,
+            variant: res.success ? 'success' : 'destructive',
+        });
+
+        setLoading(false);
+
+        if(res.success) {
+            router.push('/dashboard');
+        }
+    }
 
     return (
         <>
@@ -68,7 +98,7 @@ function ProductCard({
                     </div>
                 </CardContent>
                 <CardFooter className="flex-col">
-                    <CommunityRating />
+                    <CommunityRating productStatistics={productStatistics} />
                     <StarRating rating={rating} setRating={setRating} />
                     <CategorySelector
                         category={category}
@@ -76,30 +106,15 @@ function ProductCard({
                     />
                     <PriceInput price={price} setPrice={setPrice} />
                     <div className="mt-8">
+                        {loading && <Loader className="mt-4" />}
                         <Button
                             className="mb-4 w-full"
-                            onClick={() =>
-                                addProductToUserList(
-                                    _id,
-                                    rating,
-                                    price,
-                                    category,
-                                    'invisible',
-                                )
-                            }>
+                            onClick={() => handleAddProduct('invisible')}>
                             Zapisz ocenę
                         </Button>
                         <Button
                             className="w-full"
-                            onClick={() =>
-                                addProductToUserList(
-                                    _id,
-                                    rating,
-                                    price,
-                                    category,
-                                    'visible',
-                                )
-                            }
+                            onClick={() => handleAddProduct('visible')}
                             variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>

@@ -2,7 +2,7 @@
 
 import { products, TUserProduct, userProducts } from '@/schema';
 import { userProductSchema } from '@/validation/user-product-validation';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
 import { TCategoriesIds } from '@/types/types';
@@ -21,6 +21,11 @@ export async function addProductToUserList(
     status: TUserProduct['status'],
 ) {
     try {
+
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+
         const existingProduct = await db.query.products.findFirst({
             where: eq(products.ean, ean),
         });
@@ -30,7 +35,10 @@ export async function addProductToUserList(
         if (existingProduct) {
             productId = existingProduct?.id;
             existingUserProduct = await db.query.userProducts.findFirst({
-                where: eq(userProducts.productId, productId),
+                where: and(
+                    eq(userProducts.productId, productId),
+                    eq(userProducts.userId, session.user.id),
+                ),
             });
         } else {
             const openFoodFactsProduct = await getProductsByBarcode(ean);
@@ -66,10 +74,6 @@ export async function addProductToUserList(
 
         const userProductId = crypto.randomUUID();
 
-        const session = await getServerSession(authOptions);
-
-        if (!session) throw new Error();
-
         const userProductsValues = {
             id: userProductId,
             productId,
@@ -86,12 +90,44 @@ export async function addProductToUserList(
             await db.insert(userProducts).values(userProductsValues);
         }
 
-        revalidatePath('/product/[ean]/page');
+        revalidatePath('/product/[ean]', 'page');
 
         return {
             success: true,
-            message: 'Produkt został dodany',
+            message: parsed.data.status === 'visible' ? 'Produkt został oceniony oraz dodany do listy.' : 'Produkt został oceniony.',
         };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
+export type TGetMyListReturn = Awaited<ReturnType<typeof getMyList>>;
+
+export async function getMyList() {
+    
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+
+        const userProductsList = await db.query.userProducts.findMany({
+            where: and(
+                eq(userProducts.userId, session.user.id),
+                eq(userProducts.status, 'visible'),
+            ),
+            with: {
+                product: true
+            }
+        });
+
+        return {
+            success: true,
+            userProductsList,
+        }
+
     } catch (e) {
         return {
             success: false,

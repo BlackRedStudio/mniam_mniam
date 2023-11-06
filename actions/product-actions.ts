@@ -1,7 +1,7 @@
 'use server';
 
 import { Readable } from 'stream';
-import { products, userProducts } from '@/schema';
+import { TUserProduct, products, userProducts } from '@/schema';
 import {
     CompleteMultipartUploadCommandOutput,
     S3Client,
@@ -105,8 +105,6 @@ export async function getProduct(ean: string) {
             where: eq(products.ean, ean),
             with: {
                 userProducts: {
-                    limit: 1,
-                    where: eq(userProducts.userId, session.user.id),
                     extras: {
                         price: sql<string>`cast(${userProducts.price} as CHAR)`.as('price')
                     }
@@ -133,10 +131,33 @@ export async function getProduct(ean: string) {
             };
         }
 
+        // get average rating/price and get user product if exist
+        let peopleRateCount = existingProduct?.userProducts.length ?? 0;
+        let rating = 0;
+        let price = 0;
+        let currentUserProduct = null as TUserProduct | null;
+
+        existingProduct?.userProducts.forEach(product => {
+            rating += product.rating;
+            price += parseFloat(product.price);
+
+            if(product.userId === session.user.id) {
+                currentUserProduct = product;
+            }
+        });
+
+        const averageRating = (rating / peopleRateCount).toFixed(2);
+        const averagePrice = (price / peopleRateCount).toFixed(2);
+
         return {
             success: true,
             message: 'Pobrano produkt.',
-            existingProduct,
+            currentUserProduct,
+            productStatistics: {
+                averageRating,
+                averagePrice,
+                peopleRateCount
+            },
             product: finalProduct,
         };
     } catch (e) {

@@ -1,6 +1,14 @@
-import { decimal, mysqlEnum, mysqlTable, timestamp, tinyint, varchar } from 'drizzle-orm/mysql-core';
-import { products, users } from '.';
 import { relations } from 'drizzle-orm';
+import {
+    decimal,
+    mysqlEnum,
+    mysqlTable,
+    timestamp,
+    tinyint,
+    varchar,
+} from 'drizzle-orm/mysql-core';
+
+import { products, users } from '.';
 
 export const userProducts = mysqlTable('userProducts', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -9,20 +17,16 @@ export const userProducts = mysqlTable('userProducts', {
     rating: tinyint('rating').notNull(),
     price: decimal('price', { precision: 7, scale: 2 }).notNull(),
     category: varchar('category', {
-        length: 256
+        length: 256,
     }).notNull(),
-    status: mysqlEnum('status', [
-        'visible',
-        'invisible',
-        'draft',
-    ]).notNull(),
+    status: mysqlEnum('status', ['visible', 'invisible', 'draft']).notNull(),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
-        fsp: 3
+        fsp: 3,
     }).defaultNow(),
     dateUpdated: timestamp('dateUpdated', {
         mode: 'date',
-        fsp: 3
+        fsp: 3,
     }).defaultNow(),
 });
 

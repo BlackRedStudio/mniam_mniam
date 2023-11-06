@@ -1,4 +1,4 @@
-import { categories } from "@/lib/config";
+import { categories } from '@/lib/config';
 
 export type THTTPMethod =
     | 'GET'
@@ -7,7 +7,6 @@ export type THTTPMethod =
     | 'PUT'
     | 'PATCH'
     | 'DELETE';
-
 
 export type TOpenFoodFactsProduct = {
     _id: string;
@@ -39,3 +38,10 @@ export type TCategoriesIds = TCategories[number]['id'];
 
 export type TLogin = 'credentials' | 'google' | 'github';
 
+export type TProductStatistics = {
+    averageRating: string,
+    averagePrice: string,
+    peopleRateCount: number,
+};
+
+export type Unpacked<T> = T extends (infer U)[] ? U : T;
