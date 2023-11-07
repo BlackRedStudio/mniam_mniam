@@ -1,6 +1,6 @@
 import { getMyList } from "@/actions/user-product-actions";
 import ProductsList from "@/components/modules/ProductsList/ProductsList";
-import H3 from "@/components/ui/H3";
+import H2 from "@/components/ui/H2";
 
 async function MyListPage() {
 
@@ -8,7 +8,7 @@ async function MyListPage() {
     
     return (
         <section className="my-list-page">
-            <H3>Moja lista:</H3>
+            <H2 className="text-center mb-5">Moja lista:</H2>
             {
                 res.userProductsList && res.userProductsList.length > 0 ?
                 <ProductsList userProductsList={res.userProductsList} />

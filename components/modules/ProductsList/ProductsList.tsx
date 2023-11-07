@@ -8,7 +8,7 @@ type TProductsListProps = {
 
 function ProductsList({ userProductsList }: TProductsListProps) {
     return (
-        <div>
+        <div className='grid grid-cols-3 gap-2'>
             {userProductsList.map(product => (
                 <ProductListItem key={product.id} userProduct={product} />
             ))}

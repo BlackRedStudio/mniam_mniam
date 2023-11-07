@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt'
 import { eq } from 'drizzle-orm';
 
 import { users } from '@/schema/users';
-import { userRegistrationSchema } from '@/validation/user-validation';
+import { userRegistrationValidator } from '@/validators/user-validator';
 import { db } from '@/lib/db';
 
 export type TRegisterUserReturn = Awaited<ReturnType<typeof registerUser>>;
@@ -14,7 +14,7 @@ export async function registerUser(formData: FormData) {
     try {
         const id = crypto.randomUUID();
 
-        const parsed = userRegistrationSchema.safeParse({
+        const parsed = userRegistrationValidator.safeParse({
             name: formData.get('name'),
             email: formData.get('email'),
             password: formData.get('password'),

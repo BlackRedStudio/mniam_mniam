@@ -2,10 +2,16 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { addProductToUserList } from '@/actions/user-product-actions';
+import { useRouter } from 'next/navigation';
+import { addProductToUserList, deleteProductFromUserList } from '@/actions/user-product-actions';
 import { TUserProduct } from '@/schema';
 
-import { TCategoriesIds, TOpenFoodFactsProduct, TProductStatistics } from '@/types/types';
+import {
+    TCategoriesIds,
+    TOpenFoodFactsProduct,
+    TProductStatistics,
+} from '@/types/types';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -15,14 +21,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import Loader from '@/components/ui/Loader';
 
+import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
-import StarRating from './StarRating';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import Loader from '@/components/ui/Loader';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -33,7 +37,7 @@ type TProductCard = {
 function ProductCard({
     product: { product_name, quantity, brands, _id, image_url },
     currentUserProduct,
-    productStatistics
+    productStatistics,
 }: TProductCard) {
     const { toast } = useToast();
     const router = useRouter();
@@ -61,9 +65,25 @@ function ProductCard({
 
         setLoading(false);
 
-        if(res.success) {
+        if (res.success) {
             router.push('/dashboard');
         }
+    };
+
+    const handleDeleteProductFromList = async () => {
+
+        if(!currentUserProduct) return false;
+
+        setLoading(true);
+
+        const res = await deleteProductFromUserList(currentUserProduct?.id);
+
+        toast({
+            title: res.message,
+            variant: res.success ? 'success' : 'destructive',
+        });
+
+        setLoading(false);
     }
 
     return (
@@ -72,19 +92,15 @@ function ProductCard({
                 <CardHeader>
                     <CardTitle>
                         {product_name ?? 'Brak tytułu'}
-                        <small className="text-sm ml-3">
-                            ({quantity})
-                        </small>
+                        <small className="text-sm ml-3">({quantity})</small>
                     </CardTitle>
                     <CardDescription>
                         {brands ?? 'Brak przypisanych firm'}
-                        <small className="block">
-                            Numer EAN: {_id}
-                        </small>
+                        <small className="block">Numer EAN: {_id}</small>
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="h-[200px] relative w-full">
+                    <div className="h-[300px] relative w-full">
                         {image_url ? (
                             <Image
                                 src={image_url ?? ''}
@@ -105,10 +121,10 @@ function ProductCard({
                         setCategory={setCategory}
                     />
                     <PriceInput price={price} setPrice={setPrice} />
-                    <div className="mt-8">
+                    <div className="mt-8 space-y-4">
                         {loading && <Loader className="mt-4" />}
                         <Button
-                            className="mb-4 w-full"
+                            className="w-full"
                             onClick={() => handleAddProduct('invisible')}>
                             Zapisz ocenę
                         </Button>
@@ -118,6 +134,14 @@ function ProductCard({
                             variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>
+                        {currentUserProduct?.status === 'visible' ? (
+                            <Button
+                                className="w-full"
+                                onClick={() => handleDeleteProductFromList()}
+                                variant={'destructive'}>
+                                Usuń produkt z mojej listy
+                            </Button>
+                        ) : null}
                     </div>
                 </CardFooter>
             </Card>

@@ -1,7 +1,7 @@
 'use server'
 
 import { products, TUserProduct, userProducts } from '@/schema';
-import { userProductSchema } from '@/validation/user-product-validation';
+import { userProductValidator } from '@/validators/user-product-validator';
 import { and, eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
@@ -56,7 +56,7 @@ export async function addProductToUserList(
             productId = res.productId;
         }
 
-        const parsed = userProductSchema.safeParse({
+        const parsed = userProductValidator.safeParse({
             rating,
             price,
             category,
@@ -95,6 +95,34 @@ export async function addProductToUserList(
         return {
             success: true,
             message: parsed.data.status === 'visible' ? 'Produkt został oceniony oraz dodany do listy.' : 'Produkt został oceniony.',
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
+export async function deleteProductFromUserList(userProductId: string) {
+    try {
+
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+
+        await db.update(userProducts).set({
+            status: 'invisible'
+        }).where(and(
+            eq(userProducts.id, userProductId),
+            eq(userProducts.userId, session.user.id)
+        ))
+
+        revalidatePath('/product/[ean]', 'page');
+
+        return {
+            success: true,
+            message: 'Produkt został pomyślnie usunięty z listy',
         };
     } catch (e) {
         return {

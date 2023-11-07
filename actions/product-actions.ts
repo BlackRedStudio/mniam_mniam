@@ -172,7 +172,7 @@ export async function uploadProductPhoto(src: string, ean: string) {
     try {
         const s3Client = new S3Client({});
 
-        // const parsed = imageUploadSchema.safeParse({
+        // const parsed = imageUploadValidator.safeParse({
         //     image: formData.get('image'),
         // });
 

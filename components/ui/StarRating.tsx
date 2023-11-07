@@ -1,16 +1,22 @@
 import { Dispatch, SetStateAction, SyntheticEvent } from 'react';
 
 import { cn } from '@/lib/utils';
-import { Icons } from '@/components/modules/Icons';
 import H3 from '@/components/ui/H3';
+import { Icons } from '@/components/modules/Icons';
 
 type TStarRatingProps = {
     rating: number;
-    setRating: Dispatch<SetStateAction<number>>;
-}
+    setRating?: Dispatch<SetStateAction<number>>;
+    showHeader?: boolean;
+    bigStars?: boolean;
+};
 
-function StarRating({rating, setRating}: TStarRatingProps) {
-
+function StarRating({
+    rating,
+    setRating,
+    showHeader = true,
+    bigStars = true,
+}: TStarRatingProps) {
     let ratingColorClass = '';
 
     switch (rating) {
@@ -32,7 +38,11 @@ function StarRating({rating, setRating}: TStarRatingProps) {
             break;
     }
 
+    const starClasses = bigStars ? 'w-[30px] h-[30px] ml-1 mr-1' : 'w-[24px] h-[24px]';
+
     const handleRating = (e: SyntheticEvent) => {
+        if (!setRating) return false;
+
         const starRating = parseInt(
             e.currentTarget.getAttribute('data-rating') ?? '0',
         );
@@ -43,12 +53,12 @@ function StarRating({rating, setRating}: TStarRatingProps) {
 
     return (
         <div className="flex w-full mb-4">
-            <H3 className="mr-2 w-24">Ocena:</H3>
+            {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
             <Icons.star
                 data-rating="1"
                 onClick={e => handleRating(e)}
                 className={cn(
-                    'w-[30px] h-[30px] ml-1 mr-1',
+                    starClasses,
                     rating > 0 ? ratingColorClass : '',
                 )}
             />
@@ -56,7 +66,7 @@ function StarRating({rating, setRating}: TStarRatingProps) {
                 data-rating="2"
                 onClick={e => handleRating(e)}
                 className={cn(
-                    'w-[30px] h-[30px] ml-1 mr-1',
+                    starClasses,
                     rating > 1 ? ratingColorClass : '',
                 )}
             />
@@ -64,7 +74,7 @@ function StarRating({rating, setRating}: TStarRatingProps) {
                 data-rating="3"
                 onClick={e => handleRating(e)}
                 className={cn(
-                    'w-[30px] h-[30px] ml-1 mr-1',
+                    starClasses,
                     rating > 2 ? ratingColorClass : '',
                 )}
             />
@@ -72,7 +82,7 @@ function StarRating({rating, setRating}: TStarRatingProps) {
                 data-rating="4"
                 onClick={e => handleRating(e)}
                 className={cn(
-                    'w-[30px] h-[30px] ml-1 mr-1',
+                    starClasses,
                     rating > 3 ? ratingColorClass : '',
                 )}
             />
@@ -80,7 +90,7 @@ function StarRating({rating, setRating}: TStarRatingProps) {
                 data-rating="5"
                 onClick={e => handleRating(e)}
                 className={cn(
-                    'w-[30px] h-[30px] ml-1 mr-1',
+                    starClasses,
                     rating > 4 ? ratingColorClass : '',
                 )}
             />

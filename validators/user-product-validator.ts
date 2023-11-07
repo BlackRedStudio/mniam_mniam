@@ -4,7 +4,7 @@ import { TCategoriesIds } from '@/types/types';
 import { categories } from '@/lib/config';
 import { handleCurrencyInput } from '@/lib/utils';
 
-export const userProductSchema = z.object({
+export const userProductValidator = z.object({
     rating: z.number().min(1).max(5),
     price: z.string().refine(field => {
         return handleCurrencyInput(field);
@@ -15,4 +15,4 @@ export const userProductSchema = z.object({
     status: z.enum(['visible', 'invisible']),
 });
 
-export type TUserProductSchema = z.infer<typeof userProductSchema>;
+export type TUserProductValidator = z.infer<typeof userProductValidator>;

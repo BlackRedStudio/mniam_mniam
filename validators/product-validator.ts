@@ -8,7 +8,7 @@ const ACCEPTED_IMAGE_TYPES = [
     'image/webp',
 ];
 
-export const imageUploadSchema = z.object({
+export const imageUploadValidator = z.object({
     image: z
         .custom<File>()
         .refine(
@@ -21,4 +21,4 @@ export const imageUploadSchema = z.object({
         ),
 });
 
-export type TImageUploadType = z.infer<typeof imageUploadSchema>;
+export type TImageUploadValidator = z.infer<typeof imageUploadValidator>;
