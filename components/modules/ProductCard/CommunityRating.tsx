@@ -23,11 +23,12 @@ function CommunityRating({
                 Ocena społeczności: <br />
                 <strong>{averageRating}</strong>
             </H3>
+            <H3 className="text-md mt-2">
+                ({peopleRateCount} {peopleText} ten produkt)
+            </H3>
             <H3 className="text-md mt-4">
                 Średnia cena produktu: {averagePrice} zł
-            </H3>
-            <H3 className="text-md">
-                ({peopleRateCount} {peopleText} ten produkt)
+                <br /><small>(z ostatnich 180 dni)</small>
             </H3>
         </div>
     );

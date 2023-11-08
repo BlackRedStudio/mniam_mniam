@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, SyntheticEvent } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 import { cn } from '@/lib/utils';
 import H3 from '@/components/ui/H3';
@@ -31,7 +31,9 @@ function StarRating({
 }: TStarRatingProps) {
     const ratingColorClass = ratingColorClassMap[rating] || '';
 
-    const starClasses = bigStars ? 'w-[30px] h-[30px] ml-1 mr-1' : 'w-[24px] h-[24px]';
+    const starClasses = bigStars
+        ? 'w-[30px] h-[30px] ml-1 mr-1'
+        : 'w-[24px] h-[24px]';
 
     const handleRating = (starRating: number) => {
         if (!setRating) return false;
@@ -52,7 +54,7 @@ function StarRating({
                     starClasses,
                     rating > i - 1 ? ratingColorClass : '',
                 )}
-            />
+            />,
         );
     }
 

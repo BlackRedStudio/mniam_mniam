@@ -14,6 +14,7 @@ import { TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import moment from 'moment';
 
 // search product by name using DB, or if not exist using API
 export async function searchProductByName(name: string) {
@@ -136,13 +137,21 @@ export async function getProduct(ean: string) {
 
         // get average rating/price and get user product if exist
         let peopleRateCount = existingProduct?.userProducts.length ?? 0;
+        let peoplePriceCount = 0;
         let rating = 0;
         let price = 0;
         let currentUserProduct = null as TUserProduct | null;
 
         existingProduct?.userProducts.forEach(product => {
             rating += product.rating;
-            price += parseFloat(product.price);
+
+            // price rate should be younger than 180 days
+            const halfYearAgo = moment().subtract(180, 'days');
+
+            if(moment(product.dateUpdated) > halfYearAgo) {
+                peoplePriceCount++;
+                price += parseFloat(product.price);
+            }
 
             if(product.userId === session.user.id) {
                 currentUserProduct = product;
@@ -150,7 +159,7 @@ export async function getProduct(ean: string) {
         });
 
         const averageRating = (rating / peopleRateCount).toFixed(2);
-        const averagePrice = (price / peopleRateCount).toFixed(2);
+        const averagePrice = (price / peoplePriceCount).toFixed(2);
 
         return {
             success: true,
