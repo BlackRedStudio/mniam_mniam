@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import { searchProductByName, searchProductByNameExtended } from '@/actions/product-actions';
 
 describe('Product Actions Test', () => {

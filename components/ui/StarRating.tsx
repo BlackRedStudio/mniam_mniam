@@ -11,89 +11,55 @@ type TStarRatingProps = {
     bigStars?: boolean;
 };
 
+type TRatingColorClassMap = {
+    [key: number]: string;
+};
+
+const ratingColorClassMap: TRatingColorClassMap = {
+    1: 'fill-destructive',
+    2: 'fill-orange',
+    3: 'fill-yellow',
+    4: 'fill-success',
+    5: 'fill-blue',
+};
+
 function StarRating({
     rating,
     setRating,
     showHeader = true,
     bigStars = true,
 }: TStarRatingProps) {
-    let ratingColorClass = '';
-
-    switch (rating) {
-        case 1:
-            ratingColorClass = 'fill-destructive';
-            break;
-        case 2:
-            ratingColorClass = 'fill-orange';
-            break;
-        case 3:
-            ratingColorClass = 'fill-yellow';
-            break;
-        case 4:
-            ratingColorClass = 'fill-success';
-            break;
-        case 5:
-        default:
-            ratingColorClass = 'fill-blue';
-            break;
-    }
+    const ratingColorClass = ratingColorClassMap[rating] || '';
 
     const starClasses = bigStars ? 'w-[30px] h-[30px] ml-1 mr-1' : 'w-[24px] h-[24px]';
 
-    const handleRating = (e: SyntheticEvent) => {
+    const handleRating = (starRating: number) => {
         if (!setRating) return false;
 
-        const starRating = parseInt(
-            e.currentTarget.getAttribute('data-rating') ?? '0',
-        );
         if (starRating > 0 && starRating < 6) {
             setRating(starRating);
         }
     };
 
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+        stars.push(
+            <Icons.star
+                key={i}
+                data-rating={i}
+                onClick={() => handleRating(i)}
+                className={cn(
+                    starClasses,
+                    rating > i - 1 ? ratingColorClass : '',
+                )}
+            />
+        );
+    }
+
     return (
         <div className="flex w-full mb-4">
             {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
-            <Icons.star
-                data-rating="1"
-                onClick={e => handleRating(e)}
-                className={cn(
-                    starClasses,
-                    rating > 0 ? ratingColorClass : '',
-                )}
-            />
-            <Icons.star
-                data-rating="2"
-                onClick={e => handleRating(e)}
-                className={cn(
-                    starClasses,
-                    rating > 1 ? ratingColorClass : '',
-                )}
-            />
-            <Icons.star
-                data-rating="3"
-                onClick={e => handleRating(e)}
-                className={cn(
-                    starClasses,
-                    rating > 2 ? ratingColorClass : '',
-                )}
-            />
-            <Icons.star
-                data-rating="4"
-                onClick={e => handleRating(e)}
-                className={cn(
-                    starClasses,
-                    rating > 3 ? ratingColorClass : '',
-                )}
-            />
-            <Icons.star
-                data-rating="5"
-                onClick={e => handleRating(e)}
-                className={cn(
-                    starClasses,
-                    rating > 4 ? ratingColorClass : '',
-                )}
-            />
+            {stars}
         </div>
     );
 }

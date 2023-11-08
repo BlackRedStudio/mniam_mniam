@@ -12,8 +12,8 @@ const config = {
     testPathIgnorePatterns: ['<rootDir>/node_modules', '<rootDir>/dist', '<rootDir>/__tests__/.jest'],
     setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
     setupFiles: ['<rootDir>/__tests__/.jest/setEnvVars.ts'],
-    // testEnvironment: 'jest-environment-jsdom',
-    testEnvironment: 'node',
+    testEnvironment: 'jest-environment-jsdom',
+    // testEnvironment: 'node',
     preset: 'ts-jest',
 }
 
