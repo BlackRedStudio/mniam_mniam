@@ -15,6 +15,7 @@ import { db } from '@/lib/db';
 import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
+// search product by name using DB, or if not exist using API
 export async function searchProductByName(name: string) {
     try {
         let finalProducts: TOpenFoodFactsProduct[] | undefined = [];
@@ -54,6 +55,7 @@ export async function searchProductByName(name: string) {
             products: finalProducts,
         };
     } catch (e) {
+        console.log(e);
         return {
             success: false,
             message: 'Błąd aplikacji skontaktuj się z administratorem',
@@ -61,6 +63,7 @@ export async function searchProductByName(name: string) {
     }
 }
 
+// search product By Name using API
 export async function searchProductByNameExtended(name: string) {
     try {
         const productsPL = (await searchProduct(name, 'pl')) ?? [];
