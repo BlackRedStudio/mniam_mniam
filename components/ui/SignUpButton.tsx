@@ -1,13 +1,17 @@
+import { useFormStatus } from 'react-dom';
+
 import { Button } from '@/components/ui/button';
-import { useFormStatus } from 'react-dom'
 
-function SignUpButton() {
+type TSignUpButtonProps = {
+    title: string;
+};
 
-    const { pending } = useFormStatus()
+function SignUpButton({ title }: TSignUpButtonProps) {
+    const { pending } = useFormStatus();
 
     return (
         <Button className="mt-6 py-7 w-full" disabled={pending}>
-            Zarejestruj się
+            {title}
         </Button>
     );
 }

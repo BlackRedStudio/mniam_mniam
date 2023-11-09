@@ -12,8 +12,6 @@ import SignUpButton from '../ui/SignUpButton';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-export type loginType = 'credentials' | 'google' | 'github';
-
 function RegisterTab() {
     const { toast } = useToast();
     const router = useRouter();
@@ -111,7 +109,7 @@ function RegisterTab() {
                         />
                     }
                 </div>
-                <SignUpButton />
+                <SignUpButton title='Zarejestruj się' />
             </form>
         </div>
     );
