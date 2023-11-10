@@ -8,13 +8,11 @@ import { getServerSession } from "next-auth";
 async function profilePage() {
 
     const session = await getServerSession(authOptions);
-
     if(!session) return null;
 
     const user = await db.query.users.findFirst({
         where: eq(users.id, session.user.id)
     });
-
     if(!user) return null;
 
     return (

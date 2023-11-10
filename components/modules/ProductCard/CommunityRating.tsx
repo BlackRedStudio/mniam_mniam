@@ -1,5 +1,5 @@
 import { TProductStatistics } from '@/types/types';
-import H2 from '@/components/ui/H2';
+
 import H3 from '@/components/ui/H3';
 import { handleMultiplePersonText } from '@/lib/utils';
 
@@ -10,8 +10,14 @@ type TCommunityRatingProps = {
 function CommunityRating({
     productStatistics: { averageRating, averagePrice, peopleRateCount },
 }: TCommunityRatingProps) {
-
     const textVariant = handleMultiplePersonText(peopleRateCount);
+
+    if(isNaN(parseInt(averageRating))) {
+        averageRating = 'Brak';
+    }
+    if(isNaN(parseInt(averagePrice))) {
+        averagePrice = 'Brak';
+    }
 
     const peopleText = [
         'osoba oceniła', 'osoby oceniły', 'osób oceniło'

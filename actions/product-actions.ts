@@ -1,7 +1,7 @@
 'use server';
 
 import { Readable } from 'stream';
-import { TUserProduct, products, userProducts } from '@/schema';
+import { TProductInsert, TUserProduct, products, userProducts } from '@/schema';
 import {
     CompleteMultipartUploadCommandOutput,
     S3Client,
@@ -29,7 +29,7 @@ export async function searchProductByName(name: string) {
         if (existingProducts.length > 0) {
             finalProducts = existingProducts.map(product => ({
                 _id: product.ean,
-                brands: product.brand,
+                brands: product.brands,
                 product_name: product.name,
                 image_url: product.img,
                 quantity: product.quantity,
@@ -119,7 +119,7 @@ export async function getProduct(ean: string) {
         if (existingProduct) {
             finalProduct = {
                 _id: existingProduct.ean,
-                brands: existingProduct.brand,
+                brands: existingProduct.brands,
                 product_name: existingProduct.name,
                 image_url: existingProduct.img,
                 quantity: existingProduct.quantity,
@@ -180,20 +180,20 @@ export async function getProduct(ean: string) {
     }
 }
 
-export async function uploadProductPhoto(src: string, ean: string) {
+export async function uploadProductPhoto(src: string|File, ean: string) {
     try {
         const s3Client = new S3Client({});
 
-        const readableStream = await fetch(src).then(r =>
+        const file = typeof src === 'string' ? await fetch(src).then(r =>
             Readable.fromWeb(r.body as any),
-        );
+        ) : src;
 
         const upload = new Upload({
             client: s3Client,
             params: {
                 Bucket: process.env.BUCKET_NAME,
                 Key: `products/${ean}.jpg`,
-                Body: readableStream,
+                Body: file,
                 ContentType: 'image/jpeg',
             },
         });
@@ -214,33 +214,24 @@ export async function uploadProductPhoto(src: string, ean: string) {
     }
 }
 
-export async function addProductDB(product: TOpenFoodFactsProduct) {
+export async function addProductDB(product: Omit<TProductInsert, 'id' | 'img' >, img: string|File) {
     try {
 
         if(!product) throw Error('Brak produktu');
 
         let imgLocation = '';
 
-        if (product?.image_url) {
-            const resUpload = await uploadProductPhoto(
-                product.image_url,
-                product._id,
-            );
-            if (resUpload.success) {
-                imgLocation = resUpload.location || '';
-            }
+        const resUpload = await uploadProductPhoto(img, product.ean);
+        if (resUpload.success) {
+            imgLocation = resUpload.location || '';
         }
 
         const productId = crypto.randomUUID();
 
         await db.insert(products).values({
+            ...product,
             id: productId,
-            ean: product._id ?? '',
-            name: product.product_name ?? '',
-            brand: product.brands ?? '',
-            quantity: product.quantity ?? '',
-            img: imgLocation,
-            imgOpenFoodFacts: product?.image_url,
+            img: imgLocation
         });
 
         return {

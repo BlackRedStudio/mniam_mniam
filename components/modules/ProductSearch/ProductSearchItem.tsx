@@ -17,7 +17,7 @@ function ProductSearchItem({
             <Image
                 src={image_small_url}
                 loading="eager"
-                className="mr-4 object-contain"
+                className="object-contain"
                 width={100}
                 height={100}
                 alt={product_name || ''}
@@ -28,7 +28,7 @@ function ProductSearchItem({
             <Image
                 src={image_url}
                 loading="eager"
-                className="mr-4 object-contain"
+                className="object-contain"
                 width={100}
                 height={100}
                 alt={product_name || ''}
@@ -41,8 +41,10 @@ function ProductSearchItem({
     return (
         <Link href={`/product/${_id}`}>
             <div className="p-5 flex hover:bg-secondary">
+                <div className='w-1/3'>
                 {img}
-                <div>
+                </div>
+                <div className='w-2/3 pl-3'>
                     <strong>{product_name}</strong>
                     <br />
                     <small className="w-full">({quantity})</small>

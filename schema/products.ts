@@ -6,8 +6,8 @@ export const products = mysqlTable('products', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     ean: varchar('ean', { length: 128 }).notNull(),
     name: varchar('name', { length: 512 }).notNull(),
-    brand: varchar('brand', { length: 512 }).notNull(),
-    quantity: varchar('quantity', { length: 256 }).default(''),
+    brands: varchar('brands', { length: 512 }).notNull(),
+    quantity: varchar('quantity', { length: 256 }).notNull(),
     img: text('img').notNull(),
     imgOpenFoodFacts: text('imgOpenFoodFacts').default(''),
     dateCreated: timestamp('dateCreated', {
@@ -25,3 +25,4 @@ export const productsRelations = relations(products, ({ many }) => ({
 }));
 
 export type TProduct = typeof products.$inferSelect;
+export type TProductInsert = typeof products.$inferInsert;

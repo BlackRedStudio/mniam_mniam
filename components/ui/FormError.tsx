@@ -1,12 +1,17 @@
+import { cn } from '@/lib/utils';
+
 type TFormError = {
     formErrors: string[] | undefined;
+    className?: string;
 };
 
-function FormError({ formErrors }: TFormError) {
+function FormError({ formErrors, className }: TFormError) {
     return (
         <>
             {formErrors?.map((msg, index) => (
-                <p key={index} className="mt-1 text-destructive">
+                <p
+                    key={index}
+                    className={cn('mt-1 text-destructive', className)}>
                     {msg}
                 </p>
             ))}

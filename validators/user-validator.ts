@@ -60,7 +60,7 @@ export const userProfileValidator = userRegistrationValidatorBasic
         image: imageValidator,
     })
     .partial({
-        avatar: true,
+        image: true,
         password: true,
         passwordConfirm: true,
     })

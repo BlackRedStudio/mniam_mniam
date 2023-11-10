@@ -11,7 +11,7 @@ type TRateProductPage = {
 async function rateProductPage({params}: TRateProductPage) {
 
     const res = await getProduct(params.ean);
-    
+
     if(!res || !res.success || !res.product) {
         redirect('/dashboard');
     }
