@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-const MAX_FILE_SIZE = 1048576;
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];
+import { imageValidator } from './image-validator';
 
 const userRegistrationValidatorBasic = z.object({
     name: z
@@ -56,27 +55,18 @@ export type TUserRegistrationValidator = z.infer<
     typeof userRegistrationValidator
 >;
 
-export const userProfileValidator = userRegistrationValidatorBasic.extend({
-    avatar: z
-    .custom<File>()
-    .refine(
-        file => file?.size <= MAX_FILE_SIZE,
-        'Maksymalny rozmiar pliku to 1 MB.',
-    )
-    .refine(
-        file => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-        'Formaty obsługiwane to jpg, jpeg oraz png',
-    ),
-}).partial({
-    avatar: true,
-    password: true,
-    passwordConfirm: true,
-}).refine(
-    data => data.password === data.passwordConfirm,
-    {
+export const userProfileValidator = userRegistrationValidatorBasic
+    .extend({
+        image: imageValidator,
+    })
+    .partial({
+        avatar: true,
+        password: true,
+        passwordConfirm: true,
+    })
+    .refine(data => data.password === data.passwordConfirm, {
         message: 'Hasła nie pasują do siebie',
         path: ['passwordConfirm'],
-    },
-);
+    });
 
 export type TUserProfileValidator = z.infer<typeof userProfileValidator>;

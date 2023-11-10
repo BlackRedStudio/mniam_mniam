@@ -1,8 +1,8 @@
-'use client'
+'use client';
 
-import { Provider } from 'jotai';
 import { ReactNode } from 'react';
-// import { SessionProvider } from "next-auth/react"
+import { Provider } from 'jotai';
+import { SessionProvider } from 'next-auth/react';
 
 type TProviderLayoutProps = {
     children: ReactNode;
@@ -10,9 +10,9 @@ type TProviderLayoutProps = {
 
 function Providers({ children }: TProviderLayoutProps) {
     return (
-        <Provider>
-            {children}
-        </Provider>
+        <SessionProvider>
+            <Provider>{children}</Provider>
+        </SessionProvider>
     );
 }
 

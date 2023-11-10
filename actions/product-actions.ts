@@ -184,19 +184,6 @@ export async function uploadProductPhoto(src: string, ean: string) {
     try {
         const s3Client = new S3Client({});
 
-        // const parsed = imageUploadValidator.safeParse({
-        //     image: formData.get('image'),
-        // });
-
-        // if (!parsed.success) {
-        //     return {
-        //         success: false,
-        //         message:
-        //             'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-        //         errors: parsed.error.formErrors.fieldErrors,
-        //     };
-        // }
-
         const readableStream = await fetch(src).then(r =>
             Readable.fromWeb(r.body as any),
         );

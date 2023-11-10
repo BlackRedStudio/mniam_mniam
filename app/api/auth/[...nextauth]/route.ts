@@ -23,6 +23,7 @@ export const authOptions = {
                 return {
                     ...profile,
                     id: profile.sub,
+                    image: profile.picture,
                 };
             },
             allowDangerousEmailAccountLinking: true,
@@ -34,6 +35,7 @@ export const authOptions = {
                 return {
                     ...profile,
                     id: profile.id.toString(),
+                    image: profile.avatar_url
                 };
             },
             allowDangerousEmailAccountLinking: true,
@@ -69,21 +71,29 @@ export const authOptions = {
         }),
     ],
     callbacks: {
-        session: async ({ session, token }) => {
-            if (session?.user) {
-                session.user.id = token.uid;
-            }
-            return session;
-        },
         async jwt({ token, trigger, session, user }) {
-            if (trigger === 'update' && session?.email) {
-                token.email = session.email;
+            if (trigger === 'update') {
+                if (session?.email) {
+                    token.email = session.email;
+                }
+                if (session?.name) {
+                    token.name = session.name;
+                }
+                if (session?.image || session?.image === '') {
+                    token.picture = session.image;
+                }
             }
             if (user) {
                 token.uid = user.id;
             }
 
             return token;
+        },
+        async session({ session, token }) {
+            if (session?.user) {
+                session.user.id = token.uid;
+            }
+            return session;
         },
     },
     session: {

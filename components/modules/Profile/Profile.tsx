@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-import { TRegisterUserReturn, updateProfile } from '@/actions/user-actions';
+import { useState, SyntheticEvent } from 'react';
+import { TProfileUserReturn, deleteAvatar, updateProfile } from '@/actions/user-actions';
 import { TUser } from '@/schema';
+import { useSession } from 'next-auth/react';
 
 import { useToast } from '@/hooks/use-toast';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import SignUpButton from '@/components/ui/SignUpButton';
+import { Button } from '@/components/ui/button';
 
 type TProfile = {
     user: TUser;
@@ -16,9 +18,12 @@ type TProfile = {
 
 function Profile({ user }: TProfile) {
     const { toast } = useToast();
+    const { data: session, update } = useSession();
 
     const [profileFormState, setProfileFormState] =
-        useState<TRegisterUserReturn>();
+        useState<TProfileUserReturn>();
+
+    if (!session) return null;
 
     const handleProfileForm = async (formData: FormData) => {
         const res = await updateProfile(formData);
@@ -29,7 +34,31 @@ function Profile({ user }: TProfile) {
             title: res.message,
             variant: res.success ? 'success' : 'destructive',
         });
+
+        if (res.data) {
+            update({
+                name: res.data.name || session.user.name,
+                email: res.data.email || session.user.email,
+                image: res.data.image || session.user.image,
+            });
+        }
     };
+
+    const handleDeleteAvatar = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        const res = await deleteAvatar();
+
+        toast({
+            title: res.message,
+            variant: res.success ? 'success' : 'destructive',
+        });
+
+        if (res.success) {
+            update({
+                image: '',
+            });
+        }
+    }
 
     return (
         <form action={formData => handleProfileForm(formData)}>
@@ -47,7 +76,6 @@ function Profile({ user }: TProfile) {
             </div>
             <div className="mb-4">
                 <Label htmlFor="email">Email</Label>
-
                 <Input
                     type="email"
                     name="email"
@@ -58,18 +86,20 @@ function Profile({ user }: TProfile) {
                 />
                 {<FormError formErrors={profileFormState?.errors?.email} />}
             </div>
-            {/* <div className="mb-4">
+            <div className="mb-4">
                 <Label htmlFor="avatar">Zmień swój Avatar</Label>
                 <Input
                     type="file"
                     name="avatar"
                     className="mt-1"
-                    placeholder=""
-                    accept='image/jpeg,image/jpg'
-                    required
+                    accept="image/jpeg, image/jpg"
                 />
-                {<FormError formErrors={profileFormState?.errors?.avatar} />}
-            </div> */}
+                {<FormError formErrors={profileFormState?.errors?.image} />}
+            </div>
+            {
+                user.image &&
+                <Button className='mb-5' onClick={e => handleDeleteAvatar(e)}>Usuń swój Avatar</Button>
+            }
             <div className="mb-4">
                 <Label htmlFor="password">Hasło</Label>
                 <Input

@@ -1,12 +1,4 @@
-'use client'
-
-export default function Upload() {
-
-
-
-    return (
-        <>
-        asdasdasd
-        </>
-    );
+export default async function DebugPage() {
+    
+    return <>asdasdasd</>;
 }

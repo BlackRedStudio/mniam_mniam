@@ -1,28 +1,13 @@
-import { Session } from 'next-auth';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Logo from './Logo';
 import Link from 'next/link';
 import Menu from './Menu';
-import { getNameInitials } from '@/lib/utils';
+import AvatarElement from './Avatar';
 
-type THeader = {
-    session: Session;
-};
-
-function Header({ session }: THeader) {
-
-    const nameInitials = session.user?.name ? getNameInitials(session.user.name) : 'MM';
+function Header() {
 
     return (
         <header className="py-4 px-2 border-b-2 flex items-center justify-between">
-            <Avatar>
-                {
-                    session.user?.image ?
-                    <AvatarImage src={session.user.image} /> :
-                    null
-                }
-                <AvatarFallback>{nameInitials}</AvatarFallback>
-            </Avatar>
+            <AvatarElement />
             <Link href="/dashboard">
                 <Logo />
             </Link>
