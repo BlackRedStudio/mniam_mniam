@@ -18,31 +18,23 @@ export type TAddProductToUserListReturn = Awaited<
     ReturnType<typeof addProductToUserList>
 >;
 
-type TAddProductToUserList = {
-    ean: string;
-    rating: number;
-    price: string;
-    category: TCategoriesIds | '';
-    status: TUserProduct['status'];
-    name: string;
-    brands: string;
-    quantity: string;
-    image: File;
-};
-
-export async function addProductToUserList({
-    ean, rating, price, category, status, name, brands, image, quantity
-}: TAddProductToUserList) {
+export async function addProductToUserList(formData: FormData) {
     try {
         const session = await getServerSession(authOptions);
 
         if (!session) throw new Error();
 
+        const ean = formData.get('ean') as string;
+        const name = formData.get('name') as string;
+        const brands = formData.get('brands') as string;
+        const quantity = formData.get('quantity') as string;
+        const image = formData.get('image') as File;
+
         const parsed = userProductValidator.safeParse({
-            rating,
-            price,
-            category,
-            status,
+            rating: formData.get('rating'),
+            price: formData.get('price'),
+            category: formData.get('category'),
+            status: formData.get('status'),
         });
 
         if (!parsed.success) {
@@ -72,17 +64,17 @@ export async function addProductToUserList({
         } else {
             const openFoodFactsProduct = await getProductsByBarcode(ean);
 
-            if (!openFoodFactsProduct)
-                throw Error('Produkt o podanym Barcode nie istnieje');
-            const noProductPhoto = !openFoodFactsProduct.image_url;
+            
+
+            const noProductPhoto = !openFoodFactsProduct?.image_url;
 
             const productParsed = productValidator.partial({
                 // make partial only if image exist on openFoodFactsProduct
                 image: noProductPhoto ? undefined : true,
             }).safeParse({
-                name: openFoodFactsProduct.product_name || name,
-                brands: openFoodFactsProduct.brands || brands,
-                quantity: openFoodFactsProduct.quantity || quantity,
+                name: openFoodFactsProduct?.product_name || name,
+                brands: openFoodFactsProduct?.brands || brands,
+                quantity: openFoodFactsProduct?.quantity || quantity,
                 // omit parsing when image_url exist in openFoodFactsProduct
                 image: noProductPhoto ? image : undefined,
             });
@@ -96,20 +88,20 @@ export async function addProductToUserList({
             }
 
             // any properties missing? So it's custom user product
-            if(!openFoodFactsProduct.product_name || !openFoodFactsProduct.brands || noProductPhoto || !openFoodFactsProduct.quantity) {
+            if(!openFoodFactsProduct?.product_name || !openFoodFactsProduct?.brands || noProductPhoto || !openFoodFactsProduct?.quantity) {
                 isCustomProduct = true;
             }
 
             const productDB = {
-                ean: openFoodFactsProduct._id,
-                brands: openFoodFactsProduct.brands || productParsed.data.brands,
-                name: openFoodFactsProduct.product_name || productParsed.data.name,
-                quantity: openFoodFactsProduct.product_name || productParsed.data.quantity,
-                imgOpenFoodFacts: openFoodFactsProduct.image_url
+                ean: openFoodFactsProduct?._id || ean,
+                brands: openFoodFactsProduct?.brands || productParsed.data.brands,
+                name: openFoodFactsProduct?.product_name || productParsed.data.name,
+                quantity: openFoodFactsProduct?.product_name || productParsed.data.quantity,
+                imgOpenFoodFacts: openFoodFactsProduct?.image_url
             };
 
             // productParsed.data.image can't be undefined because if openFoodFactsProduct.image_url is empty then image parse is mandatory
-            const img = openFoodFactsProduct.image_url || productParsed.data.image as File;
+            const img = openFoodFactsProduct?.image_url || productParsed.data.image as File;
 
             const res = await addProductDB(productDB, img);
 

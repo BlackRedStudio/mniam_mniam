@@ -8,12 +8,29 @@ type TRateProductPage = {
     }
 }
 
-async function rateProductPage({params}: TRateProductPage) {
+async function rateProductPage({params: {ean}}: TRateProductPage) {
 
-    const res = await getProduct(params.ean);
-
-    if(!res || !res.success || !res.product) {
+    if(ean.length !== 13 && ean.length !== 8) {
         redirect('/dashboard');
+    }
+
+    const res = await getProduct(ean);
+    if(!res || !res.success || !res.product) {
+
+        const virtualProduct = {
+            _id: ean
+        }
+        const virtualStatistics = {
+            averageRating: 'Brak',
+            averagePrice: 'Brak',
+            peopleRateCount: 0,
+        }
+
+        return (
+            <section className="product-page">
+                <ProductCard product={virtualProduct} currentUserProduct={null} productStatistics={virtualStatistics} />
+            </section>
+        );
     }
     
     return (

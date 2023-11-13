@@ -5,7 +5,7 @@ import { categories } from '@/lib/config';
 import { handleCurrencyInput } from '@/lib/utils';
 
 export const userProductValidator = z.object({
-    rating: z.number().min(1, 'Produkt musi zostać oceniony').max(5),
+    rating: z.coerce.number().min(1, 'Produkt musi zostać oceniony').max(5),
     price: z.string().refine(field => {
         return handleCurrencyInput(field);
     }, 'Wprowadź wartość'),

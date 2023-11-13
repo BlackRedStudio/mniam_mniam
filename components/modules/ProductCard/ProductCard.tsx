@@ -89,10 +89,18 @@ function ProductCard({
             name,
             brands: brandsState,
             quantity: quantityState || '',
-            // image, TODO: make email as File, send this as FormData
+            image
         }
 
-        const res = await addProductToUserList(payload);
+        var formData = new FormData();
+        
+        let payloadKey: keyof typeof payload;
+
+        for ( payloadKey in payload ) {
+            formData.append(payloadKey, payload[payloadKey] as string);
+        }
+
+        const res = await addProductToUserList(formData);
 
         setProductFormState(res);
 

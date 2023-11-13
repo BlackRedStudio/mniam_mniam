@@ -127,7 +127,6 @@ export async function getProduct(ean: string) {
         } else {
             finalProduct = await getProductsByBarcode(ean);
         }
-
         if (!finalProduct) {
             return {
                 success: false,

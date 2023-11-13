@@ -38,7 +38,7 @@ function ProductScanner() {
             </div>
             <Button
                 className="w-full mt-5"
-                disabled={code.length < 8 || code.length > 13}
+                disabled={code.length !== 8 && code.length !== 13}
                 onClick={() => {
                     router.push(`/product/${code}`);
                 }}>
