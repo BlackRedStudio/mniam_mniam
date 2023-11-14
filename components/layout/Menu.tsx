@@ -14,12 +14,44 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/modules/Icons';
+import { App as CapacitorApp } from '@capacitor/app';
 
 import AlertModal from '../modules/Modal';
+import { useEffect, useState } from 'react';
+
+const checkAppLaunchUrl = async () => {
+    await CapacitorApp.exitApp();
+  };
 
 function Menu() {
     const { toast } = useToast();
     const router = useRouter();
+    const [test, setTest] = useState(null);
+
+    useEffect(() => {
+        CapacitorApp.addListener('backButton', ({canGoBack}) => {
+            console.log('asdasdasd');
+            if(!canGoBack){
+              CapacitorApp.exitApp();
+            } else {
+              window.history.back();
+            }
+          });
+
+          CapacitorApp.addListener('appStateChange', ({ isActive }) => {
+            console.log('App state changed. Is active?', isActive);
+          });
+          
+          CapacitorApp.addListener('appUrlOpen', data => {
+            console.log('App opened with URL:', data);
+          });
+          
+          CapacitorApp.addListener('appRestoredResult', data => {
+            console.log('Restored state:', data);
+          });
+          
+
+    }, []);
 
     return (
         <DropdownMenu>
@@ -38,6 +70,7 @@ function Menu() {
                 <Link href="/my-list">
                     <DropdownMenuItem>Moja lista</DropdownMenuItem>
                 </Link>
+                    <DropdownMenuItem onClick={checkAppLaunchUrl}>Test</DropdownMenuItem>
                 <AlertModal
                     title="Czy napewno chcesz się wylogować?"
                     accept={async () => {

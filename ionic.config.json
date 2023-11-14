@@ -1,0 +1,7 @@
+{
+  "name": "mniam_mniam",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

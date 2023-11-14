@@ -18,7 +18,9 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "db:studio": "npx drizzle-kit studio --host 127.0.0.1",
     "db:push": "npx drizzle-kit generate:mysql && npx drizzle-kit push:mysql",
-    "db:drop": "npx drizzle-kit drop"
+    "db:drop": "npx drizzle-kit drop",
+    "ionic:build": "npm run build",
+    "ionic:serve": "npm run start"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.3.4",
@@ -26,6 +28,9 @@
     "@aws-sdk/lib-storage": "^3.438.0",
     "@aws-sdk/s3-presigned-post": "^3.437.0",
     "@aws-sdk/types": "^3.433.0",
+    "@capacitor/android": "5.5.1",
+    "@capacitor/app": "^5.0.6",
+    "@capacitor/core": "^5.5.1",
     "@planetscale/database": "^1.11.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -61,6 +66,7 @@
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-zxing": "^2.0.0",
     "sharp": "^0.32.6",
     "tailwind": "^4.0.0",
     "tailwind-merge": "^1.14.0",
@@ -70,6 +76,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@capacitor/cli": "^5.5.1",
     "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
     "@next/eslint-plugin-next": "^14.0.1",
     "@testing-library/jest-dom": "^6.1.4",
