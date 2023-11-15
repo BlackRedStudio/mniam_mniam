@@ -47,7 +47,7 @@ const BarcodeScanner = ({ deviceId, devices, setCode, setDeviceId, setScannerEna
                             <SelectItem
                                 key={device.deviceId}
                                 value={device.deviceId}>
-                                {device.label}
+                                {device.label || device.deviceId}
                             </SelectItem>
                         ))}
                     </SelectContent>
