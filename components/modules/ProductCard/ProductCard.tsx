@@ -9,6 +9,7 @@ import {
     TAddProductToUserListReturn,
 } from '@/actions/user-product-actions';
 import { TUserProduct } from '@/schema';
+import FileResizer from 'react-image-file-resizer';
 
 import {
     TCategoriesIds,
@@ -70,7 +71,12 @@ function ProductCard({
     const handleAddProduct = async (status: 'visible' | 'invisible') => {
         setLoading(true);
 
-        if (!name || !brandsState || (isImageMissing && !image) || !quantityState) {
+        if (
+            !name ||
+            !brandsState ||
+            (isImageMissing && !image) ||
+            !quantityState
+        ) {
             toast({
                 title: 'Uzupełnij wszystkie dane zaznaczone na czerwono',
                 variant: 'destructive',
@@ -89,14 +95,14 @@ function ProductCard({
             name,
             brands: brandsState,
             quantity: quantityState || '',
-            image
-        }
+            image,
+        };
 
         var formData = new FormData();
-        
+
         let payloadKey: keyof typeof payload;
 
-        for ( payloadKey in payload ) {
+        for (payloadKey in payload) {
             formData.append(payloadKey, payload[payloadKey] as string);
         }
 
@@ -136,7 +142,33 @@ function ProductCard({
             setImage(null);
             return;
         }
-        setImage(e.target.files[0]);
+        const file = e.target.files[0];
+
+        try {
+            FileResizer.imageFileResizer(
+                file,
+                400,
+                400,
+                'JPEG',
+                79,
+                0,
+                file => {
+                    if(file instanceof File) {
+                        setImage(file);
+                    } else {
+                        throw new Error('Zły format pliku');
+                    }
+                },
+                'file',
+                100,
+                100,
+            );
+        } catch (err) {
+            toast({
+                title: 'Problem z plikiem, spróbuj ponownie lub zmień na inny plik.',
+                variant: 'destructive',
+            });
+        }
     };
 
     return (
@@ -167,11 +199,13 @@ function ProductCard({
                             />
                         )}
                         <small className="text-sm block mt-2">
-                            ({quantityState || (
-                            <small className="text-destructive">
-                                Brakuje podanej ilości produktu np. 200g
-                            </small>
-                        )})
+                            (
+                            {quantityState || (
+                                <small className="text-destructive">
+                                    Brakuje podanej ilości produktu np. 200g
+                                </small>
+                            )}
+                            )
                         </small>
                         {isQuantityMissing && (
                             <Input
