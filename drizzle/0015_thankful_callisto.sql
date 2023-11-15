@@ -1,0 +1,1 @@
+ALTER TABLE `userProducts` MODIFY COLUMN `status` enum('visible','invisible','draft','draftVisible') NOT NULL;

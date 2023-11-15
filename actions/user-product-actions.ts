@@ -1,12 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { products, TProductInsert, TUserProduct, userProducts } from '@/schema';
+import { TUserProduct, products, userProducts } from '@/schema';
 import { userProductValidator } from '@/validators/user-product-validator';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
-import { TCategoriesIds } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -64,8 +63,6 @@ export async function addProductToUserList(formData: FormData) {
         } else {
             const openFoodFactsProduct = await getProductsByBarcode(ean);
 
-            
-
             const noProductPhoto = !openFoodFactsProduct?.image_url;
 
             const productParsed = productValidator.partial({
@@ -116,6 +113,14 @@ export async function addProductToUserList(formData: FormData) {
 
         const userProductId = crypto.randomUUID();
 
+        let status: TUserProduct['status'] = parsed.data.status;
+
+        if(isCustomProduct && status == 'visible') {
+            status = 'draftVisible';
+        } else if(isCustomProduct) {
+            status = 'draft';
+        }
+
         const userProductsValues = {
             id: userProductId,
             productId,
@@ -123,7 +128,7 @@ export async function addProductToUserList(formData: FormData) {
             rating: parsed.data.rating,
             price: parsed.data.price,
             category: parsed.data.category,
-            status: isCustomProduct ? 'draft' as const : parsed.data.status,
+            status,
         };
 
         if (existingUserProduct) {
@@ -195,7 +200,7 @@ export async function getMyList() {
         const userProductsList = await db.query.userProducts.findMany({
             where: and(
                 eq(userProducts.userId, session.user.id),
-                eq(userProducts.status, 'visible'),
+                inArray(userProducts.status, ['visible', 'draftVisible']),
             ),
             with: {
                 product: true,

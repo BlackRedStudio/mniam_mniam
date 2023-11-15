@@ -6,12 +6,12 @@ import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 import BarcodeScanner from './BarcodeScanner';
-import Loader from '../ui/Loader';
+import Loader from '../../ui/Loader';
 
-function ProductScanner() {
+function ProductScannerWrapper() {
     const { toast } = useToast();
 
     const [code, setCode] = useState('');
@@ -91,4 +91,4 @@ function ProductScanner() {
     );
 }
 
-export default ProductScanner;
+export default ProductScannerWrapper;

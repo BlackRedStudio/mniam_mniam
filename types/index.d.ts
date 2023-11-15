@@ -1,4 +1,5 @@
 import NextAuth, { DefaultSession } from "next-auth"
+import { TUserRoles } from "./types";
 
 declare module NodeJS {
     interface Process extends NodeJS.Process {
@@ -14,11 +15,17 @@ declare module "next-auth" {
     user: {
       /** The user's postal address. */
       id: string,
+      role: TUserRoles,
     } & DefaultSession["user"]
+  }
+
+  interface User {
+    role?: TUserRoles | null;
   }
 }
 declare module "next-auth/jwt" {
   interface JWT {
-    uid: string
+    uid: string,
+    role: TUserRoles,
   }
 }

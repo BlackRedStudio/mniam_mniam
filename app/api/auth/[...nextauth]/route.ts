@@ -85,6 +85,7 @@ export const authOptions = {
             }
             if (user) {
                 token.uid = user.id;
+                token.role = user.role || 'user';
             }
 
             return token;
@@ -92,6 +93,7 @@ export const authOptions = {
         async session({ session, token }) {
             if (session?.user) {
                 session.user.id = token.uid;
+                session.user.role = token.role;
             }
             return session;
         },

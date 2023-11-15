@@ -19,7 +19,7 @@ export const userProducts = mysqlTable('userProducts', {
     category: varchar('category', {
         length: 256,
     }).notNull(),
-    status: mysqlEnum('status', ['visible', 'invisible', 'draft']).notNull(),
+    status: mysqlEnum('status', ['visible', 'invisible', 'draft', 'draftVisible']).notNull(),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,

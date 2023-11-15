@@ -34,6 +34,7 @@ import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
+import { Badge } from '@/components/ui/badge';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -67,6 +68,8 @@ function ProductCard({
     const areBrandsMissing = !brands;
     const isQuantityMissing = !quantity;
     const isImageMissing = !image_url;
+
+    const isSomethingMissing = isTitleMissing || areBrandsMissing || isQuantityMissing || isImageMissing;
 
     const handleAddProduct = async (status: 'visible' | 'invisible') => {
         setLoading(true);
@@ -171,14 +174,30 @@ function ProductCard({
         }
     };
 
+    let statusEl: JSX.Element = <Badge variant={'destructive'}>Jakiś błąd</Badge>;
+
+    if(productStatistics.peopleRateCount === 0) {
+        if(isSomethingMissing) {
+            statusEl = <Badge variant={'destructive'}>W produkcie brakuje niektórych danych, uzupełnij je!</Badge>;
+        } else {
+            statusEl = <Badge variant={'success'}>Jesteś pierwszym użytkownikiem oceniającym ten produkt!</Badge>;
+        }
+    } else if(currentUserProduct?.status === 'visible') {
+        statusEl = <Badge variant={'success'}>Produkt znajduje się na Twojej liście!</Badge>;
+    } else if(currentUserProduct?.status === 'invisible') {
+        statusEl = <Badge>Produktu nie ma na Twojej liście.</Badge>;
+    } else if(currentUserProduct?.status === 'draft') {
+        statusEl = <Badge variant={'secondary'}>Produkt jest w trakcie weryfikacji...</Badge>;
+    } else if(currentUserProduct?.status === 'draftVisible') {
+        statusEl = <Badge variant={'secondary'}>Produkt znajduje się na Twojej liście, ale jest jeszcze w trakcie weryfikacji...</Badge>;
+    }
+
     return (
         <>
             <Card>
                 <CardHeader>
-                    {isTitleMissing ||
-                    areBrandsMissing ||
-                    isQuantityMissing ||
-                    isImageMissing ? (
+                    { statusEl }
+                    {isSomethingMissing ? (
                         <small className="text-destructive">
                             Brakuje niektórych podstawowych cech produktu, aby
                             prawidłowo zapisać produkt, uzupełnij cechy
@@ -268,7 +287,7 @@ function ProductCard({
                                 name="image"
                                 className="mt-1"
                                 onChange={handleSelectImage}
-                                accept="image/jpeg, image/jpg"
+                                accept="image/*" capture
                             />
                         </>
                     )}

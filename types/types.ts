@@ -1,4 +1,5 @@
 import { categories } from '@/lib/config';
+import { userProducts } from '@/schema';
 
 export type THTTPMethod =
     | 'GET'
@@ -37,6 +38,8 @@ export type TCategories = typeof categories;
 export type TCategoriesIds = TCategories[number]['id'];
 
 export type TLogin = 'credentials' | 'google' | 'github';
+
+export type TUserRoles = 'user' | 'admin';
 
 export type TProductStatistics = {
     averageRating: string,
