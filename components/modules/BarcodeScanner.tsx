@@ -43,11 +43,11 @@ const BarcodeScanner = ({ deviceId, devices, setCode, setDeviceId, setScannerEna
                         <SelectValue placeholder="Rozwiń listę" />
                     </SelectTrigger>
                     <SelectContent>
-                        {devices.map(device => (
+                        {devices.map((device, index) => (
                             <SelectItem
                                 key={device.deviceId}
                                 value={device.deviceId}>
-                                {device.label || device.deviceId}
+                                {device.label || `Wejście Video nr: ${index + 1}`}
                             </SelectItem>
                         ))}
                     </SelectContent>
