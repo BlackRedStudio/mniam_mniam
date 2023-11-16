@@ -1,20 +1,22 @@
 'use server';
 
 import { Readable } from 'stream';
-import { TProductInsert, TUserProduct, products, userProducts } from '@/schema';
+import { revalidatePath } from 'next/cache';
+import { products, TProductInsert, TUserProduct, userProducts } from '@/schema';
+import { productValidator } from '@/validators/product-validator';
 import {
     CompleteMultipartUploadCommandOutput,
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import { eq, like, sql } from 'drizzle-orm';
+import { and, eq, like, sql } from 'drizzle-orm';
+import moment from 'moment';
 import { getServerSession } from 'next-auth';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import moment from 'moment';
 
 // search product by name using DB, or if not exist using API
 export async function searchProductByName(name: string) {
@@ -110,8 +112,10 @@ export async function getProduct(ean: string) {
             with: {
                 userProducts: {
                     extras: {
-                        price: sql<string>`cast(${userProducts.price} as CHAR)`.as('price')
-                    }
+                        price: sql<string>`cast(${userProducts.price} as CHAR)`.as(
+                            'price',
+                        ),
+                    },
                 },
             },
         });
@@ -147,12 +151,12 @@ export async function getProduct(ean: string) {
             // price rate should be younger than 180 days
             const halfYearAgo = moment().subtract(180, 'days');
 
-            if(moment(product.dateUpdated) > halfYearAgo) {
+            if (moment(product.dateUpdated) > halfYearAgo) {
                 peoplePriceCount++;
                 price += parseFloat(product.price);
             }
 
-            if(product.userId === session.user.id) {
+            if (product.userId === session.user.id) {
                 currentUserProduct = product;
             }
         });
@@ -167,7 +171,7 @@ export async function getProduct(ean: string) {
             productStatistics: {
                 averageRating,
                 averagePrice,
-                peopleRateCount
+                peopleRateCount,
             },
             product: finalProduct,
         };
@@ -179,13 +183,14 @@ export async function getProduct(ean: string) {
     }
 }
 
-export async function uploadProductPhoto(src: string|File, ean: string) {
+export async function uploadProductPhoto(src: string | File, ean: string) {
     try {
         const s3Client = new S3Client({});
 
-        const file = typeof src === 'string' ? await fetch(src).then(r =>
-            Readable.fromWeb(r.body as any),
-        ) : src;
+        const file =
+            typeof src === 'string'
+                ? await fetch(src).then(r => Readable.fromWeb(r.body as any))
+                : src;
 
         const upload = new Upload({
             client: s3Client,
@@ -213,10 +218,12 @@ export async function uploadProductPhoto(src: string|File, ean: string) {
     }
 }
 
-export async function addProductDB(product: Omit<TProductInsert, 'id' | 'img' >, img: string|File) {
+export async function addProductDB(
+    product: Omit<TProductInsert, 'id' | 'img'>,
+    img: string | File,
+) {
     try {
-
-        if(!product) throw Error('Brak produktu');
+        if (!product) throw Error('Brak produktu');
 
         let imgLocation = '';
 
@@ -230,12 +237,128 @@ export async function addProductDB(product: Omit<TProductInsert, 'id' | 'img' >,
         await db.insert(products).values({
             ...product,
             id: productId,
-            img: imgLocation
+            img: imgLocation,
         });
 
         return {
             success: true,
             productId,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
+export type TAcceptProductVerificationReturn = Awaited<
+    ReturnType<typeof acceptProductVerification>
+>;
+
+export async function acceptProductVerification(formData: FormData) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+        if (session.user.role !== 'admin') throw new Error('Permission denied');
+
+        const ean = formData.get('ean') as string;
+        const name = formData.get('name') as string;
+        const brands = formData.get('brands') as string;
+        const quantity = formData.get('quantity') as string;
+        const image = formData.get('image') as File | 'null';
+
+        let isImage = true;
+        if(image === 'null') {
+            isImage = false;
+        }
+        // get original product
+        const product = await db.query.products.findFirst({
+            where: eq(products.ean, ean),
+        });
+
+        if (!product) throw new Error();
+
+        const parsed = productValidator
+            .partial({
+                // make partial if no new image from verificator
+                image: isImage ? undefined : true,
+            })
+            .safeParse({
+                name: name,
+                brands: brands,
+                quantity: quantity,
+                image: isImage ? image : undefined,
+            });
+
+        if (!parsed.success) {
+            return {
+                success: false,
+                message:
+                    'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
+                errors: parsed.error.formErrors.fieldErrors,
+            };
+        }
+
+        let imgUrl = product.img;
+
+        if (isImage) {
+            const resUpload = await uploadProductPhoto(image, product.ean);
+
+            if (resUpload.success && resUpload.location) {
+                imgUrl = resUpload.location;
+            } else {
+                throw new Error();
+            }
+        }
+
+        const productDB = {
+            brands: parsed.data.brands,
+            name: parsed.data.name,
+            quantity: parsed.data.quantity,
+            img: imgUrl,
+        };
+
+        await db
+            .update(products)
+            .set(productDB)
+            .where(eq(products.id, product.id));
+
+        // update all userProducts draft statuses to invisible
+        await db
+            .update(userProducts)
+            .set({
+                status: 'invisible',
+            })
+            .where(
+                and(
+                    eq(userProducts.productId, product.id),
+                    eq(userProducts.status, 'draft'),
+                ),
+            );
+
+        // update all userProducts draftVisible statuses to visible
+        await db
+            .update(userProducts)
+            .set({
+                status: 'visible',
+            })
+            .where(
+                and(
+                    eq(userProducts.productId, product.id),
+                    eq(userProducts.status, 'draftVisible'),
+                ),
+            );
+
+        revalidatePath('/product/[ean]', 'page');
+        revalidatePath('/my-list', 'page');
+        revalidatePath('/product-verification', 'page');
+        revalidatePath('/product-verification/[ean]', 'page');
+
+        return {
+            success: true,
+            message: 'Produkt został zatwierdzony poprawnie',
         };
     } catch (e) {
         return {

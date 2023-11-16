@@ -16,7 +16,9 @@ import {
     TOpenFoodFactsProduct,
     TProductStatistics,
 } from '@/types/types';
+import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -34,7 +36,6 @@ import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
-import { Badge } from '@/components/ui/badge';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -69,7 +70,15 @@ function ProductCard({
     const isQuantityMissing = !quantity;
     const isImageMissing = !image_url;
 
-    const isSomethingMissing = isTitleMissing || areBrandsMissing || isQuantityMissing || isImageMissing;
+    const isDraft =
+        currentUserProduct?.status === 'draft' ||
+        currentUserProduct?.status === 'draftVisible';
+
+    const isSomethingMissing =
+        isTitleMissing ||
+        areBrandsMissing ||
+        isQuantityMissing ||
+        isImageMissing;
 
     const handleAddProduct = async (status: 'visible' | 'invisible') => {
         setLoading(true);
@@ -101,7 +110,7 @@ function ProductCard({
             image,
         };
 
-        var formData = new FormData();
+        const formData = new FormData();
 
         let payloadKey: keyof typeof payload;
 
@@ -156,7 +165,7 @@ function ProductCard({
                 79,
                 0,
                 file => {
-                    if(file instanceof File) {
+                    if (file instanceof File) {
                         setImage(file);
                     } else {
                         throw new Error('Zły format pliku');
@@ -174,37 +183,55 @@ function ProductCard({
         }
     };
 
-    let statusEl: JSX.Element = <Badge variant={'destructive'}>Jakiś błąd</Badge>;
+    let statusEl: JSX.Element = (
+        <Badge variant={'destructive'}>Jakiś błąd</Badge>
+    );
 
-    if(productStatistics.peopleRateCount === 0) {
-        if(isSomethingMissing) {
-            statusEl = <Badge variant={'destructive'}>W produkcie brakuje niektórych danych, uzupełnij je!</Badge>;
+    if (productStatistics.peopleRateCount === 0) {
+        if (isSomethingMissing) {
+            statusEl = (
+                <Badge variant={'destructive'}>
+                    Brakuje niektórych podstawowych cech produktu, aby
+                    prawidłowo zapisać produkt, uzupełnij cechy oznaczone na
+                    czerwono.
+                </Badge>
+            );
         } else {
-            statusEl = <Badge variant={'success'}>Jesteś pierwszym użytkownikiem oceniającym ten produkt!</Badge>;
+            statusEl = (
+                <Badge variant={'success'}>
+                    Jesteś pierwszym użytkownikiem oceniającym ten produkt!
+                </Badge>
+            );
         }
-    } else if(currentUserProduct?.status === 'visible') {
-        statusEl = <Badge variant={'success'}>Produkt znajduje się na Twojej liście!</Badge>;
-    } else if(currentUserProduct?.status === 'invisible') {
+    } else if (currentUserProduct?.status === 'visible') {
+        statusEl = (
+            <Badge variant={'success'}>
+                Produkt znajduje się na Twojej liście!
+            </Badge>
+        );
+    } else if (currentUserProduct?.status === 'invisible') {
         statusEl = <Badge>Produktu nie ma na Twojej liście.</Badge>;
-    } else if(currentUserProduct?.status === 'draft') {
-        statusEl = <Badge variant={'secondary'}>Produkt jest w trakcie weryfikacji...</Badge>;
-    } else if(currentUserProduct?.status === 'draftVisible') {
-        statusEl = <Badge variant={'secondary'}>Produkt znajduje się na Twojej liście, ale jest jeszcze w trakcie weryfikacji...</Badge>;
+    } else if (currentUserProduct?.status === 'draft') {
+        statusEl = (
+            <Badge variant={'secondary'}>
+                Produkt jest w trakcie weryfikacji...
+            </Badge>
+        );
+    } else if (currentUserProduct?.status === 'draftVisible') {
+        statusEl = (
+            <Badge variant={'secondary'}>
+                Produkt znajduje się na Twojej liście, ale jest jeszcze w
+                trakcie weryfikacji...
+            </Badge>
+        );
     }
 
     return (
         <>
             <Card>
                 <CardHeader>
-                    { statusEl }
-                    {isSomethingMissing ? (
-                        <small className="text-destructive">
-                            Brakuje niektórych podstawowych cech produktu, aby
-                            prawidłowo zapisać produkt, uzupełnij cechy
-                            oznaczone na czerwono.
-                        </small>
-                    ) : null}
-                    <CardTitle>
+                    {statusEl}
+                    <CardTitle className="pt-4">
                         {name || (
                             <small className="text-destructive">
                                 Brak tytułu
@@ -252,11 +279,14 @@ function ProductCard({
                 </CardHeader>
                 <CardContent>
                     {image_url ? (
-                        <div className="h-[300px] relative w-full">
+                        <div className={'h-[300px] relative w-full'}>
                             <Image
                                 src={image_url ?? ''}
                                 fill
-                                className="object-contain"
+                                className={cn(
+                                    'object-contain',
+                                    isDraft ? 'opacity-50' : '',
+                                )}
                                 alt={product_name ?? ''}
                             />
                         </div>
@@ -287,36 +317,31 @@ function ProductCard({
                                 name="image"
                                 className="mt-1"
                                 onChange={handleSelectImage}
-                                accept="image/*" capture
+                                accept="image/*"
+                                capture
                             />
                         </>
                     )}
                 </CardContent>
                 <CardFooter className="flex-col">
                     <CommunityRating productStatistics={productStatistics} />
-                    {
-                        <FormError
-                            className="mb-2"
-                            formErrors={productFormState?.errors?.rating}
-                        />
-                    }
+                    <FormError
+                        className="mb-2"
+                        formErrors={productFormState?.errors?.rating}
+                    />
                     <StarRating rating={rating} setRating={setRating} />
-                    {
-                        <FormError
-                            className="mb-2"
-                            formErrors={productFormState?.errors?.category}
-                        />
-                    }
+                    <FormError
+                        className="mb-2"
+                        formErrors={productFormState?.errors?.category}
+                    />
                     <CategorySelector
                         category={category}
                         setCategory={setCategory}
                     />
-                    {
-                        <FormError
-                            className="mb-2"
-                            formErrors={productFormState?.errors?.price}
-                        />
-                    }
+                    <FormError
+                        className="mb-2"
+                        formErrors={productFormState?.errors?.price}
+                    />
                     <PriceInput price={price} setPrice={setPrice} />
                     <div className="mt-8 space-y-4">
                         {loading && <Loader className="mt-4" />}

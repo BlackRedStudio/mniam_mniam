@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
 import { Input } from '../../ui/input';
@@ -12,7 +11,6 @@ import BarcodeScanner from './BarcodeScanner';
 import Loader from '../../ui/Loader';
 
 function ProductScannerWrapper() {
-    const { toast } = useToast();
 
     const [code, setCode] = useState('');
     const [deviceId, setDeviceId] = useState('');
@@ -33,14 +31,14 @@ function ProductScannerWrapper() {
                 setDevices(availableVideoDevices);
                 setDeviceId(availableVideoDevices[0]?.deviceId);
             } else {
-                toast({
-                    title: 'Nie znaleziono kamery',
-                    variant: 'destructive',
-                });
                 setDeviceId('NO_CAMERA_FOUND');
             }
         };
-        getMediaDevices();
+        if(typeof navigator.mediaDevices !== 'undefined') {
+            getMediaDevices();
+        } else {
+            setDeviceId('NO_CAMERA_FOUND');
+        }
     }, []);
 
     return (

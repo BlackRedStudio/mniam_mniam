@@ -12,6 +12,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import { addProductDB } from './product-actions';
 import { productValidator } from '@/validators/product-validator';
+import { TUserProductStatus } from '@/types/types';
 
 export type TAddProductToUserListReturn = Awaited<
     ReturnType<typeof addProductToUserList>
@@ -93,7 +94,7 @@ export async function addProductToUserList(formData: FormData) {
                 ean: openFoodFactsProduct?._id || ean,
                 brands: openFoodFactsProduct?.brands || productParsed.data.brands,
                 name: openFoodFactsProduct?.product_name || productParsed.data.name,
-                quantity: openFoodFactsProduct?.product_name || productParsed.data.quantity,
+                quantity: openFoodFactsProduct?.quantity || productParsed.data.quantity,
                 imgOpenFoodFacts: openFoodFactsProduct?.image_url
             };
 
@@ -141,6 +142,9 @@ export async function addProductToUserList(formData: FormData) {
         }
 
         revalidatePath('/product/[ean]', 'page');
+        revalidatePath('/my-list', 'page');
+        revalidatePath('/product-verification', 'page');
+        revalidatePath('/product-verification/[ean]', 'page');
 
         return {
             success: true,
@@ -189,9 +193,9 @@ export async function deleteProductFromUserList(userProductId: string) {
     }
 }
 
-export type TGetMyListReturn = Awaited<ReturnType<typeof getMyList>>;
+export type TGetUserProductsReturn = Awaited<ReturnType<typeof getUserProducts>>;
 
-export async function getMyList() {
+export async function getUserProducts(statuses: TUserProductStatus[]) {
     try {
         const session = await getServerSession(authOptions);
 
@@ -200,7 +204,7 @@ export async function getMyList() {
         const userProductsList = await db.query.userProducts.findMany({
             where: and(
                 eq(userProducts.userId, session.user.id),
-                inArray(userProducts.status, ['visible', 'draftVisible']),
+                inArray(userProducts.status, statuses),
             ),
             with: {
                 product: true,

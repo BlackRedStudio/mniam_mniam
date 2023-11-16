@@ -23,6 +23,7 @@ export const authOptions = {
                 return {
                     ...profile,
                     id: profile.sub,
+                    role: 'user',
                     image: profile.picture,
                 };
             },
@@ -35,6 +36,7 @@ export const authOptions = {
                 return {
                     ...profile,
                     id: profile.id.toString(),
+                    role: 'user',
                     image: profile.avatar_url
                 };
             },

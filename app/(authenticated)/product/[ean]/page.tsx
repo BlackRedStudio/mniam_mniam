@@ -2,13 +2,13 @@ import { getProduct } from "@/actions/product-actions";
 import ProductCard from "@/components/modules/ProductCard/ProductCard";
 import { redirect } from "next/navigation";
 
-type TRateProductPage = {
+type TProductPageProps = {
     params: {
         ean: string
     }
 }
 
-async function rateProductPage({params: {ean}}: TRateProductPage) {
+async function ProductPage({params: {ean}}: TProductPageProps) {
 
     if(ean.length !== 13 && ean.length !== 8) {
         redirect('/dashboard');
@@ -40,4 +40,4 @@ async function rateProductPage({params: {ean}}: TRateProductPage) {
     );
 }
 
-export default rateProductPage;
+export default ProductPage;

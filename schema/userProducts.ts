@@ -1,7 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
     decimal,
-    mysqlEnum,
     mysqlTable,
     timestamp,
     tinyint,
@@ -9,6 +8,7 @@ import {
 } from 'drizzle-orm/mysql-core';
 
 import { products, users } from '.';
+import { TUserProductStatus } from '@/types/types';
 
 export const userProducts = mysqlTable('userProducts', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -19,7 +19,7 @@ export const userProducts = mysqlTable('userProducts', {
     category: varchar('category', {
         length: 256,
     }).notNull(),
-    status: mysqlEnum('status', ['visible', 'invisible', 'draft', 'draftVisible']).notNull(),
+    status: varchar('status', { length: 255 }).$type<TUserProductStatus>().notNull().default('invisible'),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,
