@@ -1,19 +1,37 @@
+import { TGetProductsReturn } from '@/actions/product-actions';
 import { TGetUserProductsReturn } from '@/actions/user-product-actions';
 
 import ProductListItem from './ProductListItem';
-import { TProductListType } from '@/types/types';
+import ProductListItemDraft from './ProductListItemDraft';
 
-type TProductsListProps = {
-    userProductsList: NonNullable<TGetUserProductsReturn['userProductsList']>;
-    listType: TProductListType,
-};
+type TActiveList = {
+    productsList: NonNullable<TGetUserProductsReturn['userProductsList']>;
+    listType: 'active',
+}
+type TDraftList = {
+    productsList: NonNullable<TGetProductsReturn['productsList']>;
+    listType: 'draft',
+}
 
-function ProductsList({ userProductsList, listType }: TProductsListProps) {
+type TProductsListProps = TActiveList | TDraftList;
+
+function ProductsList({ productsList, listType }: TProductsListProps) {
+
+    let list = null
+
+    if(listType === 'active') {
+        list = productsList.map(product => (
+            <ProductListItem key={product.id} userProduct={product} />
+        ))
+    } else {
+        list = productsList.map(product => (
+            <ProductListItemDraft key={product.id} product={product} />
+        ))
+    }
+
     return (
         <div className='grid grid-cols-3 gap-2'>
-            {userProductsList.map(product => (
-                <ProductListItem key={product.id} listType={listType} userProduct={product} />
-            ))}
+            {list}
         </div>
     );
 }

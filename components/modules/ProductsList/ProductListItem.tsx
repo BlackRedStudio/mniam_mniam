@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { TGetUserProductsReturn } from '@/actions/user-product-actions';
 
-import { TProductListType, Unpacked } from '@/types/types';
+import { Unpacked } from '@/types/types';
 import { Card, CardHeader } from '@/components/ui/card';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
@@ -12,14 +12,11 @@ import { cn } from '@/lib/utils';
 
 type TProductListItemProps = {
     userProduct: NonNullable<Unpacked<TGetUserProductsReturn['userProductsList']>>;
-    listType: TProductListType,
 };
 
-function ProductListItem({ userProduct, listType }: TProductListItemProps) {
+function ProductListItem({ userProduct }: TProductListItemProps) {
 
-    let itemUrl = `/product/${userProduct.product.ean}`;
-
-    if(listType === 'verification') itemUrl = `/product-verification/${userProduct.product.ean}`;
+    const itemUrl = `/product/${userProduct.product.ean}`;
 
     return (
         <Link href={itemUrl}>

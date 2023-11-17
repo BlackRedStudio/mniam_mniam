@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
     acceptProductVerification,
+    rejectProductVerification,
     TAcceptProductVerificationReturn,
 } from '@/actions/product-actions';
 
@@ -79,18 +80,20 @@ function ProductVerificationCard({
     };
 
     const handleRejectVerification = async () => {
-        // if (!currentUserProduct) return false;
+        setLoading(true);
 
-        // setLoading(true);
+        const res = await rejectProductVerification(_id);
 
-        // const res = await deleteProductFromUserList(currentUserProduct?.id);
-
-        // toast({
-        //     title: res.message,
-        //     variant: res.success ? 'success' : 'destructive',
-        // });
+        toast({
+            title: res.message,
+            variant: res.success ? 'success' : 'destructive',
+        });
 
         setLoading(false);
+
+        if (res.success) {
+            router.push('/product-verification');
+        }
     };
 
     const handleSelectImage = (e: ChangeEvent<HTMLInputElement>) => {

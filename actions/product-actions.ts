@@ -13,7 +13,7 @@ import { and, eq, like, sql } from 'drizzle-orm';
 import moment from 'moment';
 import { getServerSession } from 'next-auth';
 
-import { TOpenFoodFactsProduct } from '@/types/types';
+import { TOpenFoodFactsProduct, TProductStatus } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode, searchProduct } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
@@ -183,6 +183,32 @@ export async function getProduct(ean: string) {
     }
 }
 
+export type TGetProductsReturn = Awaited<
+    ReturnType<typeof getProducts>
+>;
+
+export async function getProducts(status: TProductStatus) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+
+        const productsList = await db.query.products.findMany({
+            where: eq(products.status, status),
+        });
+
+        return {
+            success: true,
+            productsList,
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
 export async function uploadProductPhoto(src: string | File, ean: string) {
     try {
         const s3Client = new S3Client({});
@@ -318,6 +344,7 @@ export async function acceptProductVerification(formData: FormData) {
             name: parsed.data.name,
             quantity: parsed.data.quantity,
             img: imgUrl,
+            status: 'active' as const,
         };
 
         await db
@@ -351,14 +378,52 @@ export async function acceptProductVerification(formData: FormData) {
                 ),
             );
 
-        revalidatePath('/product/[ean]', 'page');
+        revalidatePath(`/product/${ean}`, 'page');
         revalidatePath('/my-list', 'page');
         revalidatePath('/product-verification', 'page');
-        revalidatePath('/product-verification/[ean]', 'page');
+        revalidatePath(`/product-verification/${ean}`, 'page');
 
         return {
             success: true,
             message: 'Produkt został zatwierdzony poprawnie',
+        };
+    } catch (e) {
+        return {
+            success: false,
+            message: 'Błąd aplikacji skontaktuj się z administratorem',
+        };
+    }
+}
+
+export async function rejectProductVerification(ean: string) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session) throw new Error();
+        if (session.user.role !== 'admin') throw new Error('Permission denied');
+
+        const product = await db.query.products.findFirst({
+            where: eq(products.ean, ean),
+        });
+
+        if (!product) throw new Error();
+        
+        await db.delete(userProducts).where(
+            eq(userProducts.productId, product.id)
+        );
+
+        await db.delete(products).where(
+            eq(products.id, product.id)
+        );
+
+        revalidatePath(`/product/${ean}`, 'page');
+        revalidatePath('/my-list', 'page');
+        revalidatePath('/product-verification', 'page');
+        revalidatePath(`/product-verification/${ean}`, 'page');
+
+        return {
+            success: true,
+            message: 'Produkt został odrzucony poprawnie.',
         };
     } catch (e) {
         return {

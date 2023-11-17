@@ -1,18 +1,18 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { TUserProduct, products, userProducts } from '@/schema';
+import { products, TUserProduct, userProducts } from '@/schema';
+import { productValidator } from '@/validators/product-validator';
 import { userProductValidator } from '@/validators/user-product-validator';
 import { and, eq, inArray } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
+import { TUserProductStatus } from '@/types/types';
 import { db } from '@/lib/db';
 import { getProductsByBarcode } from '@/lib/open-food-api';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import { addProductDB } from './product-actions';
-import { productValidator } from '@/validators/product-validator';
-import { TUserProductStatus } from '@/types/types';
 
 export type TAddProductToUserListReturn = Awaited<
     ReturnType<typeof addProductToUserList>
@@ -52,9 +52,11 @@ export async function addProductToUserList(formData: FormData) {
         let productId = '';
         let existingUserProduct = null;
         let isCustomProduct = false;
+        let noProductPhoto = false;
 
         if (existingProduct) {
-            productId = existingProduct?.id;
+            productId = existingProduct.id;
+            isCustomProduct = (existingProduct.status === 'draft');
             existingUserProduct = await db.query.userProducts.findFirst({
                 where: and(
                     eq(userProducts.productId, productId),
@@ -64,19 +66,21 @@ export async function addProductToUserList(formData: FormData) {
         } else {
             const openFoodFactsProduct = await getProductsByBarcode(ean);
 
-            const noProductPhoto = !openFoodFactsProduct?.image_url;
+            noProductPhoto = !openFoodFactsProduct?.image_url;
 
-            const productParsed = productValidator.partial({
-                // make partial only if image exist on openFoodFactsProduct
-                image: noProductPhoto ? undefined : true,
-            }).safeParse({
-                name: openFoodFactsProduct?.product_name || name,
-                brands: openFoodFactsProduct?.brands || brands,
-                quantity: openFoodFactsProduct?.quantity || quantity,
-                // omit parsing when image_url exist in openFoodFactsProduct
-                image: noProductPhoto ? image : undefined,
-            });
-            
+            const productParsed = productValidator
+                .partial({
+                    // make partial only if image exist on openFoodFactsProduct
+                    image: noProductPhoto ? undefined : true,
+                })
+                .safeParse({
+                    name: openFoodFactsProduct?.product_name || name,
+                    brands: openFoodFactsProduct?.brands || brands,
+                    quantity: openFoodFactsProduct?.quantity || quantity,
+                    // omit parsing when image_url exist in openFoodFactsProduct
+                    image: noProductPhoto ? image : undefined,
+                });
+
             if (!productParsed.success) {
                 return {
                     success: false,
@@ -86,20 +90,33 @@ export async function addProductToUserList(formData: FormData) {
             }
 
             // any properties missing? So it's custom user product
-            if(!openFoodFactsProduct?.product_name || !openFoodFactsProduct?.brands || noProductPhoto || !openFoodFactsProduct?.quantity) {
+            if (
+                !openFoodFactsProduct?.product_name ||
+                !openFoodFactsProduct?.brands ||
+                noProductPhoto ||
+                !openFoodFactsProduct?.quantity
+            ) {
                 isCustomProduct = true;
             }
 
             const productDB = {
                 ean: openFoodFactsProduct?._id || ean,
-                brands: openFoodFactsProduct?.brands || productParsed.data.brands,
-                name: openFoodFactsProduct?.product_name || productParsed.data.name,
-                quantity: openFoodFactsProduct?.quantity || productParsed.data.quantity,
-                imgOpenFoodFacts: openFoodFactsProduct?.image_url
+                brands:
+                    openFoodFactsProduct?.brands || productParsed.data.brands,
+                name:
+                    openFoodFactsProduct?.product_name ||
+                    productParsed.data.name,
+                quantity:
+                    openFoodFactsProduct?.quantity ||
+                    productParsed.data.quantity,
+                imgOpenFoodFacts: openFoodFactsProduct?.image_url,
+                status: isCustomProduct ? 'draft' as const : 'active' as const,
             };
 
             // productParsed.data.image can't be undefined because if openFoodFactsProduct.image_url is empty then image parse is mandatory
-            const img = openFoodFactsProduct?.image_url || productParsed.data.image as File;
+            const img =
+                openFoodFactsProduct?.image_url ||
+                (productParsed.data.image as File);
 
             const res = await addProductDB(productDB, img);
 
@@ -116,9 +133,9 @@ export async function addProductToUserList(formData: FormData) {
 
         let status: TUserProduct['status'] = parsed.data.status;
 
-        if(isCustomProduct && status == 'visible') {
+        if (isCustomProduct && status == 'visible') {
             status = 'draftVisible';
-        } else if(isCustomProduct) {
+        } else if (isCustomProduct) {
             status = 'draft';
         }
 
@@ -138,13 +155,18 @@ export async function addProductToUserList(formData: FormData) {
                 .set(userProductsValues)
                 .where(eq(userProducts.id, existingUserProduct.id));
         } else {
-            await db.insert(userProducts).values(userProductsValues);
+            await db.insert(userProducts).values({
+                ...userProductsValues,
+                firstRate: (typeof existingProduct === 'undefined'),
+                imgUploaded: noProductPhoto,
+                propsAdded: isCustomProduct,
+            });
         }
 
-        revalidatePath('/product/[ean]', 'page');
+        revalidatePath(`/product/${ean}`, 'page');
         revalidatePath('/my-list', 'page');
         revalidatePath('/product-verification', 'page');
-        revalidatePath('/product-verification/[ean]', 'page');
+        revalidatePath(`/product/${ean}`, 'page');
 
         return {
             success: true,
@@ -193,7 +215,9 @@ export async function deleteProductFromUserList(userProductId: string) {
     }
 }
 
-export type TGetUserProductsReturn = Awaited<ReturnType<typeof getUserProducts>>;
+export type TGetUserProductsReturn = Awaited<
+    ReturnType<typeof getUserProducts>
+>;
 
 export async function getUserProducts(statuses: TUserProductStatus[]) {
     try {

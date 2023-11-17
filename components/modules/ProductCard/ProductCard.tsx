@@ -356,7 +356,7 @@ function ProductCard({
                             variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>
-                        {currentUserProduct?.status === 'visible' ? (
+                        {currentUserProduct?.status === 'visible' || currentUserProduct?.status === 'draftVisible' ? (
                             <Button
                                 className="w-full"
                                 onClick={() => handleDeleteProductFromList()}

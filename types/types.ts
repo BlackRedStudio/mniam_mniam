@@ -42,7 +42,7 @@ export type TUserRole = 'user' | 'admin';
 
 export type TUserProductStatus = 'visible' | 'invisible' | 'draft' | 'draftVisible';
 
-export type TProductListType = 'myList' | 'verification';
+export type TProductStatus = 'active' | 'draft';
 
 export type TProductStatistics = {
     averageRating: string,

@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
+    boolean,
     decimal,
     mysqlTable,
     timestamp,
@@ -20,6 +21,9 @@ export const userProducts = mysqlTable('userProducts', {
         length: 256,
     }).notNull(),
     status: varchar('status', { length: 255 }).$type<TUserProductStatus>().notNull().default('invisible'),
+    firstRate: boolean('firstRate').notNull().default(false),
+    imgUploaded: boolean('imgUploaded').notNull().default(false),
+    propsAdded: boolean('propsAdded').notNull().default(false),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,
