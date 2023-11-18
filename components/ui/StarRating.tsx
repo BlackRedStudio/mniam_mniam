@@ -9,6 +9,7 @@ type TStarRatingProps = {
     setRating?: Dispatch<SetStateAction<number>>;
     showHeader?: boolean;
     bigStars?: boolean;
+    className?: string;
 };
 
 type TRatingColorClassMap = {
@@ -28,6 +29,7 @@ function StarRating({
     setRating,
     showHeader = true,
     bigStars = true,
+    className,
 }: TStarRatingProps) {
     const ratingColorClass = ratingColorClassMap[rating] || '';
 
@@ -59,7 +61,10 @@ function StarRating({
     }
 
     return (
-        <div className="flex w-full mb-4">
+        <div className={cn(
+            'flex w-full mb-4',
+            className
+        )}>
             {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
             {stars}
         </div>

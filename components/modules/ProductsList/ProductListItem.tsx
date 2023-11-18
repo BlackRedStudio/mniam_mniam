@@ -34,8 +34,8 @@ function ProductListItem({ userProduct }: TProductListItemProps) {
                     />
                 </div>
                 <H3 className="text-center mt-2 truncate">{userProduct.product.name}</H3>
-                <small className='block text-center truncate'>({userProduct.product.quantity})</small>
-                <StarRating rating={userProduct.rating} showHeader={false} bigStars={false} />
+                <small className='block text-center truncate pb-2'>({userProduct.product.quantity})</small>
+                <StarRating className='justify-center' rating={userProduct.rating} showHeader={false} bigStars={false} />
                 {
                     userProduct.status === 'draftVisible' &&
                     <div className='h-3 opacity-50 bg-gray-500 w-72 left-[-100px] bottom-24 absolute rotate-[118deg]'></div>

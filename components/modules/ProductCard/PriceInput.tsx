@@ -1,18 +1,23 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import { handleCurrencyInput } from '@/lib/utils';
+import { cn, handleCurrencyInput } from '@/lib/utils';
 import H3 from '@/components/ui/H3';
 import { Input } from '@/components/ui/input';
 
 type TPriceInputProps = {
+    title?: string;
+    className?: string;
     price: string;
     setPrice: Dispatch<SetStateAction<string>>;
 };
 
-function PriceInput({ price, setPrice }: TPriceInputProps) {
+function PriceInput({ title, className, price, setPrice }: TPriceInputProps) {
     return (
-        <div className="flex items-center w-full">
-            <H3 className="mr-2 w-24">Cena:</H3>{' '}
+        <div className={cn(
+            'flex items-center w-full',
+            className
+        )}>
+            <H3 className="mr-2 w-24">{title || 'Cena: '}</H3>
             <Input
                 type="text"
                 className="max-w-[100px]"

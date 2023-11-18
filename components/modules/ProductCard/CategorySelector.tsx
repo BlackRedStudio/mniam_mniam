@@ -10,19 +10,24 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 type TCategorySelectorProps = {
+    className?: string;
     category: string;
     setCategory: Dispatch<SetStateAction<TCategoriesIds | ''>>;
 };
 
-function CategorySelector({ category, setCategory }: TCategorySelectorProps) {
+function CategorySelector({ className, category, setCategory }: TCategorySelectorProps) {
     return (
-        <div className="flex items-center mb-4 w-full">
+        <div className={cn(
+            'flex items-center mb-4 w-full',
+            className
+        )}>
             <H3 className="mr-2 w-24">Kategoria:</H3>
             <Select
                 onValueChange={e => setCategory(e as TCategoriesIds)}
-                defaultValue={category}>
+                value={category}>
                 <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Rozwiń listę" />
                 </SelectTrigger>
