@@ -1,249 +1,113 @@
 'use server';
 
-import { usersTable } from '@/server/schema/users-schema';
+import { revalidatePath } from 'next/cache';
+
 import {
     userProfileValidator,
     userRegistrationValidator,
 } from '@/lib/validators/user-validator';
-import {
-    CompleteMultipartUploadCommandOutput,
-    S3Client,
-} from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
-import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
-import { getServerSession } from 'next-auth';
-import sharp from 'sharp';
 
-import { DB } from '@/server/helpers/DB';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { revalidatePath } from 'next/cache';
+import ParsedError from '../errors/ParsedError';
+import UserService from '../services/UserService';
+import CriticalError from '../errors/CriticalError';
+import Error from '../errors/Error';
+import { checkSession } from '../helpers/helpers';
 
-export type TRegisterUserReturn = Awaited<ReturnType<typeof registerUser>>;
-
-export async function registerUser(formData: FormData) {
+export async function registerUserAction(formData: FormData) {
     try {
-        const id = crypto.randomUUID();
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+        const passwordConfirm = formData.get('passwordConfirm') as string;
 
         const parsed = userRegistrationValidator.safeParse({
-            name: formData.get('name'),
-            email: formData.get('email'),
-            password: formData.get('password'),
-            passwordConfirm: formData.get('passwordConfirm'),
+            name,
+            email,
+            password,
+            passwordConfirm,
         });
 
         // validation Error
         if (!parsed.success) {
-            return {
-                success: false,
-                message:
-                    'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-                errors: parsed.error.formErrors.fieldErrors,
-            };
+            return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        const existingUser = await DB.query.usersTable.findFirst({
-            where: eq(usersTable.email, parsed.data.email),
-            with: {
-                accounts: true,
-            },
-        });
-
-        const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
+        const user = await UserService.findFirstByEmail(email);
 
         // user and password exist
-        if (existingUser) {
-            return {
-                success: false,
-                message:
-                    'Użytkownik z danym adresem email już istnieje w bazie danych',
-            };
+        if (user) {
+            return new Error('Użytkownik z danym adresem email już istnieje w bazie danych');
         }
 
-        // user not exist before
-        await DB.insert(usersTable).values({
-            id,
-            name: parsed.data.name,
-            email: parsed.data.email,
-            password: hashedPassword,
-        });
-        return { success: true, message: 'Rejestracja przebiegła pomyślnie' };
-    } catch (e) {
+        await UserService.insert(email, name, password);
+
         return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
+            success: true as const,
+            message: 'Rejestracja przebiegła pomyślnie',
         };
+    } catch (e) {
+        return new CriticalError(e);
     }
 }
 
-async function uploadAvatar(file: File) {
+export async function updateProfileAction(formData: FormData) {
     try {
-        const s3Client = new S3Client({});
+        const session = await checkSession();
 
-        const avatarId = crypto.randomUUID();
-        const avatarFileName = `${file.name}-${avatarId}`;
-
-        const fileCropped = await sharp(await file.arrayBuffer())
-            .resize({
-                width: 50,
-                height: 50,
-            })
-            .toBuffer();
-
-        const upload = new Upload({
-            client: s3Client,
-            params: {
-                Bucket: process.env.BUCKET_NAME,
-                Key: `avatars/${avatarFileName}.jpg`,
-                Body: fileCropped,
-                ContentType: 'image/jpeg',
-            },
-        });
-
-        const res =
-            (await upload.done()) as CompleteMultipartUploadCommandOutput;
-
-        return {
-            success: true,
-            uploadedImage: res,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
-    } catch (e) {
-        console.log(e);
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
-    }
-}
-
-type TFieldsToUpdate = {
-    name: string;
-    email: string;
-    password?: string;
-    image?: string;
-};
-
-export type TProfileUserReturn = Awaited<ReturnType<typeof updateProfile>>;
-
-export async function updateProfile(formData: FormData) {
-    try {
-        const session = await getServerSession(authOptions);
-
-        if (!session) throw new Error();
         const avatarFile = formData.get('avatar') as File;
+        const image = (!avatarFile || avatarFile.name !== 'undefined') ? avatarFile : undefined;
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string || undefined;
+        const passwordConfirm = formData.get('passwordConfirm') as string || undefined;
 
         const parsed = userProfileValidator.safeParse({
-            name: formData.get('name'),
-            email: formData.get('email'),
-            image:
-                !avatarFile || avatarFile.name !== 'undefined'
-                    ? avatarFile
-                    : undefined,
-            password: formData.get('password') || undefined,
-            passwordConfirm: formData.get('passwordConfirm') || undefined,
+            name,
+            email,
+            image,
+            password,
+            passwordConfirm,
         });
 
         // validation Error
         if (!parsed.success) {
-            return {
-                success: false,
-                message:
-                    'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-                errors: parsed.error.formErrors.fieldErrors,
-            };
+            return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        if (!parsed.data.email) {
-            return {
-                success: false,
-                message: 'Wykryto pusty adres Email',
-            };
-        }
-        if (!parsed.data?.name) {
-            return {
-                success: false,
-                message: 'Wykryto pustą nazwę',
-            };
-        }
-
-        const existingUser = await DB.query.usersTable.findFirst({
-            where: eq(usersTable.email, parsed.data.email),
-        });
+        const user = await UserService.findFirstByEmail(email);
 
         // if user email has changed
-        if (existingUser && session.user.email !== parsed.data.email) {
-            return {
-                success: false,
-                message:
-                    'Użytkownik z danym adresem email już istnieje w bazie danych',
-            };
+        if (user && session.user.email !== email) {
+            return new Error('Użytkownik z danym adresem email już istnieje w bazie danych');
         }
 
-        const fieldsToUpdate: TFieldsToUpdate = {
-            name: parsed.data.name,
-            email: parsed.data.email,
-        };
-
-        if (parsed.data.password) {
-            const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
-            fieldsToUpdate.password = hashedPassword;
-        }
-        if (parsed.data.image) {
-            const uploadRes = await uploadAvatar(parsed.data.image);
-
-            if (uploadRes.success && uploadRes.uploadedImage?.Location) {
-                fieldsToUpdate.image = uploadRes.uploadedImage.Location;
-            }
-        }
-
-        await DB
-            .update(usersTable)
-            .set(fieldsToUpdate)
-            .where(eq(usersTable.id, session.user.id));
+        const data = await UserService.updateProfile(session.user.id, name, email, password, image);
 
         revalidatePath('/profile');
 
         return {
-            success: true,
+            success: true as const,
             message: 'Zmiany w profilu zostały zapisane',
-            data: {
-                name: parsed.data.name,
-                email: parsed.data.email,
-                image: fieldsToUpdate.image,
-            },
+            data
         };
     } catch (e) {
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
+        return new CriticalError(e);
     }
 }
 
-export async function deleteAvatar() {
+export async function deleteAvatarAction() {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await checkSession();
 
-        if (!session) throw new Error();
-
-        await DB
-            .update(usersTable)
-            .set({
-                'image': null
-            })
-            .where(eq(usersTable.id, session.user.id));
+        await UserService.deleteAvatar(session.user.id);
 
         revalidatePath('/profile');
 
         return {
-            success: true,
+            success: true as const,
             message: 'Avatar został usunięty',
         };
     } catch (e) {
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
+        return new CriticalError(e);
     }
 }

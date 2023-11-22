@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { typeToFlattenedError, z } from 'zod';
 
 import { imageValidator } from './image-validator';
 
@@ -17,3 +17,5 @@ export const productValidator = z.object({
         .max(256, 'Pole ilość nie może być dłuższa niż 256 znaków'),
     image: imageValidator,
 });
+
+export type TProductValidatorErrors = typeToFlattenedError<typeof productValidator._input>['fieldErrors'];

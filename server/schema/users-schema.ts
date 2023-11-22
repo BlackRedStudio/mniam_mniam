@@ -27,3 +27,4 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 
 export type TUser = typeof usersTable.$inferSelect;
+export type TUserInsert = typeof usersTable.$inferInsert;

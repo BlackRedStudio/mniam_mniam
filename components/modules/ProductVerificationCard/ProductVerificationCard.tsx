@@ -24,8 +24,7 @@ import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/Loader';
 import ParsedError from '@/server/errors/ParsedError';
-import { productValidator } from '@/lib/validators/product-validator';
-import { typeToFlattenedError } from 'zod';
+import { TProductValidatorErrors } from '@/lib/validators/product-validator';
 
 type TProductVerificationCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -38,7 +37,7 @@ function ProductVerificationCard({
     const router = useRouter();
     
     const [formErrors, setFormErrors] =
-        useState<typeToFlattenedError<typeof productValidator._input>['fieldErrors']>();
+        useState<TProductValidatorErrors>();
 
     const [nameState, setNameState] = useState(product_name);
     const [brandsState, setBrandsState] = useState(brands);

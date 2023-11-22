@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { typeToFlattenedError, z } from 'zod';
 
 import { imageValidator } from './image-validator';
 
@@ -55,6 +55,8 @@ export type TUserRegistrationValidator = z.infer<
     typeof userRegistrationValidator
 >;
 
+export type TRegistrationValidatorErrors = typeToFlattenedError<typeof userRegistrationValidator._input>['fieldErrors'];
+
 export const userProfileValidator = userRegistrationValidatorBasic
     .extend({
         image: imageValidator,
@@ -70,3 +72,5 @@ export const userProfileValidator = userRegistrationValidatorBasic
     });
 
 export type TUserProfileValidator = z.infer<typeof userProfileValidator>;
+
+export type TProfileValidatorErrors = typeToFlattenedError<typeof userProfileValidator._input>['fieldErrors'];

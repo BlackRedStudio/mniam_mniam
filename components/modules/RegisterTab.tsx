@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { registerUser, TRegisterUserReturn } from '@/server/actions/user-actions';
+import { registerUserAction } from '@/server/actions/user-actions';
 
 import { useToast } from '@/lib/hooks/use-toast';
 import FormError from '@/components/ui/FormError';
@@ -11,18 +11,22 @@ import { Label } from '@/components/ui/label';
 import SignUpButton from '../ui/SignUpButton';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import ParsedError from '@/server/errors/ParsedError';
+import { TRegistrationValidatorErrors } from '@/lib/validators/user-validator';
 
 function RegisterTab() {
     const { toast } = useToast();
     const router = useRouter();
 
-    const [registerFormState, setRegisterFormState] =
-        useState<TRegisterUserReturn>();
+    const [formErrors, setFormErrors] =
+        useState<TRegistrationValidatorErrors>();
 
     const handleRegistration = async (formData: FormData) => {
-        const res = await registerUser(formData);
+        const res = await registerUserAction(formData);
 
-        setRegisterFormState(res);
+        if(res instanceof ParsedError) {
+            setFormErrors(res.errors);
+        }
 
         toast({
             title: res.message,
@@ -59,7 +63,7 @@ function RegisterTab() {
                         placeholder="Wpisz swoje imię oraz nazwisko"
                         required
                     />
-                    {<FormError formErrors={registerFormState?.errors?.name} />}
+                    {<FormError formErrors={formErrors?.name} />}
                 </div>
                 <div className="mb-4">
                     <Label htmlFor="email">Email</Label>
@@ -73,7 +77,7 @@ function RegisterTab() {
                     />
                     {
                         <FormError
-                            formErrors={registerFormState?.errors?.email}
+                            formErrors={formErrors?.email}
                         />
                     }
                 </div>
@@ -88,7 +92,7 @@ function RegisterTab() {
                     />
                     {
                         <FormError
-                            formErrors={registerFormState?.errors?.password}
+                            formErrors={formErrors?.password}
                         />
                     }
                 </div>
@@ -104,7 +108,7 @@ function RegisterTab() {
                     {
                         <FormError
                             formErrors={
-                                registerFormState?.errors?.passwordConfirm
+                                formErrors?.passwordConfirm
                             }
                         />
                     }

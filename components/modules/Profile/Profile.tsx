@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, SyntheticEvent } from 'react';
-import { TProfileUserReturn, deleteAvatar, updateProfile } from '@/server/actions/user-actions';
+import { deleteAvatarAction, updateProfileAction } from '@/server/actions/user-actions';
 import { TUser } from '@/server/schema';
 import { useSession } from 'next-auth/react';
 
@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import SignUpButton from '@/components/ui/SignUpButton';
 import { Button } from '@/components/ui/button';
+import ParsedError from '@/server/errors/ParsedError';
+import { TProfileValidatorErrors } from '@/lib/validators/user-validator';
 
 type TProfile = {
     user: TUser;
@@ -20,22 +22,24 @@ function Profile({ user }: TProfile) {
     const { toast } = useToast();
     const { data: session, update } = useSession();
 
-    const [profileFormState, setProfileFormState] =
-        useState<TProfileUserReturn>();
+    const [formErrors, setFormErrors] =
+        useState<TProfileValidatorErrors>();
 
     if (!session) return null;
 
     const handleProfileForm = async (formData: FormData) => {
-        const res = await updateProfile(formData);
+        const res = await updateProfileAction(formData);
 
-        setProfileFormState(res);
+        if(res instanceof ParsedError) {
+            setFormErrors(res.errors);
+        }
 
         toast({
             title: res.message,
             variant: res.success ? 'success' : 'destructive',
         });
 
-        if (res.data) {
+        if (res.success && res.data) {
             update({
                 name: res.data.name || session.user.name,
                 email: res.data.email || session.user.email,
@@ -46,7 +50,7 @@ function Profile({ user }: TProfile) {
 
     const handleDeleteAvatar = async (e: SyntheticEvent) => {
         e.preventDefault();
-        const res = await deleteAvatar();
+        const res = await deleteAvatarAction();
 
         toast({
             title: res.message,
@@ -72,7 +76,7 @@ function Profile({ user }: TProfile) {
                     defaultValue={user.name ?? user.email}
                     required
                 />
-                {<FormError formErrors={profileFormState?.errors?.name} />}
+                {<FormError formErrors={formErrors?.name} />}
             </div>
             <div className="mb-4">
                 <Label htmlFor="email">Email</Label>
@@ -84,7 +88,7 @@ function Profile({ user }: TProfile) {
                     defaultValue={user.email}
                     required
                 />
-                {<FormError formErrors={profileFormState?.errors?.email} />}
+                {<FormError formErrors={formErrors?.email} />}
             </div>
             <div className="mb-4">
                 <Label htmlFor="avatar">Zmień swój Avatar</Label>
@@ -94,7 +98,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     accept="image/jpeg, image/jpg"
                 />
-                {<FormError formErrors={profileFormState?.errors?.image} />}
+                {<FormError formErrors={formErrors?.image} />}
             </div>
             {
                 user.image &&
@@ -108,7 +112,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     placeholder="Wpisz swoje hasło"
                 />
-                {<FormError formErrors={profileFormState?.errors?.password} />}
+                {<FormError formErrors={formErrors?.password} />}
             </div>
             <div className="mb-4">
                 <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
@@ -120,7 +124,7 @@ function Profile({ user }: TProfile) {
                 />
                 {
                     <FormError
-                        formErrors={profileFormState?.errors?.passwordConfirm}
+                        formErrors={formErrors?.passwordConfirm}
                     />
                 }
             </div>
