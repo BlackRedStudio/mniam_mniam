@@ -1,9 +1,9 @@
 import { mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
-import { userProducts } from '.';
+import { userProductsTable } from '.';
 import { relations } from 'drizzle-orm';
 import { TProductStatus } from '@/types/types';
 
-export const products = mysqlTable('products', {
+export const productsTable = mysqlTable('products', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     ean: varchar('ean', { length: 128 }).notNull(),
     name: varchar('name', { length: 512 }).notNull(),
@@ -22,9 +22,9 @@ export const products = mysqlTable('products', {
     }).defaultNow(),
 });
 
-export const productsRelations = relations(products, ({ many }) => ({
-    userProducts: many(userProducts),
+export const productsRelations = relations(productsTable, ({ many }) => ({
+    userProducts: many(userProductsTable),
 }));
 
-export type TProduct = typeof products.$inferSelect;
-export type TProductInsert = typeof products.$inferInsert;
+export type TProduct = typeof productsTable.$inferSelect;
+export type TProductInsert = typeof productsTable.$inferInsert;

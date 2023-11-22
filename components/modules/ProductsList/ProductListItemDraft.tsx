@@ -6,11 +6,11 @@ import { Unpacked } from '@/types/types';
 import { Card, CardHeader } from '@/components/ui/card';
 import H3 from '@/components/ui/H3';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
-import { TGetProductsReturn } from '@/actions/product-actions';
+import { cn } from '@/lib/utils/utils';
+import { TGetProductsActionReturn } from '@/server/actions/product-actions';
 
 type TProductListItemDraftProps = {
-    product: NonNullable<Unpacked<TGetProductsReturn['productsList']>>;
+    product: NonNullable<Unpacked<TGetProductsActionReturn['productsList']>>;
 };
 
 function ProductListItemDraft({ product }: TProductListItemDraftProps) {

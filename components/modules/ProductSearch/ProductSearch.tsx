@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import {
-    searchProductByName,
-    searchProductByNameExtended,
-} from '@/actions/product-actions';
+    searchProductAction,
+    searchProductExtendedAction,
+} from '@/server/actions/product-actions';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast';
 
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
@@ -43,14 +43,14 @@ function ProductSearch() {
                     onClick={async () => {
                         setLoading(true);
                         setProductList(null);
-                        const res = await searchProductByNameExtended(name);
+                        const res = await searchProductExtendedAction(name);
 
                         toast({
                             title: res.message,
                             variant: res.success ? 'success' : 'destructive',
                         });
 
-                        if (res.success && res.products) {
+                        if (res.success) {
                             setProductList(res.products);
                             setExtendedSearch(false);
                         }
@@ -81,14 +81,14 @@ function ProductSearch() {
                 onClick={async () => {
                     setLoading(true);
                     setProductList(null);
-                    const res = await searchProductByName(name);
+                    const res = await searchProductAction(name);
 
                     toast({
                         title: res.message,
                         variant: res.success ? 'success' : 'destructive',
                     });
 
-                    if (res.success && res.products) {
+                    if (res.success) {
                         setProductList(res.products);
 
                         if (res.extendedSearch) {

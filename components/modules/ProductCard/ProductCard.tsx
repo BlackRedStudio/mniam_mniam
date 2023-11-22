@@ -7,8 +7,8 @@ import {
     addProductToUserList,
     deleteProductFromUserList,
     TAddProductToUserListReturn,
-} from '@/actions/user-product-actions';
-import { TUserProduct } from '@/schema';
+} from '@/server/actions/user-product-actions';
+import { TUserProduct } from '@/server/schema';
 import FileResizer from 'react-image-file-resizer';
 
 import {
@@ -16,8 +16,8 @@ import {
     TOpenFoodFactsProduct,
     TProductStatistics,
 } from '@/types/types';
-import { cn } from '@/lib/utils';
-import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils/utils';
+import { useToast } from '@/lib/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,7 +39,7 @@ import PriceInput from './PriceInput';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
-    currentUserProduct: TUserProduct | null;
+    currentUserProduct: TUserProduct | undefined | null;
     productStatistics: TProductStatistics;
 };
 

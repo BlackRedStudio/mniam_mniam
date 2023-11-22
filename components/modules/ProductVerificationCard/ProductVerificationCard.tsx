@@ -4,15 +4,14 @@ import { ChangeEvent, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
-    acceptProductVerification,
-    rejectProductVerification,
-    TAcceptProductVerificationReturn,
-} from '@/actions/product-actions';
+    acceptProductVerificationAction,
+    rejectProductVerificationAction,
+} from '@/server/actions/product-actions';
 
 import FileResizer from 'react-image-file-resizer';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -24,6 +23,9 @@ import {
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/Loader';
+import ParsedError from '@/server/errors/ParsedError';
+import { productValidator } from '@/lib/validators/product-validator';
+import { typeToFlattenedError } from 'zod';
 
 type TProductVerificationCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -34,9 +36,9 @@ function ProductVerificationCard({
 }: TProductVerificationCard) {
     const { toast } = useToast();
     const router = useRouter();
-
-    const [productFormState, setProductFormState] =
-        useState<TAcceptProductVerificationReturn>();
+    
+    const [formErrors, setFormErrors] =
+        useState<typeToFlattenedError<typeof productValidator._input>['fieldErrors']>();
 
     const [nameState, setNameState] = useState(product_name);
     const [brandsState, setBrandsState] = useState(brands);
@@ -63,9 +65,11 @@ function ProductVerificationCard({
             formData.append(payloadKey, payload[payloadKey] as string);
         }
 
-        const res = await acceptProductVerification(formData);
+        const res = await acceptProductVerificationAction(formData);
 
-        setProductFormState(res);
+        if(res instanceof ParsedError) {
+            setFormErrors(res.errors);
+        }
 
         toast({
             title: res.message,
@@ -82,7 +86,7 @@ function ProductVerificationCard({
     const handleRejectVerification = async () => {
         setLoading(true);
 
-        const res = await rejectProductVerification(_id);
+        const res = await rejectProductVerificationAction(_id);
 
         toast({
             title: res.message,
@@ -151,7 +155,7 @@ function ProductVerificationCard({
                         />
                         <FormError
                             className="mb-2"
-                            formErrors={productFormState?.errors?.name}
+                            formErrors={formErrors?.name}
                         />
                         <small className="text-muted-foreground mt-0 text-xs">
                             Bazowa ilość:
@@ -165,7 +169,7 @@ function ProductVerificationCard({
                         />
                         <FormError
                             className="mb-2"
-                            formErrors={productFormState?.errors?.quantity}
+                            formErrors={formErrors?.quantity}
                         />
                         <small className="text-muted-foreground mt-0 text-xs">
                             Bazowe nazwy firm:
@@ -179,7 +183,7 @@ function ProductVerificationCard({
                         />
                         <FormError
                             className="mb-2"
-                            formErrors={productFormState?.errors?.brands}
+                            formErrors={formErrors?.brands}
                         />
                     </CardTitle>
                 </CardHeader>
@@ -220,7 +224,7 @@ function ProductVerificationCard({
                     />
                     <FormError
                         className="mb-2"
-                        formErrors={productFormState?.errors?.image}
+                        formErrors={formErrors?.image}
                     />
                 </CardContent>
                 <CardFooter className="flex-col">

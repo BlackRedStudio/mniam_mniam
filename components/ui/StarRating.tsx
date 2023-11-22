@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 import H3 from '@/components/ui/H3';
 import { Icons } from '@/components/modules/Icons';
 

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, SyntheticEvent } from 'react';
-import { TProfileUserReturn, deleteAvatar, updateProfile } from '@/actions/user-actions';
-import { TUser } from '@/schema';
+import { TProfileUserReturn, deleteAvatar, updateProfile } from '@/server/actions/user-actions';
+import { TUser } from '@/server/schema';
 import { useSession } from 'next-auth/react';
 
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

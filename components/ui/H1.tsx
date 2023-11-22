@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 
 type TH1Props = {
     children: ReactNode;

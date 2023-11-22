@@ -2,28 +2,28 @@ import type { Adapter } from '@auth/core/adapters';
 import { and, eq } from 'drizzle-orm';
 import { PlanetScaleDatabase } from 'drizzle-orm/planetscale-serverless';
 
-import { users } from '@/schema/users';
-import { accounts } from '@/schema/accounts';
+import { usersTable } from '@/server/schema/users-schema';
+import { accountsTable } from '@/server/schema/accounts-schema';
 
-export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
+export function DrizzleAdapter(client: PlanetScaleDatabase): Adapter {
     return {
         async createUser(data) {
             const id = crypto.randomUUID();
 
-            await client.insert(users).values({ ...data, id });
+            await client.insert(usersTable).values({ ...data, id });
 
             return await client
                 .select()
-                .from(users)
-                .where(eq(users.id, id))
+                .from(usersTable)
+                .where(eq(usersTable.id, id))
                 .then(res => res[0]);
         },
         async getUser(data) {
             const thing =
                 (await client
                     .select()
-                    .from(users)
-                    .where(eq(users.id, data))
+                    .from(usersTable)
+                    .where(eq(usersTable.id, data))
                     .then(res => res[0])) ?? null;
 
             return thing;
@@ -32,8 +32,8 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
             const user =
                 (await client
                     .select()
-                    .from(users)
-                    .where(eq(users.email, data))
+                    .from(usersTable)
+                    .where(eq(usersTable.email, data))
                     .then(res => res[0])) ?? null;
 
             return user;
@@ -43,32 +43,32 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
                 throw new Error('No user id.');
             }
 
-            await client.update(users).set(data).where(eq(users.id, data.id));
+            await client.update(usersTable).set(data).where(eq(usersTable.id, data.id));
 
             return await client
                 .select()
-                .from(users)
-                .where(eq(users.id, data.id))
+                .from(usersTable)
+                .where(eq(usersTable.id, data.id))
                 .then(res => res[0]);
         },
         async linkAccount(rawAccount) {
-            await client.insert(accounts).values(rawAccount);
+            await client.insert(accountsTable).values(rawAccount);
         },
         async getUserByAccount(account) {
             const dbAccount =
                 (await client
                     .select()
-                    .from(accounts)
+                    .from(accountsTable)
                     .where(
                         and(
                             eq(
-                                accounts.providerAccountId,
+                                accountsTable.providerAccountId,
                                 account.providerAccountId,
                             ),
-                            eq(accounts.provider, account.provider),
+                            eq(accountsTable.provider, account.provider),
                         ),
                     )
-                    .leftJoin(users, eq(accounts.userId, users.id))
+                    .leftJoin(usersTable, eq(accountsTable.userId, usersTable.id))
                     .then(res => res[0])) ?? null;
 
             if (!dbAccount) {
@@ -80,24 +80,24 @@ export function drizzleAdapter(client: PlanetScaleDatabase): Adapter {
         async deleteUser(id) {
             const user = await client
                 .select()
-                .from(users)
-                .where(eq(users.id, id))
+                .from(usersTable)
+                .where(eq(usersTable.id, id))
                 .then(res => res[0] ?? null);
 
-            await client.delete(users).where(eq(users.id, id));
+            await client.delete(usersTable).where(eq(usersTable.id, id));
 
             return user;
         },
         async unlinkAccount(account) {
             await client
-                .delete(accounts)
+                .delete(accountsTable)
                 .where(
                     and(
                         eq(
-                            accounts.providerAccountId,
+                            accountsTable.providerAccountId,
                             account.providerAccountId,
                         ),
-                        eq(accounts.provider, account.provider),
+                        eq(accountsTable.provider, account.provider),
                     ),
                 );
 

@@ -1,4 +1,4 @@
-import { getUserProducts } from '@/actions/user-product-actions';
+import { getUserProducts } from '@/server/actions/user-product-actions';
 
 import H2 from '@/components/ui/H2';
 import ProductsList from '@/components/modules/ProductsList/ProductsList';

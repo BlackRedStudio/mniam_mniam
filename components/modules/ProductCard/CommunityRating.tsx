@@ -1,7 +1,7 @@
 import { TProductStatistics } from '@/types/types';
 
 import H3 from '@/components/ui/H3';
-import { handleMultiplePersonText } from '@/lib/utils';
+import { handleMultiplePersonText } from '@/lib/utils/utils';
 
 type TCommunityRatingProps = {
     productStatistics: TProductStatistics;

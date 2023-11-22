@@ -1,4 +1,4 @@
-import { getProduct } from "@/actions/product-actions";
+import { getProductAction } from "@/server/actions/product-actions";
 import ProductCard from "@/components/modules/ProductCard/ProductCard";
 import { redirect } from "next/navigation";
 
@@ -14,8 +14,8 @@ async function ProductPage({params: {ean}}: TProductPageProps) {
         redirect('/dashboard');
     }
 
-    const res = await getProduct(ean);
-    if(!res || !res.success || !res.product) {
+    const res = await getProductAction(ean);
+    if(!res.success) {
 
         const virtualProduct = {
             _id: ean

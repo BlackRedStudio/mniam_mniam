@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 
 import { TCategoriesIds } from '@/types/types';
-import { categories } from '@/lib/config';
+import { categories } from '@/lib/config/config';
 import H3 from '@/components/ui/H3';
 import {
     Select,
@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 
 type TCategorySelectorProps = {
     className?: string;

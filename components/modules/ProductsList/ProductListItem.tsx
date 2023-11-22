@@ -1,14 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import { TGetUserProductsReturn } from '@/actions/user-product-actions';
+import { TGetUserProductsReturn } from '@/server/actions/user-product-actions';
 
 import { Unpacked } from '@/types/types';
 import { Card, CardHeader } from '@/components/ui/card';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 
 type TProductListItemProps = {
     userProduct: NonNullable<Unpacked<TGetUserProductsReturn['userProductsList']>>;

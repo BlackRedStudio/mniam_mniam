@@ -1,4 +1,4 @@
-import { users } from '@/schema/users';
+import { users } from '@/server/schema/users-schema';
 import bcrypt from 'bcrypt';
 import { eq } from 'drizzle-orm';
 import NextAuth, { AuthOptions } from 'next-auth';
@@ -7,11 +7,11 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
-import { db } from '@/lib/db';
-import { drizzleAdapter } from '@/lib/drizzle-adapter';
+import { DB } from '@/server/helpers/DB';
+import { DrizzleAdapter } from '@/server/helpers/DrizzleAdapter';
 
 export const authOptions = {
-    adapter: drizzleAdapter(db as any) as Adapter,
+    adapter: DrizzleAdapter(DB as any) as Adapter,
     pages: {
         signIn: '/',
     },
@@ -53,7 +53,7 @@ export const authOptions = {
             async authorize(credentials) {
                 if (!credentials) return null;
 
-                const user = await db.query.users.findFirst({
+                const user = await DB.query.users.findFirst({
                     where: eq(users.email, credentials.email),
                 });
 

@@ -1,10 +1,10 @@
 'use server';
 
-import { users } from '@/schema/users';
+import { usersTable } from '@/server/schema/users-schema';
 import {
     userProfileValidator,
     userRegistrationValidator,
-} from '@/validators/user-validator';
+} from '@/lib/validators/user-validator';
 import {
     CompleteMultipartUploadCommandOutput,
     S3Client,
@@ -15,7 +15,7 @@ import { eq } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 import sharp from 'sharp';
 
-import { db } from '@/lib/db';
+import { DB } from '@/server/helpers/DB';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { revalidatePath } from 'next/cache';
 
@@ -42,8 +42,8 @@ export async function registerUser(formData: FormData) {
             };
         }
 
-        const existingUser = await db.query.users.findFirst({
-            where: eq(users.email, parsed.data.email),
+        const existingUser = await DB.query.usersTable.findFirst({
+            where: eq(usersTable.email, parsed.data.email),
             with: {
                 accounts: true,
             },
@@ -61,7 +61,7 @@ export async function registerUser(formData: FormData) {
         }
 
         // user not exist before
-        await db.insert(users).values({
+        await DB.insert(usersTable).values({
             id,
             name: parsed.data.name,
             email: parsed.data.email,
@@ -167,8 +167,8 @@ export async function updateProfile(formData: FormData) {
             };
         }
 
-        const existingUser = await db.query.users.findFirst({
-            where: eq(users.email, parsed.data.email),
+        const existingUser = await DB.query.usersTable.findFirst({
+            where: eq(usersTable.email, parsed.data.email),
         });
 
         // if user email has changed
@@ -197,10 +197,10 @@ export async function updateProfile(formData: FormData) {
             }
         }
 
-        await db
-            .update(users)
+        await DB
+            .update(usersTable)
             .set(fieldsToUpdate)
-            .where(eq(users.id, session.user.id));
+            .where(eq(usersTable.id, session.user.id));
 
         revalidatePath('/profile');
 
@@ -227,12 +227,12 @@ export async function deleteAvatar() {
 
         if (!session) throw new Error();
 
-        await db
-            .update(users)
+        await DB
+            .update(usersTable)
             .set({
                 'image': null
             })
-            .where(eq(users.id, session.user.id));
+            .where(eq(usersTable.id, session.user.id));
 
         revalidatePath('/profile');
 

@@ -1,4 +1,4 @@
-import { categories } from '@/lib/config';
+import { categories } from '@/lib/config/config';
 
 export type THTTPMethod =
     | 'GET'

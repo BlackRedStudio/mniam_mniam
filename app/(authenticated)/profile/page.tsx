@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Profile from "@/components/modules/Profile/Profile";
-import { db } from "@/lib/db";
-import { users } from "@/schema";
+import { db } from "@/server/helpers/DB";
+import { users } from "@/server/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 

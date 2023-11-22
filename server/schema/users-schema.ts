@@ -1,10 +1,10 @@
 import { relations } from 'drizzle-orm';
 import { mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
-import { accounts, userProducts } from '.';
+import { accountsTable, userProductsTable } from '.';
 import { TUserRole } from '@/types/types';
 
-export const users = mysqlTable('users', {
+export const usersTable = mysqlTable('users', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     name: varchar('name', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull(),
@@ -21,9 +21,9 @@ export const users = mysqlTable('users', {
     }).defaultNow(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-    accounts: many(accounts),
-    userProducts: many(userProducts),
+export const usersRelations = relations(usersTable, ({ many }) => ({
+    accounts: many(accountsTable),
+    userProducts: many(userProductsTable),
 }));
 
-export type TUser = typeof users.$inferSelect;
+export type TUser = typeof usersTable.$inferSelect;

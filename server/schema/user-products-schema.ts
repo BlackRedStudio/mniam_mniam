@@ -8,10 +8,10 @@ import {
     varchar,
 } from 'drizzle-orm/mysql-core';
 
-import { products, users } from '.';
+import { productsTable, usersTable } from '.';
 import { TUserProductStatus } from '@/types/types';
 
-export const userProducts = mysqlTable('userProducts', {
+export const userProductsTable = mysqlTable('userProducts', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     userId: varchar('userId', { length: 255 }).notNull(),
     productId: varchar('productId', { length: 255 }).notNull(),
@@ -34,15 +34,15 @@ export const userProducts = mysqlTable('userProducts', {
     }).defaultNow(),
 });
 
-export const userProductsRelations = relations(userProducts, ({ one }) => ({
-    user: one(users, {
-        fields: [userProducts.productId],
-        references: [users.id],
+export const userProductsRelations = relations(userProductsTable, ({ one }) => ({
+    user: one(usersTable, {
+        fields: [userProductsTable.productId],
+        references: [usersTable.id],
     }),
-    product: one(products, {
-        fields: [userProducts.productId],
-        references: [products.id],
+    product: one(productsTable, {
+        fields: [userProductsTable.productId],
+        references: [productsTable.id],
     }),
 }));
 
-export type TUserProduct = typeof userProducts.$inferSelect;
+export type TUserProduct = typeof userProductsTable.$inferSelect;

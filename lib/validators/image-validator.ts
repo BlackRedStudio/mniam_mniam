@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/lib/config';
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/lib/config/config';
 
 export const imageValidator = z
     .custom<File>()

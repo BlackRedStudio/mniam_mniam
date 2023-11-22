@@ -9,7 +9,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../../ui/select';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast';
 
 type TBarcodeScannerProps = {
     deviceId: string;

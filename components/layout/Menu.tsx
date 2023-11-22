@@ -7,7 +7,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import { signOut, useSession } from 'next-auth/react';
 
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/lib/hooks/use-toast';
 import {
     DropdownMenu,
     DropdownMenuContent,

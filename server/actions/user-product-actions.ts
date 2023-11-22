@@ -1,18 +1,18 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { products, TUserProduct, userProducts } from '@/schema';
-import { productValidator } from '@/validators/product-validator';
-import { userProductValidator } from '@/validators/user-product-validator';
+import { productsTable, TUserProduct, userProductsTable } from '@/server/schema';
+import { productValidator } from '@/lib/validators/product-validator';
+import { userProductValidator } from '@/lib/validators/user-product-validator';
 import { and, eq, inArray } from 'drizzle-orm';
 import { getServerSession } from 'next-auth';
 
 import { TUserProductStatus } from '@/types/types';
-import { db } from '@/lib/db';
-import { getProductsByBarcode } from '@/lib/open-food-api';
+import { DB } from '@/server/helpers/DB';
+import { getProductsByBarcode } from '@/server/services/OpenFoodAPIService';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
-import { addProductDB } from './product-actions';
+import ProductService from '../services/ProductService';
 
 export type TAddProductToUserListReturn = Awaited<
     ReturnType<typeof addProductToUserList>
@@ -46,8 +46,8 @@ export async function addProductToUserList(formData: FormData) {
             };
         }
 
-        const existingProduct = await db.query.products.findFirst({
-            where: eq(products.ean, ean),
+        const existingProduct = await DB.query.productsTable.findFirst({
+            where: eq(productsTable.ean, ean),
         });
         let productId = '';
         let existingUserProduct = null;
@@ -57,10 +57,10 @@ export async function addProductToUserList(formData: FormData) {
         if (existingProduct) {
             productId = existingProduct.id;
             isCustomProduct = (existingProduct.status === 'draft');
-            existingUserProduct = await db.query.userProducts.findFirst({
+            existingUserProduct = await DB.query.userProductsTable.findFirst({
                 where: and(
-                    eq(userProducts.productId, productId),
-                    eq(userProducts.userId, session.user.id),
+                    eq(userProductsTable.productId, productId),
+                    eq(userProductsTable.userId, session.user.id),
                 ),
             });
         } else {
@@ -118,15 +118,7 @@ export async function addProductToUserList(formData: FormData) {
                 openFoodFactsProduct?.image_url ||
                 (productParsed.data.image as File);
 
-            const res = await addProductDB(productDB, img);
-
-            if (!res.success || !res.productId) {
-                return {
-                    success: false,
-                    message: res.message,
-                };
-            }
-            productId = res.productId;
+            productId = await ProductService.insert(productDB, img);
         }
 
         const userProductId = crypto.randomUUID();
@@ -150,12 +142,12 @@ export async function addProductToUserList(formData: FormData) {
         };
 
         if (existingUserProduct) {
-            await db
-                .update(userProducts)
+            await DB
+                .update(userProductsTable)
                 .set(userProductsValues)
-                .where(eq(userProducts.id, existingUserProduct.id));
+                .where(eq(userProductsTable.id, existingUserProduct.id));
         } else {
-            await db.insert(userProducts).values({
+            await DB.insert(userProductsTable).values({
                 ...userProductsValues,
                 firstRate: (typeof existingProduct === 'undefined'),
                 imgUploaded: noProductPhoto,
@@ -189,15 +181,15 @@ export async function deleteProductFromUserList(userProductId: string) {
 
         if (!session) throw new Error();
 
-        await db
-            .update(userProducts)
+        await DB
+            .update(userProductsTable)
             .set({
                 status: 'invisible',
             })
             .where(
                 and(
-                    eq(userProducts.id, userProductId),
-                    eq(userProducts.userId, session.user.id),
+                    eq(userProductsTable.id, userProductId),
+                    eq(userProductsTable.userId, session.user.id),
                 ),
             );
 
@@ -225,10 +217,10 @@ export async function getUserProducts(statuses: TUserProductStatus[]) {
 
         if (!session) throw new Error();
 
-        const userProductsList = await db.query.userProducts.findMany({
+        const userProductsList = await DB.query.userProductsTable.findMany({
             where: and(
-                eq(userProducts.userId, session.user.id),
-                inArray(userProducts.status, statuses),
+                eq(userProductsTable.userId, session.user.id),
+                inArray(userProductsTable.status, statuses),
             ),
             with: {
                 product: true,

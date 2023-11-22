@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 
-import { getNameInitials } from '@/lib/utils';
+import { getNameInitials } from '@/lib/utils/utils';
 
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 

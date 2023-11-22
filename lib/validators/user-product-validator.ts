@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 import { TCategoriesIds } from '@/types/types';
-import { categories } from '@/lib/config';
-import { handleCurrencyInput } from '@/lib/utils';
+import { categories } from '@/lib/config/config';
+import { handleCurrencyInput } from '@/lib/utils/utils';
 
 export const userProductValidator = z.object({
     rating: z.coerce.number().min(1, 'Produkt musi zostać oceniony').max(5),

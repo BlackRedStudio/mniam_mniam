@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import { THTTPMethod } from '@/types/types';
+import CriticalError from '@/server/errors/CriticalError';
+import Error from '@/server/errors/Error';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));

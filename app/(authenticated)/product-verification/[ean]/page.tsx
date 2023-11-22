@@ -1,5 +1,7 @@
-import { getProduct } from "@/actions/product-actions";
+import { getProductAction } from "@/server/actions/product-actions";
 import ProductVerificationCard from "@/components/modules/ProductVerificationCard/ProductVerificationCard";
+import CriticalError from "@/server/errors/CriticalError";
+import Error from "@/server/errors/Error";
 import { redirect } from "next/navigation";
 
 type TProductVerificationItemPageProps = {
@@ -10,9 +12,9 @@ type TProductVerificationItemPageProps = {
 
 async function ProductVerificationItemPage({params: {ean}}: TProductVerificationItemPageProps) {
 
-    const res = await getProduct(ean);
+    const res = await getProductAction(ean);
 
-    if(!res || !res.success || !res.product) {
+    if(res instanceof Error || res instanceof CriticalError) {
         redirect('/product-verification');
     }
 

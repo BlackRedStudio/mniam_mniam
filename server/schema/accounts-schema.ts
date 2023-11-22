@@ -2,9 +2,9 @@ import type { AdapterAccount } from '@auth/core/adapters';
 import { relations } from 'drizzle-orm';
 import { int, mysqlTable, text, varchar } from 'drizzle-orm/mysql-core';
 
-import { users } from '.';
+import { usersTable } from '.';
 
-export const accounts = mysqlTable('accounts', {
+export const accountsTable = mysqlTable('accounts', {
     userId: varchar('userId', { length: 255 }).notNull().primaryKey(),
     type: varchar('type', { length: 255 })
         .$type<AdapterAccount['type']>()
@@ -21,11 +21,11 @@ export const accounts = mysqlTable('accounts', {
     id_token: text('id_token'),
 });
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-    user: one(users, {
-        fields: [accounts.userId],
-        references: [users.id],
+export const accountsRelations = relations(accountsTable, ({ one }) => ({
+    user: one(usersTable, {
+        fields: [accountsTable.userId],
+        references: [usersTable.id],
     }),
 }));
 
-export type TAccount = typeof accounts.$inferSelect;
+export type TAccount = typeof accountsTable.$inferSelect;

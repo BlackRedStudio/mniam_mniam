@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { TGetProductsReturn } from '@/actions/product-actions';
-import { TGetUserProductsReturn } from '@/actions/user-product-actions';
+import { TGetProductsActionReturn } from '@/server/actions/product-actions';
+import { TGetUserProductsReturn } from '@/server/actions/user-product-actions';
 
 import { TCategoriesIds, Unpacked } from '@/types/types';
 import { Button } from '@/components/ui/button';
@@ -25,7 +25,7 @@ type TActiveList = {
     listType: 'active';
 };
 type TDraftList = {
-    productsList: NonNullable<TGetProductsReturn['productsList']>;
+    productsList: NonNullable<TGetProductsActionReturn['productsList']>;
     listType: 'draft';
 };
 
