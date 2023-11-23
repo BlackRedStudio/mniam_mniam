@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { TGetProductsActionReturn } from '@/server/actions/product-actions';
-import { TGetUserProductsReturn } from '@/server/actions/user-product-actions';
 
-import { TCategoriesIds, Unpacked } from '@/types/types';
+import { TCategoriesIds } from '@/types/types';
 import { Button } from '@/components/ui/button';
 import {
     Collapsible,
@@ -19,13 +17,14 @@ import CategorySelector from '../ProductCard/CategorySelector';
 import PriceInput from '../ProductCard/PriceInput';
 import ProductListItem from './ProductListItem';
 import ProductListItemDraft from './ProductListItemDraft';
+import { TProduct, TUserProductWithProduct } from '@/server/schema';
 
 type TActiveList = {
-    productsList: NonNullable<TGetUserProductsReturn['userProductsList']>;
+    productsList: TUserProductWithProduct[];
     listType: 'active';
 };
 type TDraftList = {
-    productsList: NonNullable<TGetProductsActionReturn['productsList']>;
+    productsList: TProduct[];
     listType: 'draft';
 };
 
@@ -45,9 +44,7 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
     };
 
     const handleFilters = (
-        product: NonNullable<
-            Unpacked<TGetUserProductsReturn['userProductsList']>
-        >,
+        product: TUserProductWithProduct,
     ) => {
         if (rating > 0) {
             if (product.rating !== rating) {

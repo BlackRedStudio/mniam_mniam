@@ -1,18 +1,13 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Profile from "@/components/modules/Profile/Profile";
-import { db } from "@/server/helpers/DB";
-import { users } from "@/server/schema";
-import { eq } from "drizzle-orm";
-import { getServerSession } from "next-auth";
+import { checkSession } from "@/server/helpers/helpers";
+import UserService from "@/server/services/UserService";
 
 async function profilePage() {
 
-    const session = await getServerSession(authOptions);
-    if(!session) return null;
+    const session = await checkSession();
 
-    const user = await db.query.users.findFirst({
-        where: eq(users.id, session.user.id)
-    });
+    const user = await UserService.findFirstById(session.user.id);
+
     if(!user) return null;
 
     return (

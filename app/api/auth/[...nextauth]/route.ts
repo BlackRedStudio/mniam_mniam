@@ -1,6 +1,4 @@
-import { users } from '@/server/schema/users-schema';
 import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
 import NextAuth, { AuthOptions } from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -9,6 +7,7 @@ import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
 import { DB } from '@/server/helpers/DB';
 import { DrizzleAdapter } from '@/server/helpers/DrizzleAdapter';
+import UserService from '@/server/services/UserService';
 
 export const authOptions = {
     adapter: DrizzleAdapter(DB as any) as Adapter,
@@ -53,9 +52,7 @@ export const authOptions = {
             async authorize(credentials) {
                 if (!credentials) return null;
 
-                const user = await DB.query.users.findFirst({
-                    where: eq(users.email, credentials.email),
-                });
+                const user = await UserService.findFirstByEmail(credentials.email);
 
                 if (user && user.password) {
                     const passwordMatch = await bcrypt.compare(

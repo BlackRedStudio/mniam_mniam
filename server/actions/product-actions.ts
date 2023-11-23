@@ -128,10 +128,6 @@ export async function getProductAction(ean: string) {
     }
 }
 
-export type TGetProductsActionReturn = Awaited<
-    ReturnType<typeof getProductsAction>
->;
-
 export async function getProductsAction(status: TProductStatus) {
     try {
         await checkSession(true);
@@ -207,7 +203,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
 
         await ProductService.update(product);
 
-        await UserProductService.changeDraftToActive(product.id);
+        await UserProductService.activateProducts(product.id);
 
         revalidateProductPaths(ean);
 

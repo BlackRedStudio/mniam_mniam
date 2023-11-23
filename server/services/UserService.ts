@@ -32,6 +32,14 @@ class UserService {
         });
     }
 
+    static async findFirstById(id: string) {
+        const user = await DB.query.usersTable.findFirst({
+            where: eq(usersTable.id, id)
+        });
+
+        return user;
+    }
+
     static async findFirstByEmail(email: string) {
         const user = await DB.query.usersTable.findFirst({
             where: eq(usersTable.email, email),

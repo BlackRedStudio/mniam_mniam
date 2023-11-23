@@ -1,10 +1,10 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import moment from 'moment';
 
-import { TProductStatistics } from '@/types/types';
+import { TProductStatistics, TUserProductStatus } from '@/types/types';
 
 import { DB } from '../helpers/DB';
-import { TUserProduct, userProductsTable } from '../schema';
+import { TUserProduct, TUserProductInsert, userProductsTable } from '../schema';
 
 class UserProductService {
     // get average rating/price/count
@@ -36,7 +36,49 @@ class UserProductService {
         };
     }
 
-    static async changeDraftToActive(productId: string) {
+    static async findFirstUserProduct(productId: string, userId: string) {
+        const userProduct = await DB.query.userProductsTable.findFirst({
+            where: and(
+                eq(userProductsTable.productId, productId),
+                eq(userProductsTable.userId, userId),
+            ),
+        });
+
+        return userProduct;
+    }
+
+    static async findUserProductsByStatus(userId: string, statuses: TUserProductStatus[]) {
+
+        const userProductsList = await DB.query.userProductsTable.findMany({
+            where: and(
+                eq(userProductsTable.userId, userId),
+                inArray(userProductsTable.status, statuses),
+            ),
+            with: {
+                product: true,
+            },
+        });
+
+        return userProductsList;
+    }
+
+    static async update(id: string, userProductValues: Omit<TUserProductInsert, 'id'>) {
+        await DB.update(userProductsTable)
+            .set(userProductValues)
+            .where(eq(userProductsTable.id, id));
+    }
+
+    static async insert(userProductValues: Omit<TUserProductInsert, 'id'>) {
+
+        const id = crypto.randomUUID();
+
+        await DB.insert(userProductsTable).values({
+            id,
+            ...userProductValues,
+        });
+    }
+
+    static async activateProducts(productId: string) {
         // update all userProducts draft statuses to invisible
         await DB.update(userProductsTable)
             .set({
@@ -60,6 +102,21 @@ class UserProductService {
                     eq(userProductsTable.status, 'draftVisible'),
                 ),
             );
+    }
+
+    static async changeVisibleToInvisible(productId: string, userId: string) {
+        const res = await DB.update(userProductsTable)
+            .set({
+                status: 'invisible',
+            })
+            .where(
+                and(
+                    eq(userProductsTable.id, productId),
+                    eq(userProductsTable.userId, userId),
+                ),
+            );
+
+        return res;
     }
 
     static async deleteByProductId(productId: string) {

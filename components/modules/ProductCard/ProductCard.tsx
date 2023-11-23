@@ -4,9 +4,8 @@ import { ChangeEvent, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
-    addProductToUserList,
-    deleteProductFromUserList,
-    TAddProductToUserListReturn,
+    addProductToUserListAction,
+    deleteProductFromUserListAction,
 } from '@/server/actions/user-product-actions';
 import { TUserProduct } from '@/server/schema';
 import FileResizer from 'react-image-file-resizer';
@@ -36,6 +35,8 @@ import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
+import { TUserProductValidatorErrors } from '@/lib/validators/user-product-validator';
+import ParsedError from '@/server/errors/ParsedError';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -51,8 +52,8 @@ function ProductCard({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [productFormState, setProductFormState] =
-        useState<TAddProductToUserListReturn>();
+    const [formErrors, setFormErrors] =
+        useState<TUserProductValidatorErrors>();
 
     const [rating, setRating] = useState(currentUserProduct?.rating ?? 0);
     const [category, setCategory] = useState<TCategoriesIds | ''>(
@@ -118,9 +119,11 @@ function ProductCard({
             formData.append(payloadKey, payload[payloadKey] as string);
         }
 
-        const res = await addProductToUserList(formData);
+        const res = await addProductToUserListAction(formData);
 
-        setProductFormState(res);
+        if(res instanceof ParsedError) {
+            setFormErrors(res.errors);
+        }
 
         toast({
             title: res.message,
@@ -139,7 +142,7 @@ function ProductCard({
 
         setLoading(true);
 
-        const res = await deleteProductFromUserList(currentUserProduct?.id);
+        const res = await deleteProductFromUserListAction(_id, currentUserProduct.id);
 
         toast({
             title: res.message,
@@ -327,12 +330,12 @@ function ProductCard({
                     <CommunityRating productStatistics={productStatistics} />
                     <FormError
                         className="mb-2"
-                        formErrors={productFormState?.errors?.rating}
+                        formErrors={formErrors?.rating}
                     />
                     <StarRating rating={rating} setRating={setRating} />
                     <FormError
                         className="mb-2"
-                        formErrors={productFormState?.errors?.category}
+                        formErrors={formErrors?.category}
                     />
                     <CategorySelector
                         category={category}
@@ -340,7 +343,7 @@ function ProductCard({
                     />
                     <FormError
                         className="mb-2"
-                        formErrors={productFormState?.errors?.price}
+                        formErrors={formErrors?.price}
                     />
                     <PriceInput price={price} setPrice={setPrice} />
                     <div className="mt-8 space-y-4">

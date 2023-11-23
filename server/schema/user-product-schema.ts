@@ -8,7 +8,7 @@ import {
     varchar,
 } from 'drizzle-orm/mysql-core';
 
-import { productsTable, usersTable } from '.';
+import { TProduct, productsTable, usersTable } from '.';
 import { TUserProductStatus } from '@/types/types';
 
 export const userProductsTable = mysqlTable('userProducts', {
@@ -46,3 +46,9 @@ export const userProductsRelations = relations(userProductsTable, ({ one }) => (
 }));
 
 export type TUserProduct = typeof userProductsTable.$inferSelect;
+
+export type TUserProductWithProduct = TUserProduct & {
+    product: TProduct
+};
+
+export type TUserProductInsert = typeof userProductsTable.$inferInsert;

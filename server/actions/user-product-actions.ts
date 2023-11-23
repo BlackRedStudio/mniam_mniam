@@ -1,28 +1,24 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { productsTable, TUserProduct, userProductsTable } from '@/server/schema';
-import { productValidator } from '@/lib/validators/product-validator';
-import { userProductValidator } from '@/lib/validators/user-product-validator';
-import { and, eq, inArray } from 'drizzle-orm';
-import { getServerSession } from 'next-auth';
+import {
+    TUserProduct,
+} from '@/server/schema';
+import OpenFoodAPIService from '@/server/services/OpenFoodAPIService';
 
 import { TUserProductStatus } from '@/types/types';
-import { DB } from '@/server/helpers/DB';
-import { getProductsByBarcode } from '@/server/services/OpenFoodAPIService';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { productValidator } from '@/lib/validators/product-validator';
+import { userProductValidator } from '@/lib/validators/user-product-validator';
 
+import CriticalError from '../errors/CriticalError';
+import Error from '../errors/Error';
+import ParsedError from '../errors/ParsedError';
+import { checkSession, revalidateProductPaths } from '../helpers/helpers';
 import ProductService from '../services/ProductService';
+import UserProductService from '../services/UserProductService';
 
-export type TAddProductToUserListReturn = Awaited<
-    ReturnType<typeof addProductToUserList>
->;
-
-export async function addProductToUserList(formData: FormData) {
+export async function addProductToUserListAction(formData: FormData) {
     try {
-        const session = await getServerSession(authOptions);
-
-        if (!session) throw new Error();
+        const session = await checkSession();
 
         const ean = formData.get('ean') as string;
         const name = formData.get('name') as string;
@@ -30,70 +26,64 @@ export async function addProductToUserList(formData: FormData) {
         const quantity = formData.get('quantity') as string;
         const image = formData.get('image') as File;
 
-        const parsed = userProductValidator.safeParse({
-            rating: formData.get('rating'),
-            price: formData.get('price'),
-            category: formData.get('category'),
-            status: formData.get('status'),
-        });
+        const rating = parseInt(formData.get('rating') as string);
+        const price = formData.get('price') as string;
+        const category = formData.get('category') as string;
+        let status = formData.get('status') as TUserProduct['status'];
 
+        const parsed = userProductValidator.safeParse({
+            rating,
+            price,
+            category,
+            status,
+        });
         if (!parsed.success) {
-            return {
-                success: false,
-                message:
-                    'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-                errors: parsed.error.formErrors.fieldErrors,
-            };
+            return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        const existingProduct = await DB.query.productsTable.findFirst({
-            where: eq(productsTable.ean, ean),
-        });
+        const product = await ProductService.findFirstByEan(ean);
         let productId = '';
         let existingUserProduct = null;
         let isCustomProduct = false;
-        let noProductPhoto = false;
+        let hasPhoto = true;
 
-        if (existingProduct) {
-            productId = existingProduct.id;
-            isCustomProduct = (existingProduct.status === 'draft');
-            existingUserProduct = await DB.query.userProductsTable.findFirst({
-                where: and(
-                    eq(userProductsTable.productId, productId),
-                    eq(userProductsTable.userId, session.user.id),
-                ),
-            });
+        if (product) {
+            productId = product.id;
+            isCustomProduct = product.status === 'draft';
+            existingUserProduct = await UserProductService.findFirstUserProduct(
+                productId,
+                session.user.id,
+            );
         } else {
-            const openFoodFactsProduct = await getProductsByBarcode(ean);
+            const openFoodFactsProduct =
+                await OpenFoodAPIService.getProductsByBarcode(ean);
 
-            noProductPhoto = !openFoodFactsProduct?.image_url;
+            hasPhoto = !!openFoodFactsProduct?.image_url;
 
             const productParsed = productValidator
                 .partial({
                     // make partial only if image exist on openFoodFactsProduct
-                    image: noProductPhoto ? undefined : true,
+                    image: hasPhoto ? true : undefined,
                 })
                 .safeParse({
                     name: openFoodFactsProduct?.product_name || name,
                     brands: openFoodFactsProduct?.brands || brands,
                     quantity: openFoodFactsProduct?.quantity || quantity,
                     // omit parsing when image_url exist in openFoodFactsProduct
-                    image: noProductPhoto ? image : undefined,
+                    image: hasPhoto ? undefined : image,
                 });
 
             if (!productParsed.success) {
-                return {
-                    success: false,
-                    message:
-                        'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-                };
+                return new Error(
+                    'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
+                );
             }
 
             // any properties missing? So it's custom user product
             if (
                 !openFoodFactsProduct?.product_name ||
                 !openFoodFactsProduct?.brands ||
-                noProductPhoto ||
+                !hasPhoto ||
                 !openFoodFactsProduct?.quantity
             ) {
                 isCustomProduct = true;
@@ -101,16 +91,13 @@ export async function addProductToUserList(formData: FormData) {
 
             const productDB = {
                 ean: openFoodFactsProduct?._id || ean,
-                brands:
-                    openFoodFactsProduct?.brands || productParsed.data.brands,
-                name:
-                    openFoodFactsProduct?.product_name ||
-                    productParsed.data.name,
-                quantity:
-                    openFoodFactsProduct?.quantity ||
-                    productParsed.data.quantity,
+                brands: openFoodFactsProduct?.brands || brands,
+                name: openFoodFactsProduct?.product_name || name,
+                quantity: openFoodFactsProduct?.quantity || quantity,
                 imgOpenFoodFacts: openFoodFactsProduct?.image_url,
-                status: isCustomProduct ? 'draft' as const : 'active' as const,
+                status: isCustomProduct
+                    ? ('draft' as const)
+                    : ('active' as const),
             };
 
             // productParsed.data.image can't be undefined because if openFoodFactsProduct.image_url is empty then image parse is mandatory
@@ -121,120 +108,92 @@ export async function addProductToUserList(formData: FormData) {
             productId = await ProductService.insert(productDB, img);
         }
 
-        const userProductId = crypto.randomUUID();
-
-        let status: TUserProduct['status'] = parsed.data.status;
-
         if (isCustomProduct && status == 'visible') {
             status = 'draftVisible';
         } else if (isCustomProduct) {
             status = 'draft';
         }
 
-        const userProductsValues = {
-            id: userProductId,
+        const userProductValues = {
             productId,
             userId: session.user.id,
-            rating: parsed.data.rating,
-            price: parsed.data.price,
-            category: parsed.data.category,
+            rating,
+            price,
+            category,
             status,
         };
 
         if (existingUserProduct) {
-            await DB
-                .update(userProductsTable)
-                .set(userProductsValues)
-                .where(eq(userProductsTable.id, existingUserProduct.id));
+            await UserProductService.update(existingUserProduct.id, userProductValues);
         } else {
-            await DB.insert(userProductsTable).values({
-                ...userProductsValues,
-                firstRate: (typeof existingProduct === 'undefined'),
-                imgUploaded: noProductPhoto,
+            await UserProductService.insert({
+                ...userProductValues,
+                firstRate: typeof product === 'undefined',
+                imgUploaded: !hasPhoto,
                 propsAdded: isCustomProduct,
             });
         }
 
-        revalidatePath(`/product/${ean}`, 'page');
-        revalidatePath('/my-list', 'page');
-        revalidatePath('/product-verification', 'page');
-        revalidatePath(`/product/${ean}`, 'page');
+        revalidateProductPaths(ean);
 
         return {
-            success: true,
+            success: true as const,
             message:
                 parsed.data.status === 'visible'
                     ? 'Produkt został oceniony oraz dodany do listy.'
                     : 'Produkt został oceniony.',
         };
     } catch (e) {
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
+        return new CriticalError(e);
     }
 }
 
-export async function deleteProductFromUserList(userProductId: string) {
+export async function deleteProductFromUserListAction(ean: string, userProductId: string) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await checkSession();
 
-        if (!session) throw new Error();
+        const product = await ProductService.findFirstByEan(ean);
 
-        await DB
-            .update(userProductsTable)
-            .set({
-                status: 'invisible',
-            })
-            .where(
-                and(
-                    eq(userProductsTable.id, userProductId),
-                    eq(userProductsTable.userId, session.user.id),
-                ),
-            );
+        if(!product) {
+            return new Error('Brak produktu.');
+        }
 
-        revalidatePath('/product/[ean]', 'page');
+        const res = await UserProductService.changeVisibleToInvisible(userProductId, session.user.id);
+
+        if(res.rowsAffected === 0) {
+            return new Error('Brak produktu użytkownika.');
+        }
+
+        revalidateProductPaths(product.ean);
 
         return {
-            success: true,
+            success: true as const,
             message: 'Produkt został pomyślnie usunięty z listy',
         };
     } catch (e) {
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
+        return new CriticalError(e);
     }
 }
 
-export type TGetUserProductsReturn = Awaited<
-    ReturnType<typeof getUserProducts>
+export type TGetUserProductsActionReturn = Awaited<
+    ReturnType<typeof getUserProductsAction>
 >;
 
-export async function getUserProducts(statuses: TUserProductStatus[]) {
+export async function getUserProductsAction(statuses: TUserProductStatus[]) {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await checkSession();
 
-        if (!session) throw new Error();
+        const userProductsList = await UserProductService.findUserProductsByStatus(session.user.id, statuses);
 
-        const userProductsList = await DB.query.userProductsTable.findMany({
-            where: and(
-                eq(userProductsTable.userId, session.user.id),
-                inArray(userProductsTable.status, statuses),
-            ),
-            with: {
-                product: true,
-            },
-        });
+        if(userProductsList.length === 0) {
+            return new Error('Brak produktów.');
+        }
 
         return {
-            success: true,
+            success: true as const,
             userProductsList,
         };
     } catch (e) {
-        return {
-            success: false,
-            message: 'Błąd aplikacji skontaktuj się z administratorem',
-        };
+        return new CriticalError(e);
     }
 }
