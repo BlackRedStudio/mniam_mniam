@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { registerUserAction } from '@/server/actions/user-actions';
-import ParsedError from '@/server/errors/ParsedError';
 import { signIn } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
@@ -24,7 +23,7 @@ function RegisterTab() {
     const handleRegistration = async (formData: FormData) => {
         const res = await registerUserAction(formData);
 
-        if (res instanceof ParsedError) {
+        if (!res.success && res.errors) {
             setFormErrors(res.errors);
         }
 

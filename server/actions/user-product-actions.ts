@@ -14,7 +14,6 @@ import { checkSession, revalidateProductPaths } from '../helpers/helpers';
 import ProductRepository from '../repositories/ProductRepository';
 import UserProductRepository from '../repositories/UserProductRepository';
 import ProductService from '../services/ProductService';
-import UserProductService from '../services/UserProductService';
 
 export async function addProductToUserListAction(formData: FormData) {
     try {
@@ -38,7 +37,7 @@ export async function addProductToUserListAction(formData: FormData) {
             status,
         });
         if (!parsed.success) {
-            return new ParsedError(parsed.error.formErrors.fieldErrors);
+            return {...new ParsedError(parsed.error.formErrors.fieldErrors)};
         }
 
         const product = await ProductRepository.firstWithUserProducts({ean});
@@ -74,9 +73,9 @@ export async function addProductToUserListAction(formData: FormData) {
                 });
 
             if (!productParsed.success) {
-                return new Error(
+                return {...new Error(
                     'W formularzy wystąpiły błędy, popraw je i spróbuj ponownie',
-                );
+                )};
             }
 
             // any properties missing? So it's custom user product
@@ -148,7 +147,7 @@ export async function addProductToUserListAction(formData: FormData) {
                     : 'Produkt został oceniony.',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -162,7 +161,7 @@ export async function deleteProductFromUserListAction(
         const product = await ProductRepository.firstWithUserProducts({ean});
 
         if (!product) {
-            return new Error('Brak produktu.');
+            return {...new Error('Brak produktu.')};
         }
 
         const res = await UserProductRepository.makeInvisible(
@@ -171,7 +170,7 @@ export async function deleteProductFromUserListAction(
         );
 
         if (res.rowsAffected === 0) {
-            return new Error('Brak produktu użytkownika.');
+            return {...new Error('Brak produktu użytkownika.')};
         }
 
         revalidateProductPaths(product.ean);
@@ -181,7 +180,7 @@ export async function deleteProductFromUserListAction(
             message: 'Produkt został pomyślnie usunięty z listy',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -199,7 +198,7 @@ export async function getUserProductsAction(statuses: TUserProductStatus[]) {
         });
 
         if (userProductsList.length === 0) {
-            return new Error('Brak produktów.');
+            return {...new Error('Brak produktów.')};
         }
 
         return {
@@ -207,6 +206,6 @@ export async function getUserProductsAction(statuses: TUserProductStatus[]) {
             userProductsList,
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }

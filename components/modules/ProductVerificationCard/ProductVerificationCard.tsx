@@ -7,7 +7,6 @@ import {
     acceptProductVerificationAction,
     rejectProductVerificationAction,
 } from '@/server/actions/product-actions';
-import ParsedError from '@/server/errors/ParsedError';
 import FileResizer from 'react-image-file-resizer';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
@@ -64,7 +63,7 @@ function ProductVerificationCard({
 
         const res = await acceptProductVerificationAction(formData);
 
-        if (res instanceof ParsedError) {
+        if (!res.success && res.errors) {
             setFormErrors(res.errors);
         }
 

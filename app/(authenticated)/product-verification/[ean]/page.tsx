@@ -1,7 +1,5 @@
 import { redirect } from 'next/navigation';
 import { getProductAction } from '@/server/actions/product-actions';
-import CriticalError from '@/server/errors/CriticalError';
-import Error from '@/server/errors/Error';
 
 import ProductVerificationCard from '@/components/modules/ProductVerificationCard/ProductVerificationCard';
 
@@ -16,7 +14,7 @@ async function ProductVerificationItemPage({
 }: TProductVerificationItemPageProps) {
     const res = await getProductAction(ean);
 
-    if (res instanceof Error || res instanceof CriticalError) {
+    if (!res.success) {
         redirect('/product-verification');
     }
 

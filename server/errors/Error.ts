@@ -4,6 +4,8 @@ class Error {
 
     message: string;
 
+    errors: null;
+
     constructor(message: string) {
         this.message = message;
     }

@@ -36,7 +36,7 @@ export async function api<Res>(
 
     const response = await fetch(url, {
         method,
-        body: JSON.stringify(body),
+        body: body ? JSON.stringify(body) : undefined,
         headers,
     });
 

@@ -7,6 +7,8 @@ class CriticalError {
 
     message: string;
 
+    errors: null;
+
     constructor(e: unknown) {
 
         if(e instanceof SessionError) {
@@ -16,7 +18,6 @@ class CriticalError {
         } else {
             this.message = 'Błąd aplikacji skontaktuj się z administratorem.';
         }
-
         console.log(e);
     }
 }

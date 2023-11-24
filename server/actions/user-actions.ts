@@ -30,14 +30,14 @@ export async function registerUserAction(formData: FormData) {
 
         // validation Error
         if (!parsed.success) {
-            return new ParsedError(parsed.error.formErrors.fieldErrors);
+            return {...new ParsedError(parsed.error.formErrors.fieldErrors)};
         }
 
         const user = await UserRepository.firstWithAccounts({email});
 
         // user and password exist
         if (user) {
-            return new Error('Użytkownik z danym adresem email już istnieje w bazie danych');
+            return {...new Error('Użytkownik z danym adresem email już istnieje w bazie danych')};
         }
         
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,7 +49,7 @@ export async function registerUserAction(formData: FormData) {
             message: 'Rejestracja przebiegła pomyślnie',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -74,14 +74,14 @@ export async function updateProfileAction(formData: FormData) {
 
         // validation Error
         if (!parsed.success) {
-            return new ParsedError(parsed.error.formErrors.fieldErrors);
+            return {...new ParsedError(parsed.error.formErrors.fieldErrors)};
         }
 
         const user = await UserRepository.firstWithAccounts({email});
 
         // if user email has changed
         if (user && session.user.email !== email) {
-            return new Error('Użytkownik z danym adresem email już istnieje w bazie danych');
+            return {...new Error('Użytkownik z danym adresem email już istnieje w bazie danych')};
         }
 
         const data = await UserService.updateProfile(session.user.id, name, email, password, image);
@@ -94,7 +94,7 @@ export async function updateProfileAction(formData: FormData) {
             data
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -111,6 +111,6 @@ export async function deleteAvatarAction() {
             message: 'Avatar został usunięty',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }

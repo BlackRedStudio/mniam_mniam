@@ -39,9 +39,8 @@ export async function searchProductAction(name: string) {
 
             products = [...productsApiPL, ...productsApiEN];
         }
-
         if (!products || products.length === 0) {
-            return new Error('Nie znaleziono produktów');
+            return {...new Error('Nie znaleziono produktów')};
         }
 
         return {
@@ -51,7 +50,7 @@ export async function searchProductAction(name: string) {
             products,
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -73,7 +72,7 @@ export async function searchProductExtendedAction(name: string) {
         ];
 
         if (!products || products.length === 0) {
-            return new Error('Nie znaleziono produktów');
+            return {...new Error('Nie znaleziono produktów')};
         }
 
         return {
@@ -82,7 +81,7 @@ export async function searchProductExtendedAction(name: string) {
             products,
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -101,7 +100,7 @@ export async function getProductAction(ean: string) {
         }
 
         if (!product) {
-            return new Error('Nie znaleziono produktów');
+            return {...new Error('Nie znaleziono produktów')};
         }
 
         let productStatistics: TProductStatistics = {
@@ -126,7 +125,7 @@ export async function getProductAction(ean: string) {
             product,
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -137,7 +136,7 @@ export async function getProductsAction(status: TProductStatus) {
         const productsList = await ProductRepository.first({status});
 
         if (productsList.length === 0) {
-            return new Error('Nie znaleziono produktów');
+            return {...new Error('Nie znaleziono produktów')};
         }
 
         return {
@@ -146,7 +145,7 @@ export async function getProductsAction(status: TProductStatus) {
             productsList,
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -167,7 +166,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
         }
         const product = await ProductRepository.firstWithUserProducts({ean});
 
-        if (!product) return new Error('Produkt nie istnieje');
+        if (!product) return {...new Error('Produkt nie istnieje')};
 
         const parsed = productValidator
             .partial({
@@ -182,7 +181,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
             });
 
         if (!parsed.success) {
-            return new ParsedError(parsed.error.formErrors.fieldErrors);
+            return {...new ParsedError(parsed.error.formErrors.fieldErrors)};
         }
 
         let imgUrl = product.img;
@@ -193,17 +192,20 @@ export async function acceptProductVerificationAction(formData: FormData) {
             if (photoUrl) {
                 imgUrl = photoUrl;
             } else {
-                return new Error('Wystąpił błąd z przesłaniem zdjęcia.');
+                return {...new Error('Wystąpił błąd z przesłaniem zdjęcia.')};
             }
         }
 
-        product.brands = brands;
-        product.name = name;
-        product.quantity = quantity;
-        product.img = imgUrl;
-        product.status = 'active';
+        const productValues = {
+            brands,
+            name,
+            quantity,
+            ean,
+            img: imgUrl,
+            status: 'active' as const,
+        };
 
-        await ProductRepository.update(product.id, product);
+        await ProductRepository.update(product.id, productValues);
 
         await UserProductRepository.makeActive(product.id);
 
@@ -214,7 +216,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
             message: 'Produkt został zatwierdzony poprawnie',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }
 
@@ -224,7 +226,7 @@ export async function rejectProductVerificationAction(ean: string) {
 
         const product = await ProductRepository.firstWithUserProducts({ean});
 
-        if(!product) return new Error('Produkt nie istnieje');
+        if(!product) return {...new Error('Produkt nie istnieje')};
 
         await UserProductRepository.deleteByProductId(product.id);
         await ProductRepository.delete(product.id);
@@ -236,6 +238,6 @@ export async function rejectProductVerificationAction(ean: string) {
             message: 'Produkt został odrzucony poprawnie.',
         };
     } catch (e) {
-        return new CriticalError(e);
+        return {...new CriticalError(e)};
     }
 }

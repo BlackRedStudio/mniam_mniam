@@ -58,9 +58,10 @@ class ProductRepository {
         return product;
     }
 
-    static async update(id: string, product: TProduct) {
+    static async update(id: string, productValues: Omit<TProductInsert, 'id'>,) {
+
         const res = await DB.update(productsTable)
-            .set(product)
+            .set(productValues)
             .where(eq(productsTable.id, id));
 
         return res;

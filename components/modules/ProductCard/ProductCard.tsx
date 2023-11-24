@@ -7,7 +7,6 @@ import {
     addProductToUserListAction,
     deleteProductFromUserListAction,
 } from '@/server/actions/user-product-actions';
-import ParsedError from '@/server/errors/ParsedError';
 import { TUserProduct } from '@/server/schemas';
 import FileResizer from 'react-image-file-resizer';
 
@@ -120,7 +119,7 @@ function ProductCard({
 
         const res = await addProductToUserListAction(formData);
 
-        if (res instanceof ParsedError) {
+        if (!res.success && res.errors) {
             setFormErrors(res.errors);
         }
 

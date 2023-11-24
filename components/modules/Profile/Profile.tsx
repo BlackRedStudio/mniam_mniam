@@ -5,7 +5,6 @@ import {
     deleteAvatarAction,
     updateProfileAction,
 } from '@/server/actions/user-actions';
-import ParsedError from '@/server/errors/ParsedError';
 import { TUser } from '@/server/schemas';
 import { useSession } from 'next-auth/react';
 
@@ -32,7 +31,7 @@ function Profile({ user }: TProfile) {
     const handleProfileForm = async (formData: FormData) => {
         const res = await updateProfileAction(formData);
 
-        if (res instanceof ParsedError) {
+        if (!res.success && res.errors) {
             setFormErrors(res.errors);
         }
 
