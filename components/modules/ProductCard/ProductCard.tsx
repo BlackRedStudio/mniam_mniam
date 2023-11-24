@@ -1,7 +1,6 @@
 'use client';
 
 import { ChangeEvent, useState } from 'react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
     addProductToUserListAction,
@@ -16,13 +15,9 @@ import {
     TProductStatistics,
 } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
-import { cn } from '@/lib/utils/utils';
 import { TUserProductValidatorErrors } from '@/lib/validators/user-product-validator';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
 import {
     Card,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
@@ -30,12 +25,14 @@ import {
 } from '@/components/ui/Card';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
-import Loader from '@/components/ui/Loader';
 
 import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
+import ProductCardBadge from './ProductCardBadge';
+import ProductCardFooter from './ProductCardFooter';
+import ProductCardImage from './ProductCardImage';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -64,30 +61,17 @@ function ProductCard({
     const [image, setImage] = useState<File | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const isTitleMissing = !product_name;
-    const areBrandsMissing = !brands;
-    const isQuantityMissing = !quantity;
-    const isImageMissing = !image_url;
-
     const isDraft =
         currentUserProduct?.status === 'draft' ||
         currentUserProduct?.status === 'draftVisible';
 
     const isSomethingMissing =
-        isTitleMissing ||
-        areBrandsMissing ||
-        isQuantityMissing ||
-        isImageMissing;
+        !product_name || !brands || !quantity || !image_url;
 
     const handleAddProduct = async (status: 'visible' | 'invisible') => {
         setLoading(true);
 
-        if (
-            !name ||
-            !brandsState ||
-            (isImageMissing && !image) ||
-            !quantityState
-        ) {
+        if (!name || !brandsState || (!image_url && !image) || !quantityState) {
             toast({
                 title: 'Uzupełnij wszystkie dane zaznaczone na czerwono',
                 variant: 'destructive',
@@ -187,61 +171,22 @@ function ProductCard({
         }
     };
 
-    let statusEl: JSX.Element = (
-        <Badge variant={'destructive'}>Jakiś błąd</Badge>
-    );
-
-    if (productStatistics.peopleRateCount === 0) {
-        if (isSomethingMissing) {
-            statusEl = (
-                <Badge variant={'destructive'}>
-                    Brakuje niektórych podstawowych cech produktu, aby
-                    prawidłowo zapisać produkt, uzupełnij cechy oznaczone na
-                    czerwono.
-                </Badge>
-            );
-        } else {
-            statusEl = (
-                <Badge variant={'success'}>
-                    Jesteś pierwszym użytkownikiem oceniającym ten produkt!
-                </Badge>
-            );
-        }
-    } else if (currentUserProduct?.status === 'visible') {
-        statusEl = (
-            <Badge variant={'success'}>
-                Produkt znajduje się na Twojej liście!
-            </Badge>
-        );
-    } else if (currentUserProduct?.status === 'invisible') {
-        statusEl = <Badge>Produktu nie ma na Twojej liście.</Badge>;
-    } else if (currentUserProduct?.status === 'draft') {
-        statusEl = (
-            <Badge variant={'secondary'}>
-                Produkt jest w trakcie weryfikacji...
-            </Badge>
-        );
-    } else if (currentUserProduct?.status === 'draftVisible') {
-        statusEl = (
-            <Badge variant={'secondary'}>
-                Produkt znajduje się na Twojej liście, ale jest jeszcze w
-                trakcie weryfikacji...
-            </Badge>
-        );
-    }
-
     return (
         <>
             <Card>
                 <CardHeader>
-                    {statusEl}
+                    <ProductCardBadge
+                        peopleRateCount={productStatistics.peopleRateCount}
+                        isSomethingMissing={isSomethingMissing}
+                        status={currentUserProduct?.status}
+                    />
                     <CardTitle className="pt-4">
                         {name || (
                             <small className="text-destructive">
                                 Brak tytułu
                             </small>
                         )}
-                        {isTitleMissing && (
+                        {!product_name && (
                             <Input
                                 className="mt-3"
                                 placeholder="Wpisz brakujący tytuł (min 3 znaki)."
@@ -257,7 +202,7 @@ function ProductCard({
                             )}
                             )
                         </small>
-                        {isQuantityMissing && (
+                        {!quantity && (
                             <Input
                                 className="mt-3"
                                 placeholder="Wpisz brakującą ilość (min 2 znaki)."
@@ -271,7 +216,7 @@ function ProductCard({
                                 Brak firm
                             </small>
                         )}
-                        {areBrandsMissing && (
+                        {!brands && (
                             <Input
                                 className="mt-3"
                                 placeholder="Wpisz brakujące firmy (min 3 znaki)."
@@ -281,52 +226,13 @@ function ProductCard({
                         <small className="block">Numer EAN: {_id}</small>
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    {image_url ? (
-                        <div className={'relative h-[300px] w-full'}>
-                            <Image
-                                src={image_url ?? ''}
-                                fill
-                                className={cn(
-                                    'object-contain',
-                                    isDraft ? 'opacity-50' : '',
-                                )}
-                                alt={product_name ?? ''}
-                            />
-                        </div>
-                    ) : (
-                        <>
-                            {image ? (
-                                <>
-                                    <div className="text-success">
-                                        Pogląd obrazka
-                                    </div>
-                                    <div className="relative h-[300px] w-full">
-                                        <Image
-                                            src={URL.createObjectURL(image)}
-                                            fill
-                                            className="object-contain"
-                                            alt="Pogląd obrazka"
-                                        />
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="text-destructive">
-                                    Brak obrazka <br />
-                                    (akceptowany format to jpeg/jpg)
-                                </div>
-                            )}
-                            <Input
-                                type="file"
-                                name="image"
-                                className="mt-1"
-                                onChange={handleSelectImage}
-                                accept="image/*"
-                                capture
-                            />
-                        </>
-                    )}
-                </CardContent>
+                <ProductCardImage
+                    image_url={image_url}
+                    product_name={product_name}
+                    isDraft={isDraft}
+                    image={image}
+                    handleSelectImage={handleSelectImage}
+                />
                 <CardFooter className="flex-col">
                     <CommunityRating productStatistics={productStatistics} />
                     <FormError
@@ -347,29 +253,14 @@ function ProductCard({
                         formErrors={formErrors?.price}
                     />
                     <PriceInput price={price} setPrice={setPrice} />
-                    <div className="mt-8 space-y-4">
-                        {loading && <Loader className="mt-4" />}
-                        <Button
-                            className="w-full"
-                            onClick={() => handleAddProduct('invisible')}>
-                            Zapisz ocenę
-                        </Button>
-                        <Button
-                            className="w-full"
-                            onClick={() => handleAddProduct('visible')}
-                            variant={'outline'}>
-                            Zapisz ocenę i dodaj do mojej listy
-                        </Button>
-                        {currentUserProduct?.status === 'visible' ||
-                        currentUserProduct?.status === 'draftVisible' ? (
-                            <Button
-                                className="w-full"
-                                onClick={() => handleDeleteProductFromList()}
-                                variant={'destructive'}>
-                                Usuń produkt z mojej listy
-                            </Button>
-                        ) : null}
-                    </div>
+                    <ProductCardFooter
+                        loading={loading}
+                        handleAddProduct={handleAddProduct}
+                        handleDeleteProductFromList={
+                            handleDeleteProductFromList
+                        }
+                        currentUserProduct={currentUserProduct}
+                    />
                 </CardFooter>
             </Card>
         </>
