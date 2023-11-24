@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { cn, handleCurrencyInput } from '@/lib/utils/utils';
 import H3 from '@/components/ui/H3';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 
 type TPriceInputProps = {
     title?: string;

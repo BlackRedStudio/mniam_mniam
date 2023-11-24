@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { TProduct, TUserProductWithProduct } from '@/server/schemas';
 
 import { TCategoriesIds } from '@/types/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from '@/components/ui/Collapsible';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
 

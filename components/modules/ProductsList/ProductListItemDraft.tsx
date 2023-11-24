@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { TProduct } from '@/server/schemas';
 
 import { cn } from '@/lib/utils/utils';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/Card';
 import H3 from '@/components/ui/H3';
 
 type TProductListItemDraftProps = {

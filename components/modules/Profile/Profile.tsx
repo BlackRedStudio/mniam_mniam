@@ -10,10 +10,10 @@ import { useSession } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
 import { TProfileValidatorErrors } from '@/lib/validators/user-validator';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import SignUpButton from '@/components/ui/SignUpButton';
 
 type TProfile = {

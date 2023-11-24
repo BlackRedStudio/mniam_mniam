@@ -2,8 +2,8 @@ import { ChangeEvent } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils/utils';
-import { CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { CardContent } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 
 type TProductCardImageProps = {
     image_url?: string;
