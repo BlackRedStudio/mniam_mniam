@@ -29,7 +29,7 @@ const BarcodeScanner = ({
     const { toast } = useToast();
 
     const { ref } = useZxing({
-        deviceId,
+        // deviceId,
         onDecodeResult(result) {
             setCode(result.getText());
             setScannerEnabled(false);

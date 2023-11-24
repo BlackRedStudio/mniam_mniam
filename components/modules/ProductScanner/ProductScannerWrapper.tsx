@@ -35,9 +35,7 @@ function ProductScannerWrapper() {
         };
 
         if (typeof navigator.mediaDevices !== 'undefined') {
-            setTimeout(async () => {
-                await getMediaDevices();
-            }, 2000);
+            getMediaDevices();
         } else {
             setDeviceId('NO_CAMERA_FOUND');
         }
@@ -62,13 +60,13 @@ function ProductScannerWrapper() {
                         urządzeniu
                     </div>
                 )}
-                {deviceId !== 'NO_CAMERA_FOUND' && deviceId && (
+                {/* {deviceId !== 'NO_CAMERA_FOUND' && deviceId && ( */}
                     <Button onClick={() => setScannerEnabled(!scannerEnabled)}>
                         {scannerEnabled
                             ? 'Zakończ skanowanie'
                             : 'Rozpocznij skanowanie'}
                     </Button>
-                )}
+                {/* )} */}
             </div>
             <div className="mb-4">
                 <Label htmlFor="code">
