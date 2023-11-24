@@ -22,9 +22,12 @@ function ProductScannerWrapper() {
             const availableDevices =
                 await navigator.mediaDevices.enumerateDevices();
 
+            alert(JSON.stringify(availableDevices));
             const availableVideoDevices = availableDevices.filter(
                 device => device.kind === 'videoinput',
             );
+            alert(JSON.stringify(availableVideoDevices));
+
 
             if (availableVideoDevices?.length > 0) {
                 setDevices(availableVideoDevices);
@@ -33,6 +36,7 @@ function ProductScannerWrapper() {
                 setDeviceId('NO_CAMERA_FOUND');
             }
         };
+        alert(JSON.stringify(navigator));
         if (typeof navigator.mediaDevices !== 'undefined') {
             getMediaDevices();
         } else {
