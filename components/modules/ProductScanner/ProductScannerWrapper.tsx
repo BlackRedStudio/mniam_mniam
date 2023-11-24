@@ -22,22 +22,22 @@ function ProductScannerWrapper() {
             const availableDevices =
                 await navigator.mediaDevices.enumerateDevices();
 
-            alert(JSON.stringify(availableDevices));
             const availableVideoDevices = availableDevices.filter(
                 device => device.kind === 'videoinput',
             );
-            alert(JSON.stringify(availableVideoDevices));
 
-            if (availableVideoDevices?.length > 0) {
+            if (availableVideoDevices?.length > 0 && availableVideoDevices[0]?.deviceId) {
                 setDevices(availableVideoDevices);
                 setDeviceId(availableVideoDevices[0]?.deviceId);
             } else {
                 setDeviceId('NO_CAMERA_FOUND');
             }
         };
-        alert(JSON.stringify(navigator));
+
         if (typeof navigator.mediaDevices !== 'undefined') {
-            getMediaDevices();
+            setTimeout(async () => {
+                await getMediaDevices();
+            }, 2000);
         } else {
             setDeviceId('NO_CAMERA_FOUND');
         }
