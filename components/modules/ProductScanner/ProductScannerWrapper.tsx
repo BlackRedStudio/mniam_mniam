@@ -28,7 +28,6 @@ function ProductScannerWrapper() {
             );
             alert(JSON.stringify(availableVideoDevices));
 
-
             if (availableVideoDevices?.length > 0) {
                 setDevices(availableVideoDevices);
                 setDeviceId(availableVideoDevices[0]?.deviceId);
