@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 
 import { getNameInitials } from '@/lib/utils/utils';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 function AvatarElement() {
     const { data: session } = useSession();
