@@ -6,10 +6,10 @@ import { signIn } from 'next-auth/react';
 
 import { TLogin } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
-import { Separator } from '@/components/ui/Separator';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 
 function LoginTab() {
     const { toast } = useToast();

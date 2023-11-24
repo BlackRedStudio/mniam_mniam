@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 
 import H2 from '@/components/ui/H2';
-import { Separator } from '@/components/ui/Separator';
+import { Separator } from '@/components/ui/separator';
 import ProductScannerWrapper from '@/components/modules/ProductScanner/ProductScannerWrapper';
 import ProductSearch from '@/components/modules/ProductSearch/ProductSearch';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';

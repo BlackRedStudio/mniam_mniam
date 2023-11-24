@@ -1,6 +1,6 @@
 import { TUserProduct } from '@/server/schemas';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import Loader from '@/components/ui/Loader';
 
 type TProductCardFooterProps = {

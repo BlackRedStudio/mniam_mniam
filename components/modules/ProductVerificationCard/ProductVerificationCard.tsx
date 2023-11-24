@@ -12,16 +12,16 @@ import FileResizer from 'react-image-file-resizer';
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
 import { TProductValidatorErrors } from '@/lib/validators/product-validator';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/Card';
+} from '@/components/ui/card';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/input';
 import Loader from '@/components/ui/Loader';
 
 type TProductVerificationCard = {

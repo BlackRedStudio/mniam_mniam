@@ -15,7 +15,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from '@/components/ui/Dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { Icons } from '@/components/modules/Icons';
 
 import AlertModal from '../modules/Modal';

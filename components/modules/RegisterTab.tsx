@@ -8,8 +8,8 @@ import { signIn } from 'next-auth/react';
 import { useToast } from '@/lib/hooks/use-toast';
 import { TRegistrationValidatorErrors } from '@/lib/validators/user-validator';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 import SignUpButton from '../ui/SignUpButton';
 

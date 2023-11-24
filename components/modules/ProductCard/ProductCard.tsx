@@ -22,9 +22,9 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/Card';
+} from '@/components/ui/card';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/input';
 
 import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';

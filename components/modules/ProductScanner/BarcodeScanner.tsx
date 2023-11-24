@@ -9,7 +9,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '../../ui/Select';
+} from '../../ui/select';
 
 type TBarcodeScannerProps = {
     deviceId: string;

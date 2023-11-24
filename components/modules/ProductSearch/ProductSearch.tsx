@@ -9,9 +9,9 @@ import {
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
 
-import { Button } from '../../ui/Button';
-import { Input } from '../../ui/Input';
-import { Label } from '../../ui/Label';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 import Loader from '../../ui/Loader';
 import ProductSearchItem from './ProductSearchItem';
 

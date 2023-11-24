@@ -1,6 +1,6 @@
 import { useFormStatus } from 'react-dom';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
 type TSignUpButtonProps = {
     title: string;

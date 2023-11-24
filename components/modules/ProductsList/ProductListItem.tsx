@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { TUserProductWithProduct } from '@/server/schemas';
 
 import { cn } from '@/lib/utils/utils';
-import { Card, CardHeader } from '@/components/ui/Card';
+import { Card, CardHeader } from '@/components/ui/card';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
 

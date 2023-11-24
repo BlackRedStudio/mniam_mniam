@@ -3,10 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/button';
 
-import { Input } from '../../ui/Input';
-import { Label } from '../../ui/Label';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 import Loader from '../../ui/Loader';
 import BarcodeScanner from './BarcodeScanner';
 

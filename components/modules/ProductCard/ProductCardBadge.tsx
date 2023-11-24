@@ -1,5 +1,5 @@
 import { TUserProductStatus } from '@/types/types';
-import { Badge } from '@/components/ui/Badge';
+import { Badge } from '@/components/ui/badge';
 
 const badgesConfig = {
     unknown: {
