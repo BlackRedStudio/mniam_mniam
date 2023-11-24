@@ -1,7 +1,6 @@
 import { TProductStatistics } from '@/types/types';
-
-import H3 from '@/components/ui/H3';
 import { handleMultiplePersonText } from '@/lib/utils/utils';
+import H3 from '@/components/ui/H3';
 
 type TCommunityRatingProps = {
     productStatistics: TProductStatistics;
@@ -12,29 +11,30 @@ function CommunityRating({
 }: TCommunityRatingProps) {
     const textVariant = handleMultiplePersonText(peopleRateCount);
 
-    if(isNaN(parseInt(averageRating))) {
+    if (isNaN(parseInt(averageRating))) {
         averageRating = 'Brak';
     }
-    if(isNaN(parseInt(averagePrice))) {
+    if (isNaN(parseInt(averagePrice))) {
         averagePrice = 'Brak';
     }
 
-    const peopleText = [
-        'osoba oceniła', 'osoby oceniły', 'osób oceniło'
-    ][textVariant];
+    const peopleText = ['osoba oceniła', 'osoby oceniły', 'osób oceniło'][
+        textVariant
+    ];
 
     return (
-        <div className="mb-7 text-center w-full">
-            <H3 className="mr-2 pb-0 bg-muted p-4 text-xl">
+        <div className="mb-7 w-full text-center">
+            <H3 className="mr-2 bg-muted p-4 pb-0 text-xl">
                 Ocena społeczności: <br />
                 <strong>{averageRating}</strong>
             </H3>
-            <H3 className="text-md mt-2">
+            <H3 className="mt-2 text-base">
                 ({peopleRateCount} {peopleText} ten produkt)
             </H3>
-            <H3 className="text-md mt-4">
+            <H3 className="mt-4 text-base">
                 Średnia cena produktu: {averagePrice} zł
-                <br /><small>(z ostatnich 180 dni)</small>
+                <br />
+                <small>(z ostatnich 180 dni)</small>
             </H3>
         </div>
     );

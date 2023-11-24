@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { App as CapacitorApp } from '@capacitor/app';
@@ -15,7 +15,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/Dropdown-menu';
 import { Icons } from '@/components/modules/Icons';
 
 import AlertModal from '../modules/Modal';
@@ -44,7 +44,7 @@ function Menu() {
             <DropdownMenuTrigger className="pointer-events-auto">
                 <Icons.menu className="h-9 w-9 stroke-1" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-42 mr-4">
+            <DropdownMenuContent className="mr-4 w-44">
                 <DropdownMenuLabel>Menu główne</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <Link href="/dashboard">
@@ -56,9 +56,13 @@ function Menu() {
                 <Link href="/my-list">
                     <DropdownMenuItem>Moja lista</DropdownMenuItem>
                 </Link>
-                {session?.user.role === 'admin' && <Link href="/product-verification">
-                    <DropdownMenuItem>Weryfikacja produktów</DropdownMenuItem>
-                </Link>}
+                {session?.user.role === 'admin' && (
+                    <Link href="/product-verification">
+                        <DropdownMenuItem>
+                            Weryfikacja produktów
+                        </DropdownMenuItem>
+                    </Link>
+                )}
                 <AlertModal
                     title="Czy napewno chcesz się wylogować?"
                     accept={async () => {
@@ -79,9 +83,11 @@ function Menu() {
                         Wyloguj się
                     </DropdownMenuItem>
                 </AlertModal>
-                {Capacitor.isNativePlatform() && <DropdownMenuItem onClick={checkAppLaunchUrl}>
-                    Wyjdź z aplikacji
-                </DropdownMenuItem>}
+                {Capacitor.isNativePlatform() && (
+                    <DropdownMenuItem onClick={checkAppLaunchUrl}>
+                        Wyjdź z aplikacji
+                    </DropdownMenuItem>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -1,12 +1,12 @@
-import Logo from './Logo';
 import Link from 'next/link';
-import Menu from './Menu';
+
 import AvatarElement from './Avatar';
+import Logo from './Logo';
+import Menu from './Menu';
 
 function Header() {
-
     return (
-        <header className="py-4 px-2 border-b-2 flex items-center justify-between">
+        <header className="flex items-center justify-between border-b-2 px-2 py-4">
             <AvatarElement />
             <Link href="/dashboard">
                 <Logo />

@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { TProduct, TUserProductWithProduct } from '@/server/schemas';
 
 import { TCategoriesIds } from '@/types/types';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+} from '@/components/ui/Collapsible';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
 
@@ -17,7 +18,6 @@ import CategorySelector from '../ProductCard/CategorySelector';
 import PriceInput from '../ProductCard/PriceInput';
 import ProductListItem from './ProductListItem';
 import ProductListItemDraft from './ProductListItemDraft';
-import { TProduct, TUserProductWithProduct } from '@/server/schema';
 
 type TActiveList = {
     productsList: TUserProductWithProduct[];
@@ -43,9 +43,7 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
         setRating(0);
     };
 
-    const handleFilters = (
-        product: TUserProductWithProduct,
-    ) => {
+    const handleFilters = (product: TUserProductWithProduct) => {
         if (rating > 0) {
             if (product.rating !== rating) {
                 return null;
@@ -82,8 +80,8 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
     return (
         <>
             {listType === 'active' && (
-                <Collapsible className="p-3 border rounded-lg mb-5">
-                    <CollapsibleTrigger className="flex items-center justify-start w-full">
+                <Collapsible className="mb-5 rounded-lg border p-3">
+                    <CollapsibleTrigger className="flex w-full items-center justify-start">
                         <Icons.chevronsUpDown />
                         <H3>Filtry</H3>
                     </CollapsibleTrigger>

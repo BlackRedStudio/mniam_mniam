@@ -1,41 +1,48 @@
-import { getProductAction } from "@/server/actions/product-actions";
-import ProductCard from "@/components/modules/ProductCard/ProductCard";
-import { redirect } from "next/navigation";
+import { redirect } from 'next/navigation';
+import { getProductAction } from '@/server/actions/product-actions';
+
+import ProductCard from '@/components/modules/ProductCard/ProductCard';
 
 type TProductPageProps = {
     params: {
-        ean: string
-    }
-}
+        ean: string;
+    };
+};
 
-async function ProductPage({params: {ean}}: TProductPageProps) {
-
-    if(ean.length !== 13 && ean.length !== 8) {
+async function ProductPage({ params: { ean } }: TProductPageProps) {
+    if (ean.length !== 13 && ean.length !== 8) {
         redirect('/dashboard');
     }
 
     const res = await getProductAction(ean);
-    if(!res.success) {
-
+    if (!res.success) {
         const virtualProduct = {
-            _id: ean
-        }
+            _id: ean,
+        };
         const virtualStatistics = {
             averageRating: 'Brak',
             averagePrice: 'Brak',
             peopleRateCount: 0,
-        }
+        };
 
         return (
-            <section className="product-page">
-                <ProductCard product={virtualProduct} currentUserProduct={null} productStatistics={virtualStatistics} />
+            <section>
+                <ProductCard
+                    product={virtualProduct}
+                    currentUserProduct={null}
+                    productStatistics={virtualStatistics}
+                />
             </section>
         );
     }
-    
+
     return (
-        <section className="product-page">
-            <ProductCard product={res.product} currentUserProduct={res.currentUserProduct} productStatistics={res.productStatistics} />
+        <section>
+            <ProductCard
+                product={res.product}
+                currentUserProduct={res.currentUserProduct}
+                productStatistics={res.productStatistics}
+            />
         </section>
     );
 }

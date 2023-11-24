@@ -76,7 +76,4 @@ export const categories = [
 // 10 MB
 export const MAX_FILE_SIZE = 10485760;
 
-export const ACCEPTED_IMAGE_TYPES = [
-    'image/jpeg',
-    'image/jpg',
-];
+export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];

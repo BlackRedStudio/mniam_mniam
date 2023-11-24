@@ -1,18 +1,21 @@
 'use client';
 
-import { useState, SyntheticEvent } from 'react';
-import { deleteAvatarAction, updateProfileAction } from '@/server/actions/user-actions';
-import { TUser } from '@/server/schema';
+import { SyntheticEvent, useState } from 'react';
+import {
+    deleteAvatarAction,
+    updateProfileAction,
+} from '@/server/actions/user-actions';
+import ParsedError from '@/server/errors/ParsedError';
+import { TUser } from '@/server/schemas';
 import { useSession } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
-import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import SignUpButton from '@/components/ui/SignUpButton';
-import { Button } from '@/components/ui/button';
-import ParsedError from '@/server/errors/ParsedError';
 import { TProfileValidatorErrors } from '@/lib/validators/user-validator';
+import { Button } from '@/components/ui/Button';
+import FormError from '@/components/ui/FormError';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import SignUpButton from '@/components/ui/SignUpButton';
 
 type TProfile = {
     user: TUser;
@@ -22,15 +25,14 @@ function Profile({ user }: TProfile) {
     const { toast } = useToast();
     const { data: session, update } = useSession();
 
-    const [formErrors, setFormErrors] =
-        useState<TProfileValidatorErrors>();
+    const [formErrors, setFormErrors] = useState<TProfileValidatorErrors>();
 
     if (!session) return null;
 
     const handleProfileForm = async (formData: FormData) => {
         const res = await updateProfileAction(formData);
 
-        if(res instanceof ParsedError) {
+        if (res instanceof ParsedError) {
             setFormErrors(res.errors);
         }
 
@@ -62,7 +64,7 @@ function Profile({ user }: TProfile) {
                 image: '',
             });
         }
-    }
+    };
 
     return (
         <form action={formData => handleProfileForm(formData)}>
@@ -100,10 +102,11 @@ function Profile({ user }: TProfile) {
                 />
                 {<FormError formErrors={formErrors?.image} />}
             </div>
-            {
-                user.image &&
-                <Button className='mb-5' onClick={e => handleDeleteAvatar(e)}>Usuń swój Avatar</Button>
-            }
+            {user.image && (
+                <Button className="mb-5" onClick={e => handleDeleteAvatar(e)}>
+                    Usuń swój Avatar
+                </Button>
+            )}
             <div className="mb-4">
                 <Label htmlFor="password">Hasło</Label>
                 <Input
@@ -122,11 +125,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     placeholder="Wpisz ponownie swoje hasło"
                 />
-                {
-                    <FormError
-                        formErrors={formErrors?.passwordConfirm}
-                    />
-                }
+                {<FormError formErrors={formErrors?.passwordConfirm} />}
             </div>
             <SignUpButton title="Zmień dane profilowe" />
         </form>

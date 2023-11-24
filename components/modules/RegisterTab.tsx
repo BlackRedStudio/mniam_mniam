@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { registerUserAction } from '@/server/actions/user-actions';
+import ParsedError from '@/server/errors/ParsedError';
+import { signIn } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
+import { TRegistrationValidatorErrors } from '@/lib/validators/user-validator';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 
 import SignUpButton from '../ui/SignUpButton';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import ParsedError from '@/server/errors/ParsedError';
-import { TRegistrationValidatorErrors } from '@/lib/validators/user-validator';
 
 function RegisterTab() {
     const { toast } = useToast();
@@ -24,7 +24,7 @@ function RegisterTab() {
     const handleRegistration = async (formData: FormData) => {
         const res = await registerUserAction(formData);
 
-        if(res instanceof ParsedError) {
+        if (res instanceof ParsedError) {
             setFormErrors(res.errors);
         }
 
@@ -33,7 +33,7 @@ function RegisterTab() {
             variant: res.success ? 'success' : 'destructive',
         });
 
-        if(res.success === true) {
+        if (res.success === true) {
             const resLogin = await signIn('credentials', {
                 email: formData.get('email'),
                 password: formData.get('password'),
@@ -52,7 +52,7 @@ function RegisterTab() {
     };
 
     return (
-        <div className="register-tab">
+        <div>
             <form action={formData => handleRegistration(formData)}>
                 <div className="mb-4">
                     <Label htmlFor="name">Nazwa użytkownika</Label>
@@ -75,11 +75,7 @@ function RegisterTab() {
                         placeholder="Wpisz swój email"
                         required
                     />
-                    {
-                        <FormError
-                            formErrors={formErrors?.email}
-                        />
-                    }
+                    {<FormError formErrors={formErrors?.email} />}
                 </div>
                 <div className="mb-4">
                     <Label htmlFor="password">Hasło</Label>
@@ -90,11 +86,7 @@ function RegisterTab() {
                         placeholder="Wpisz swoje hasło"
                         required
                     />
-                    {
-                        <FormError
-                            formErrors={formErrors?.password}
-                        />
-                    }
+                    {<FormError formErrors={formErrors?.password} />}
                 </div>
                 <div className="mb-4">
                     <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
@@ -105,15 +97,9 @@ function RegisterTab() {
                         placeholder="Wpisz ponownie swoje hasło"
                         required
                     />
-                    {
-                        <FormError
-                            formErrors={
-                                formErrors?.passwordConfirm
-                            }
-                        />
-                    }
+                    {<FormError formErrors={formErrors?.passwordConfirm} />}
                 </div>
-                <SignUpButton title='Zarejestruj się' />
+                <SignUpButton title="Zarejestruj się" />
             </form>
         </div>
     );

@@ -5,7 +5,8 @@ import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
 
 import { cn } from '@/lib/utils/utils';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/Toaster';
+
 import Providers from './providers';
 
 const fontSans = FontSans({ subsets: ['latin'], variable: '--font-sans' });
@@ -23,15 +24,13 @@ type TRootLayoutProps = {
 
 async function RootLayout({ children }: TRootLayoutProps) {
     return (
-        <html lang="pl" className='max-w-screen-sm mx-auto'>
+        <html lang="pl" className="mx-auto max-w-screen-sm">
             <body
                 className={cn(
-                    'min-h-screen bg-background font-sans antialiased mx-auto max-w-[700px] overflow-hidden',
+                    'mx-auto min-h-screen max-w-[700px] overflow-hidden bg-background font-sans antialiased',
                     fontSans.variable,
                 )}>
-                <Providers>
-                    {children}
-                </Providers>
+                <Providers>{children}</Providers>
                 <Toaster />
             </body>
         </html>

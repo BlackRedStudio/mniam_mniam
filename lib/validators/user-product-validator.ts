@@ -20,4 +20,6 @@ export const userProductValidator = z.object({
 
 export type TUserProductValidator = z.infer<typeof userProductValidator>;
 
-export type TUserProductValidatorErrors = typeToFlattenedError<typeof userProductValidator._input>['fieldErrors'];
+export type TUserProductValidatorErrors = typeToFlattenedError<
+    typeof userProductValidator._input
+>['fieldErrors'];

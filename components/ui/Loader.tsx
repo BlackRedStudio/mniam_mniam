@@ -1,5 +1,6 @@
-import { cn } from '@/lib/utils/utils';
 import Image from 'next/image';
+
+import { cn } from '@/lib/utils/utils';
 
 type TLoaderProps = {
     className?: string;

@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { useZxing } from 'react-zxing';
 
+import { useToast } from '@/lib/hooks/use-toast';
 
 import {
     Select,
@@ -8,8 +9,7 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '../../ui/select';
-import { useToast } from '@/lib/hooks/use-toast';
+} from '../../ui/Select';
 
 type TBarcodeScannerProps = {
     deviceId: string;
@@ -19,8 +19,13 @@ type TBarcodeScannerProps = {
     setScannerEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
-const BarcodeScanner = ({ deviceId, devices, setCode, setDeviceId, setScannerEnabled }: TBarcodeScannerProps) => {
-    
+const BarcodeScanner = ({
+    deviceId,
+    devices,
+    setCode,
+    setDeviceId,
+    setScannerEnabled,
+}: TBarcodeScannerProps) => {
     const { toast } = useToast();
 
     const { ref } = useZxing({
@@ -39,7 +44,7 @@ const BarcodeScanner = ({ deviceId, devices, setCode, setDeviceId, setScannerEna
         <>
             {devices.length > 0 && (
                 <Select onValueChange={e => setDeviceId(e)} value={deviceId}>
-                    <SelectTrigger className="w-full mb-5">
+                    <SelectTrigger className="mb-5 w-full">
                         <SelectValue placeholder="Rozwiń listę" />
                     </SelectTrigger>
                     <SelectContent>
@@ -47,13 +52,17 @@ const BarcodeScanner = ({ deviceId, devices, setCode, setDeviceId, setScannerEna
                             <SelectItem
                                 key={device.deviceId}
                                 value={device.deviceId}>
-                                {device.label || `Wejście Video nr: ${index + 1}`}
+                                {device.label ||
+                                    `Wejście Video nr: ${index + 1}`}
                             </SelectItem>
                         ))}
                     </SelectContent>
                 </Select>
             )}
-            <video className="rounded-3xl h-[250px] w-full object-cover mb-7" ref={ref} />
+            <video
+                className="mb-7 h-[250px] w-full rounded-3xl object-cover"
+                ref={ref}
+            />
         </>
     );
 };

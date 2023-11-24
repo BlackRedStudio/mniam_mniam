@@ -2,8 +2,6 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 import { THTTPMethod } from '@/types/types';
-import CriticalError from '@/server/errors/CriticalError';
-import Error from '@/server/errors/Error';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -24,7 +22,7 @@ export function getNameInitials(userName: string) {
 export async function api<Res>(
     url: string,
     method: THTTPMethod = 'GET',
-    body?: any,
+    body?: Record<string, string> | null,
 ) {
     const headers = {
         'User-Agent': 'Mniam App',
@@ -36,20 +34,21 @@ export async function api<Res>(
         body = null;
     }
 
-    let response = await fetch(url, {
+    const response = await fetch(url, {
         method,
-        body,
+        body: JSON.stringify(body),
         headers,
     });
 
-    let data = (await response.json()) as Res;
+    const data = (await response.json()) as Res;
 
     return data;
 }
 
 export function handleCurrencyInput(value: string) {
-
-    if( value.match(/[^0-9\.]/g) ) return null;
+    if (value.match(/[^0-9.]/g)) {
+        return null;
+    }
 
     const splittedVal = value.split('.');
 
@@ -68,8 +67,8 @@ export function handleMultiplePersonText(persons: number) {
     if (persons === 1) {
         textVariant = 0;
     } else if (persons > 1) {
-        const lastNumber = parseInt( String(persons).slice(-1) );
-        if(lastNumber > 1 && lastNumber < 5) {
+        const lastNumber = parseInt(String(persons).slice(-1));
+        if (lastNumber > 1 && lastNumber < 5) {
             textVariant = 1;
         }
     }

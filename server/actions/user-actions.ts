@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-
+import bcrypt from 'bcrypt';
 import {
     userProfileValidator,
     userRegistrationValidator,
@@ -12,6 +12,7 @@ import UserService from '../services/UserService';
 import CriticalError from '../errors/CriticalError';
 import Error from '../errors/Error';
 import { checkSession } from '../helpers/helpers';
+import UserRepository from '../repositories/UserRepository';
 
 export async function registerUserAction(formData: FormData) {
     try {
@@ -32,14 +33,16 @@ export async function registerUserAction(formData: FormData) {
             return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        const user = await UserService.findFirstByEmail(email);
+        const user = await UserRepository.firstWithAccounts({email});
 
         // user and password exist
         if (user) {
             return new Error('Użytkownik z danym adresem email już istnieje w bazie danych');
         }
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        await UserService.insert(email, name, password);
+        await UserRepository.insert(email, name, hashedPassword);
 
         return {
             success: true as const,
@@ -74,7 +77,7 @@ export async function updateProfileAction(formData: FormData) {
             return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        const user = await UserService.findFirstByEmail(email);
+        const user = await UserRepository.firstWithAccounts({email});
 
         // if user email has changed
         if (user && session.user.email !== email) {
@@ -99,7 +102,7 @@ export async function deleteAvatarAction() {
     try {
         const session = await checkSession();
 
-        await UserService.deleteAvatar(session.user.id);
+        await UserRepository.deleteAvatar(session.user.id);
 
         revalidatePath('/profile');
 

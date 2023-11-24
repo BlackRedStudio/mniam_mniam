@@ -1,6 +1,6 @@
 import { useFormStatus } from 'react-dom';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 type TSignUpButtonProps = {
     title: string;
@@ -10,7 +10,7 @@ function SignUpButton({ title }: TSignUpButtonProps) {
     const { pending } = useFormStatus();
 
     return (
-        <Button className="mt-6 py-7 w-full" disabled={pending}>
+        <Button className="mt-6 w-full py-7" disabled={pending}>
             {title}
         </Button>
     );

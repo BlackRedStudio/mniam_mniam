@@ -1,15 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
-import { useToast } from '@/lib/hooks/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { useRouter } from 'next/navigation';
 import { TLogin } from '@/types/types';
+import { useToast } from '@/lib/hooks/use-toast';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Separator } from '@/components/ui/Separator';
 
 function LoginTab() {
     const { toast } = useToast();
@@ -49,7 +49,7 @@ function LoginTab() {
     };
 
     return (
-        <div className="login-tab">
+        <div>
             <div className="mb-4">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -75,14 +75,14 @@ function LoginTab() {
                 />
             </div>
             <Button
-                className="mt-6 py-7 w-full"
+                className="mt-6 w-full py-7"
                 disabled={loading}
                 onClick={() => handleLogin('credentials')}>
                 Zaloguj się
             </Button>
             <Separator className="my-8" />
             <Button
-                className="py-7 w-full bg-white text-primary border-2 mb-6"
+                className="mb-6 w-full border-2 bg-white py-7 text-primary"
                 onClick={() => handleLogin('google')}>
                 <img
                     loading="lazy"
@@ -95,7 +95,7 @@ function LoginTab() {
                 Zaloguj się przez Google
             </Button>
             <Button
-                className="py-7 w-full border-2 mb-6"
+                className="mb-6 w-full border-2 py-7"
                 onClick={() => handleLogin('github')}>
                 <img
                     loading="lazy"

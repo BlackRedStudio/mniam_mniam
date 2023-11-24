@@ -15,6 +15,8 @@ import { checkSession, revalidateProductPaths } from '../helpers/helpers';
 import ProductService from '../services/ProductService';
 import UserProductService from '../services/UserProductService';
 import ParsedError from '../errors/ParsedError';
+import UserProductRepository from '../repositories/UserProductRepository';
+import ProductRepository from '../repositories/ProductRepository';
 
 // search product by name using DB, or if not exist using API
 export async function searchProductAction(name: string) {
@@ -22,7 +24,7 @@ export async function searchProductAction(name: string) {
         let products: TOpenFoodFactsProduct[];
         let extendedSearch = false;
 
-        const productsDB = await ProductService.findByName(name);
+        const productsDB = await ProductRepository.searchByName(name);
 
         if (productsDB.length > 0) {
             products = productsDB.map(product =>
@@ -90,7 +92,7 @@ export async function getProductAction(ean: string) {
 
         let product: TOpenFoodFactsProduct | undefined;
 
-        const productDB = await ProductService.findFirstByEan(ean);
+        const productDB = await ProductRepository.firstWithUserProducts({ean});
 
         if (productDB) {
             product = ProductService.mapToApiProduct(productDB);
@@ -132,7 +134,7 @@ export async function getProductsAction(status: TProductStatus) {
     try {
         await checkSession(true);
 
-        const productsList = await ProductService.findByStatus(status);
+        const productsList = await ProductRepository.first({status});
 
         if (productsList.length === 0) {
             return new Error('Nie znaleziono produktów');
@@ -163,7 +165,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
         if (image === 'null') {
             isImage = false;
         }
-        const product = await ProductService.findFirstByEan(ean);
+        const product = await ProductRepository.firstWithUserProducts({ean});
 
         if (!product) return new Error('Produkt nie istnieje');
 
@@ -201,9 +203,9 @@ export async function acceptProductVerificationAction(formData: FormData) {
         product.img = imgUrl;
         product.status = 'active';
 
-        await ProductService.update(product);
+        await ProductRepository.update(product.id, product);
 
-        await UserProductService.activateProducts(product.id);
+        await UserProductRepository.makeActive(product.id);
 
         revalidateProductPaths(ean);
 
@@ -220,12 +222,12 @@ export async function rejectProductVerificationAction(ean: string) {
     try {
         await checkSession(true);
 
-        const product = await ProductService.findFirstByEan(ean);
+        const product = await ProductRepository.firstWithUserProducts({ean});
 
         if(!product) return new Error('Produkt nie istnieje');
 
-        await UserProductService.deleteByProductId(product.id);
-        await ProductService.deleteByProductId(product.id);
+        await UserProductRepository.deleteByProductId(product.id);
+        await ProductRepository.delete(product.id);
 
         revalidateProductPaths(ean);
 

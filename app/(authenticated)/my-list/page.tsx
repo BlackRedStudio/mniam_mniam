@@ -7,8 +7,8 @@ async function MyListPage() {
     const res = await getUserProductsAction(['visible', 'draftVisible']);
 
     return (
-        <section className="my-list-page">
-            <H2 className="text-center mb-3">Moja lista:</H2>
+        <section>
+            <H2 className="mb-3 text-center">Moja lista:</H2>
             {res.success ? (
                 <ProductsList
                     productsList={res.userProductsList}

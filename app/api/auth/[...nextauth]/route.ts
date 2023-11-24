@@ -1,3 +1,6 @@
+import { DB } from '@/server/helpers/DB';
+import { DrizzleAdapter } from '@/server/helpers/DrizzleAdapter';
+import UserRepository from '@/server/repositories/UserRepository';
 import bcrypt from 'bcrypt';
 import NextAuth, { AuthOptions } from 'next-auth';
 import { Adapter } from 'next-auth/adapters';
@@ -5,12 +8,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
-import { DB } from '@/server/helpers/DB';
-import { DrizzleAdapter } from '@/server/helpers/DrizzleAdapter';
-import UserService from '@/server/services/UserService';
-
 export const authOptions = {
+    /* eslint-disable */
     adapter: DrizzleAdapter(DB as any) as Adapter,
+    /* eslint-enable */
     pages: {
         signIn: '/',
     },
@@ -36,7 +37,7 @@ export const authOptions = {
                     ...profile,
                     id: profile.id.toString(),
                     role: 'user',
-                    image: profile.avatar_url
+                    image: profile.avatar_url,
                 };
             },
             allowDangerousEmailAccountLinking: true,
@@ -52,7 +53,9 @@ export const authOptions = {
             async authorize(credentials) {
                 if (!credentials) return null;
 
-                const user = await UserService.findFirstByEmail(credentials.email);
+                const user = await UserRepository.firstWithAccounts({
+                    email: credentials.email,
+                });
 
                 if (user && user.password) {
                     const passwordMatch = await bcrypt.compare(

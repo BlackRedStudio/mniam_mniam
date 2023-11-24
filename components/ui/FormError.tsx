@@ -11,7 +11,7 @@ function FormError({ formErrors, className }: TFormError) {
             {formErrors?.map((msg, index) => (
                 <p
                     key={index}
-                    className={cn('mt-1 text-destructive text-xs', className)}>
+                    className={cn('mt-1 text-xs text-destructive', className)}>
                     {msg}
                 </p>
             ))}

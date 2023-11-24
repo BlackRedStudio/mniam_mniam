@@ -1,7 +1,6 @@
 {
     "root": true,
     "parser": "@babel/eslint-parser",
-    "typeRoots": ["types"],
     "env": {
         "node": true,
         "browser": true,
@@ -14,7 +13,8 @@
         "plugin:prettier/recommended",
         "plugin:tailwindcss/recommended",
 		"plugin:testing-library/react",
-		"plugin:jest-dom/recommended"
+		"plugin:jest-dom/recommended",
+        "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
         "ecmaFeatures": {
@@ -23,11 +23,14 @@
         "ecmaVersion": 2020,
         "requireConfigFile": false
     },
-    "plugins": ["react", "@next/eslint-plugin-next", "prettier", "tailwindcss"],
+    "plugins": ["react", "@next/eslint-plugin-next", "prettier", "tailwindcss", "@typescript-eslint"],
     "settings": {
         "tailwindcss": {
             "callees": ["cn"],
             "config": "tailwind.config.js"
+        },
+        "react": {
+            "version": "detect"
         },
         "next": {
             "rootDir": ["./"]
@@ -41,7 +44,7 @@
         "no-unused-expressions": ["error", { "allowTernary": true }],
         "camelcase": 0,
         "react/self-closing-comp": 1,
-        "react/jsx-filename-extension": [1, { "extensions": [".js", "jsx"] }],
+        "react/jsx-filename-extension": [1, { "extensions": [".ts", "tsx"] }],
         "react/prop-types": 0,
         "react/destructuring-assignment": 0,
         "react/jsx-no-comment-textnodes": 0,
@@ -50,8 +53,8 @@
         "react/no-unescaped-entities": 0,
         "react/require-default-props": 0,
         "react/react-in-jsx-scope": 0,
-        "linebreak-style": ["error", "windows"],
-        "semi": ["error", "never"],
+        "linebreak-style": 0,
+        "semi": [2, "always"],
         "prettier/prettier": [
             "error",
             { "endOfLine": "auto" },

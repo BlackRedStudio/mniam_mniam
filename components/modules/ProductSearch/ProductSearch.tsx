@@ -9,9 +9,9 @@ import {
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
 
-import { Button } from '../../ui/button';
-import { Input } from '../../ui/input';
-import { Label } from '../../ui/label';
+import { Button } from '../../ui/Button';
+import { Input } from '../../ui/Input';
+import { Label } from '../../ui/Label';
 import Loader from '../../ui/Loader';
 import ProductSearchItem from './ProductSearchItem';
 
@@ -38,27 +38,31 @@ function ProductSearch() {
                             />
                         ),
                 )}
-                {extendedSearch ? <Button
-                    className="mt-5 w-full"
-                    onClick={async () => {
-                        setLoading(true);
-                        setProductList(null);
-                        const res = await searchProductExtendedAction(name);
+                {extendedSearch ? (
+                    <Button
+                        className="mt-5 w-full"
+                        onClick={async () => {
+                            setLoading(true);
+                            setProductList(null);
+                            const res = await searchProductExtendedAction(name);
 
-                        toast({
-                            title: res.message,
-                            variant: res.success ? 'success' : 'destructive',
-                        });
+                            toast({
+                                title: res.message,
+                                variant: res.success
+                                    ? 'success'
+                                    : 'destructive',
+                            });
 
-                        if (res.success) {
-                            setProductList(res.products);
-                            setExtendedSearch(false);
-                        }
+                            if (res.success) {
+                                setProductList(res.products);
+                                setExtendedSearch(false);
+                            }
 
-                        setLoading(false);
-                    }}>
-                    Szukanie rozszerzone
-                </Button> : null}
+                            setLoading(false);
+                        }}>
+                        Szukanie rozszerzone
+                    </Button>
+                ) : null}
             </div>
         );
     }
@@ -77,7 +81,7 @@ function ProductSearch() {
                 />
             </div>
             <Button
-                className="w-full mt-5"
+                className="mt-5 w-full"
                 onClick={async () => {
                     setLoading(true);
                     setProductList(null);

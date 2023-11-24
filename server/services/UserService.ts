@@ -3,53 +3,13 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import bcrypt from 'bcrypt';
-import { eq } from 'drizzle-orm';
 import sharp from 'sharp';
 
-import { DB } from '../helpers/DB';
-import { usersTable } from '../schema';
-
-type TFieldsToUpdate = {
-    name: string;
-    email: string;
-    password?: string;
-    image?: string;
-};
+import bcrypt from 'bcrypt';
+import { TUserInsert } from '../schemas';
+import UserRepository from '../repositories/UserRepository';
 
 class UserService {
-    static async insert(email: string, name: string, password: string) {
-        const id = crypto.randomUUID();
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // user not exist before
-        await DB.insert(usersTable).values({
-            id,
-            name,
-            email,
-            password: hashedPassword,
-        });
-    }
-
-    static async findFirstById(id: string) {
-        const user = await DB.query.usersTable.findFirst({
-            where: eq(usersTable.id, id)
-        });
-
-        return user;
-    }
-
-    static async findFirstByEmail(email: string) {
-        const user = await DB.query.usersTable.findFirst({
-            where: eq(usersTable.email, email),
-            with: {
-                accounts: true,
-            },
-        });
-
-        return user;
-    }
 
     static async uploadAvatar(file: File) {
         const s3Client = new S3Client({});
@@ -80,14 +40,6 @@ class UserService {
         return res.Location;
     }
 
-    static async deleteAvatar(userId: string) {
-        await DB.update(usersTable)
-            .set({
-                image: null,
-            })
-            .where(eq(usersTable.id, userId));
-    }
-
     static async updateProfile(
         userId: string,
         name: string,
@@ -95,31 +47,29 @@ class UserService {
         password?: string,
         image?: File,
     ) {
-        const fieldsToUpdate: TFieldsToUpdate = {
+        const userValues: Omit<TUserInsert, 'id'> = {
             name,
             email,
         };
 
         if (password) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            fieldsToUpdate.password = hashedPassword;
+            userValues.password = hashedPassword;
         }
         if (image) {
             const avatarUrl = await this.uploadAvatar(image);
 
             if (avatarUrl) {
-                fieldsToUpdate.image = avatarUrl;
+                userValues.image = avatarUrl;
             }
         }
 
-        await DB.update(usersTable)
-            .set(fieldsToUpdate)
-            .where(eq(usersTable.id, userId));
+        await UserRepository.update(userId, userValues);
 
         return {
             name,
             email,
-            image: fieldsToUpdate.image,
+            image: userValues.image,
         };
     }
 }

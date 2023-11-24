@@ -61,10 +61,7 @@ function StarRating({
     }
 
     return (
-        <div className={cn(
-            'flex w-full mb-4',
-            className
-        )}>
+        <div className={cn('mb-4 flex w-full', className)}>
             {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
             {stars}
         </div>

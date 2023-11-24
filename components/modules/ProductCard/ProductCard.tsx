@@ -7,7 +7,8 @@ import {
     addProductToUserListAction,
     deleteProductFromUserListAction,
 } from '@/server/actions/user-product-actions';
-import { TUserProduct } from '@/server/schema';
+import ParsedError from '@/server/errors/ParsedError';
+import { TUserProduct } from '@/server/schemas';
 import FileResizer from 'react-image-file-resizer';
 
 import {
@@ -15,10 +16,11 @@ import {
     TOpenFoodFactsProduct,
     TProductStatistics,
 } from '@/types/types';
-import { cn } from '@/lib/utils/utils';
 import { useToast } from '@/lib/hooks/use-toast';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils/utils';
+import { TUserProductValidatorErrors } from '@/lib/validators/user-product-validator';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
 import {
     Card,
     CardContent,
@@ -26,17 +28,15 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/Card';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import Loader from '@/components/ui/Loader';
 
 import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
 import PriceInput from './PriceInput';
-import { TUserProductValidatorErrors } from '@/lib/validators/user-product-validator';
-import ParsedError from '@/server/errors/ParsedError';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -52,8 +52,7 @@ function ProductCard({
     const { toast } = useToast();
     const router = useRouter();
 
-    const [formErrors, setFormErrors] =
-        useState<TUserProductValidatorErrors>();
+    const [formErrors, setFormErrors] = useState<TUserProductValidatorErrors>();
 
     const [rating, setRating] = useState(currentUserProduct?.rating ?? 0);
     const [category, setCategory] = useState<TCategoriesIds | ''>(
@@ -121,7 +120,7 @@ function ProductCard({
 
         const res = await addProductToUserListAction(formData);
 
-        if(res instanceof ParsedError) {
+        if (res instanceof ParsedError) {
             setFormErrors(res.errors);
         }
 
@@ -142,7 +141,10 @@ function ProductCard({
 
         setLoading(true);
 
-        const res = await deleteProductFromUserListAction(_id, currentUserProduct.id);
+        const res = await deleteProductFromUserListAction(
+            _id,
+            currentUserProduct.id,
+        );
 
         toast({
             title: res.message,
@@ -247,7 +249,7 @@ function ProductCard({
                                 onChange={e => setName(e.target.value)}
                             />
                         )}
-                        <small className="text-sm block mt-2">
+                        <small className="mt-2 block text-sm">
                             (
                             {quantityState || (
                                 <small className="text-destructive">
@@ -282,7 +284,7 @@ function ProductCard({
                 </CardHeader>
                 <CardContent>
                     {image_url ? (
-                        <div className={'h-[300px] relative w-full'}>
+                        <div className={'relative h-[300px] w-full'}>
                             <Image
                                 src={image_url ?? ''}
                                 fill
@@ -300,7 +302,7 @@ function ProductCard({
                                     <div className="text-success">
                                         Pogląd obrazka
                                     </div>
-                                    <div className="h-[300px] relative w-full">
+                                    <div className="relative h-[300px] w-full">
                                         <Image
                                             src={URL.createObjectURL(image)}
                                             fill
@@ -359,7 +361,8 @@ function ProductCard({
                             variant={'outline'}>
                             Zapisz ocenę i dodaj do mojej listy
                         </Button>
-                        {currentUserProduct?.status === 'visible' || currentUserProduct?.status === 'draftVisible' ? (
+                        {currentUserProduct?.status === 'visible' ||
+                        currentUserProduct?.status === 'draftVisible' ? (
                             <Button
                                 className="w-full"
                                 onClick={() => handleDeleteProductFromList()}

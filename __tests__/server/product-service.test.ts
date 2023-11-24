@@ -2,13 +2,13 @@
  * @jest-environment node
  */
 
-import ProductService from "@/server/services/ProductService";
+import ProductRepository from "@/server/repositories/ProductRepository";
 
 describe('Product Service Test', () => {
     it('Should get product by name, from API', async () => {
         const productName = 'Pilos';
 
-        const products = await ProductService.findByName(productName);
+        const products = await ProductRepository.searchByName(productName);
         expect(products.length).toBeGreaterThan(0);
     });
 });

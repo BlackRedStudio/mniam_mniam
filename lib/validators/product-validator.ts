@@ -18,4 +18,6 @@ export const productValidator = z.object({
     image: imageValidator,
 });
 
-export type TProductValidatorErrors = typeToFlattenedError<typeof productValidator._input>['fieldErrors'];
+export type TProductValidatorErrors = typeToFlattenedError<
+    typeof productValidator._input
+>['fieldErrors'];

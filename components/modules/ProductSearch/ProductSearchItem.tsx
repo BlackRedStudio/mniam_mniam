@@ -40,11 +40,9 @@ function ProductSearchItem({
 
     return (
         <Link href={`/product/${_id}`}>
-            <div className="p-5 flex hover:bg-secondary">
-                <div className='w-1/3'>
-                {img}
-                </div>
-                <div className='w-2/3 pl-3'>
+            <div className="flex p-5 hover:bg-secondary">
+                <div className="w-1/3">{img}</div>
+                <div className="w-2/3 pl-3">
                     <strong>{product_name}</strong>
                     <br />
                     <small className="w-full">({quantity})</small>

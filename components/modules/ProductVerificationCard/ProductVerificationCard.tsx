@@ -7,24 +7,23 @@ import {
     acceptProductVerificationAction,
     rejectProductVerificationAction,
 } from '@/server/actions/product-actions';
-
+import ParsedError from '@/server/errors/ParsedError';
 import FileResizer from 'react-image-file-resizer';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
-import { Button } from '@/components/ui/button';
+import { TProductValidatorErrors } from '@/lib/validators/product-validator';
+import { Button } from '@/components/ui/Button';
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
     CardTitle,
-} from '@/components/ui/card';
+} from '@/components/ui/Card';
 import FormError from '@/components/ui/FormError';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/Input';
 import Loader from '@/components/ui/Loader';
-import ParsedError from '@/server/errors/ParsedError';
-import { TProductValidatorErrors } from '@/lib/validators/product-validator';
 
 type TProductVerificationCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -35,9 +34,8 @@ function ProductVerificationCard({
 }: TProductVerificationCard) {
     const { toast } = useToast();
     const router = useRouter();
-    
-    const [formErrors, setFormErrors] =
-        useState<TProductValidatorErrors>();
+
+    const [formErrors, setFormErrors] = useState<TProductValidatorErrors>();
 
     const [nameState, setNameState] = useState(product_name);
     const [brandsState, setBrandsState] = useState(brands);
@@ -66,7 +64,7 @@ function ProductVerificationCard({
 
         const res = await acceptProductVerificationAction(formData);
 
-        if(res instanceof ParsedError) {
+        if (res instanceof ParsedError) {
             setFormErrors(res.errors);
         }
 
@@ -142,7 +140,7 @@ function ProductVerificationCard({
                         <br /> <strong className="text-lg">{_id}</strong>
                     </div>
                     <CardTitle className="pt-4">
-                        <small className="text-muted-foreground text-xs">
+                        <small className="text-xs text-muted-foreground">
                             Bazowy tytuł:
                         </small>
                         <div className="text-blue">{product_name}</div>
@@ -156,7 +154,7 @@ function ProductVerificationCard({
                             className="mb-2"
                             formErrors={formErrors?.name}
                         />
-                        <small className="text-muted-foreground mt-0 text-xs">
+                        <small className="mt-0 text-xs text-muted-foreground">
                             Bazowa ilość:
                         </small>
                         <div className="text-blue">{quantity}</div>
@@ -170,7 +168,7 @@ function ProductVerificationCard({
                             className="mb-2"
                             formErrors={formErrors?.quantity}
                         />
-                        <small className="text-muted-foreground mt-0 text-xs">
+                        <small className="mt-0 text-xs text-muted-foreground">
                             Bazowe nazwy firm:
                         </small>
                         <div className="text-blue">{brands}</div>
@@ -187,10 +185,10 @@ function ProductVerificationCard({
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-blue mt-5 mb-2 text-center">
+                    <div className="mb-2 mt-5 text-center text-blue">
                         Obrazek użytkownika
                     </div>
-                    <div className={'h-[300px] relative w-full'}>
+                    <div className={'relative h-[300px] w-full'}>
                         <Image
                             src={image_url ?? ''}
                             fill
@@ -200,10 +198,10 @@ function ProductVerificationCard({
                     </div>
                     {imageState && (
                         <>
-                            <div className="text-success mt-5 text-center">
+                            <div className="mt-5 text-center text-success">
                                 Nowy obrazek
                             </div>
-                            <div className="h-[300px] relative w-full">
+                            <div className="relative h-[300px] w-full">
                                 <Image
                                     src={URL.createObjectURL(imageState)}
                                     fill

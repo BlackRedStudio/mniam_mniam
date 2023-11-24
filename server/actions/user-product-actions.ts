@@ -1,8 +1,6 @@
 'use server';
 
-import {
-    TUserProduct,
-} from '@/server/schema';
+import { TUserProduct } from '@/server/schemas';
 import OpenFoodAPIService from '@/server/services/OpenFoodAPIService';
 
 import { TUserProductStatus } from '@/types/types';
@@ -13,6 +11,8 @@ import CriticalError from '../errors/CriticalError';
 import Error from '../errors/Error';
 import ParsedError from '../errors/ParsedError';
 import { checkSession, revalidateProductPaths } from '../helpers/helpers';
+import ProductRepository from '../repositories/ProductRepository';
+import UserProductRepository from '../repositories/UserProductRepository';
 import ProductService from '../services/ProductService';
 import UserProductService from '../services/UserProductService';
 
@@ -41,7 +41,7 @@ export async function addProductToUserListAction(formData: FormData) {
             return new ParsedError(parsed.error.formErrors.fieldErrors);
         }
 
-        const product = await ProductService.findFirstByEan(ean);
+        const product = await ProductRepository.firstWithUserProducts({ean});
         let productId = '';
         let existingUserProduct = null;
         let isCustomProduct = false;
@@ -50,10 +50,10 @@ export async function addProductToUserListAction(formData: FormData) {
         if (product) {
             productId = product.id;
             isCustomProduct = product.status === 'draft';
-            existingUserProduct = await UserProductService.findFirstUserProduct(
+            existingUserProduct = await UserProductRepository.first({
                 productId,
-                session.user.id,
-            );
+                userId: session.user.id,
+            });
         } else {
             const openFoodFactsProduct =
                 await OpenFoodAPIService.getProductsByBarcode(ean);
@@ -89,23 +89,24 @@ export async function addProductToUserListAction(formData: FormData) {
                 isCustomProduct = true;
             }
 
+            const imgToUpload = openFoodFactsProduct?.image_url || image;
+
+            const photoUrl =
+                (await ProductService.uploadPhoto(imgToUpload, ean)) || '';
+
             const productDB = {
                 ean: openFoodFactsProduct?._id || ean,
                 brands: openFoodFactsProduct?.brands || brands,
                 name: openFoodFactsProduct?.product_name || name,
                 quantity: openFoodFactsProduct?.quantity || quantity,
                 imgOpenFoodFacts: openFoodFactsProduct?.image_url,
+                img: photoUrl,
                 status: isCustomProduct
                     ? ('draft' as const)
                     : ('active' as const),
             };
 
-            // productParsed.data.image can't be undefined because if openFoodFactsProduct.image_url is empty then image parse is mandatory
-            const img =
-                openFoodFactsProduct?.image_url ||
-                (productParsed.data.image as File);
-
-            productId = await ProductService.insert(productDB, img);
+            productId = await ProductRepository.insert(productDB);
         }
 
         if (isCustomProduct && status == 'visible') {
@@ -124,9 +125,12 @@ export async function addProductToUserListAction(formData: FormData) {
         };
 
         if (existingUserProduct) {
-            await UserProductService.update(existingUserProduct.id, userProductValues);
+            await UserProductRepository.update(
+                existingUserProduct.id,
+                userProductValues,
+            );
         } else {
-            await UserProductService.insert({
+            await UserProductRepository.insert({
                 ...userProductValues,
                 firstRate: typeof product === 'undefined',
                 imgUploaded: !hasPhoto,
@@ -148,19 +152,25 @@ export async function addProductToUserListAction(formData: FormData) {
     }
 }
 
-export async function deleteProductFromUserListAction(ean: string, userProductId: string) {
+export async function deleteProductFromUserListAction(
+    ean: string,
+    userProductId: string,
+) {
     try {
         const session = await checkSession();
 
-        const product = await ProductService.findFirstByEan(ean);
+        const product = await ProductRepository.firstWithUserProducts({ean});
 
-        if(!product) {
+        if (!product) {
             return new Error('Brak produktu.');
         }
 
-        const res = await UserProductService.changeVisibleToInvisible(userProductId, session.user.id);
+        const res = await UserProductRepository.makeInvisible(
+            userProductId,
+            session.user.id,
+        );
 
-        if(res.rowsAffected === 0) {
+        if (res.rowsAffected === 0) {
             return new Error('Brak produktu użytkownika.');
         }
 
@@ -183,9 +193,12 @@ export async function getUserProductsAction(statuses: TUserProductStatus[]) {
     try {
         const session = await checkSession();
 
-        const userProductsList = await UserProductService.findUserProductsByStatus(session.user.id, statuses);
+        const userProductsList = await UserProductRepository.manyWithProduct({
+            userId: session.user.id,
+            statuses,
+        });
 
-        if(userProductsList.length === 0) {
+        if (userProductsList.length === 0) {
             return new Error('Brak produktów.');
         }
 

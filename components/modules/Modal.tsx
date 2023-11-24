@@ -10,7 +10,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/AlertDialog';
 
 type AlertDialogProps = {
     children: ReactNode;
@@ -25,7 +25,7 @@ export default function AlertModal({
     title,
     description,
     cancel,
-    accept
+    accept,
 }: AlertDialogProps) {
     return (
         <AlertDialog>
@@ -33,16 +33,19 @@ export default function AlertModal({
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
-                    {
-                        description &&
+                    {description && (
                         <AlertDialogDescription>
-                        {description}
+                            {description}
                         </AlertDialogDescription>
-                    }
+                    )}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={cancel}>Anuluj</AlertDialogCancel>
-                    <AlertDialogAction onClick={accept}>Kontynuuj</AlertDialogAction>
+                    <AlertDialogCancel onClick={cancel}>
+                        Anuluj
+                    </AlertDialogCancel>
+                    <AlertDialogAction onClick={accept}>
+                        Kontynuuj
+                    </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
