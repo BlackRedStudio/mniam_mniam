@@ -22,7 +22,7 @@ async function ProductPage({ params: { ean } }: TProductPageProps) {
         const virtualStatistics = {
             averageRating: 'Brak',
             averagePrice: 'Brak',
-            peopleRateCount: 0,
+            peopleCount: 0,
         };
 
         return (
