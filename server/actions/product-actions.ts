@@ -87,7 +87,7 @@ export async function searchProductExtendedAction(name: string) {
 
 export async function getProductAction(ean: string) {
     try {
-        const session = await checkSession(true);
+        const session = await checkSession();
 
         let product: TOpenFoodFactsProduct | undefined;
 
@@ -131,7 +131,7 @@ export async function getProductAction(ean: string) {
 
 export async function getProductsAction(status: TProductStatus) {
     try {
-        await checkSession(true);
+        await checkSession();
 
         const productsList = await ProductRepository.first({status});
 

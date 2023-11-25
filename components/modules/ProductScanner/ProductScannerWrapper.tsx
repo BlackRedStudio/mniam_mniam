@@ -7,7 +7,13 @@ import { Button } from '@/components/ui/Button';
 
 import { Input } from '../../ui/Input';
 import { Label } from '../../ui/Label';
-import Loader from '../../ui/Loader';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../../ui/Select';
 import BarcodeScanner from './BarcodeScanner';
 
 function ProductScannerWrapper() {
@@ -26,7 +32,10 @@ function ProductScannerWrapper() {
                 device => device.kind === 'videoinput',
             );
 
-            if (availableVideoDevices?.length > 0 && availableVideoDevices[0]?.deviceId) {
+            if (
+                availableVideoDevices?.length > 0 &&
+                availableVideoDevices[0]?.deviceId
+            ) {
                 setDevices(availableVideoDevices);
                 setDeviceId(availableVideoDevices[0]?.deviceId);
             } else {
@@ -44,12 +53,28 @@ function ProductScannerWrapper() {
     return (
         <>
             <div className="mb-3 text-center">
-                {!deviceId && <Loader />}
+                {devices.length > 0 && (
+                    <Select
+                        onValueChange={e => setDeviceId(e)}
+                        value={deviceId}>
+                        <SelectTrigger className="mb-5 w-full">
+                            <SelectValue placeholder="Rozwiń listę" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {devices.map((device, index) => (
+                                <SelectItem
+                                    key={device.deviceId}
+                                    value={device.deviceId}>
+                                    {device.label ||
+                                        `Wejście Video nr: ${index + 1}`}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                )}
                 {scannerEnabled && (
                     <BarcodeScanner
                         deviceId={deviceId}
-                        devices={devices}
-                        setDeviceId={setDeviceId}
                         setCode={setCode}
                         setScannerEnabled={setScannerEnabled}
                     />
@@ -60,13 +85,13 @@ function ProductScannerWrapper() {
                         urządzeniu
                     </div>
                 )}
-                {/* {deviceId !== 'NO_CAMERA_FOUND' && deviceId && ( */}
+                {deviceId !== 'NO_CAMERA_FOUND' && (
                     <Button onClick={() => setScannerEnabled(!scannerEnabled)}>
                         {scannerEnabled
                             ? 'Zakończ skanowanie'
                             : 'Rozpocznij skanowanie'}
                     </Button>
-                {/* )} */}
+                )}
             </div>
             <div className="mb-4">
                 <Label htmlFor="code">
