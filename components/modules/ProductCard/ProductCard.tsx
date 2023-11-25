@@ -29,10 +29,11 @@ import { Input } from '@/components/ui/Input';
 import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
 import CommunityRating from './CommunityRating';
-import PriceInput from './PriceInput';
+import PriceRating from './PriceRating';
 import ProductCardBadge from './ProductCardBadge';
 import ProductCardFooter from './ProductCardFooter';
 import ProductCardImage from './ProductCardImage';
+import { Separator } from '@/components/ui/Separator';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -54,7 +55,7 @@ function ProductCard({
     const [category, setCategory] = useState<TCategoriesIds | ''>(
         (currentUserProduct?.category as TCategoriesIds) ?? '',
     );
-    const [price, setPrice] = useState(currentUserProduct?.price || '');
+    const [price, setPrice] = useState(currentUserProduct?.price ?? 0);
     const [name, setName] = useState(product_name);
     const [brandsState, setBrandsState] = useState(brands);
     const [quantityState, setQuantityState] = useState(quantity);
@@ -176,7 +177,7 @@ function ProductCard({
             <Card>
                 <CardHeader>
                     <ProductCardBadge
-                        peopleRateCount={productStatistics.peopleRateCount}
+                        peopleRateCount={productStatistics.peopleCount}
                         isSomethingMissing={isSomethingMissing}
                         status={currentUserProduct?.status}
                     />
@@ -252,7 +253,7 @@ function ProductCard({
                         className="mb-2"
                         formErrors={formErrors?.price}
                     />
-                    <PriceInput price={price} setPrice={setPrice} />
+                    <PriceRating price={price} setPrice={setPrice} />
                     <ProductCardFooter
                         loading={loading}
                         handleAddProduct={handleAddProduct}

@@ -15,7 +15,7 @@ import StarRating from '@/components/ui/StarRating';
 
 import { Icons } from '../Icons';
 import CategorySelector from '../ProductCard/CategorySelector';
-import PriceInput from '../ProductCard/PriceInput';
+import PriceRating from '../ProductCard/PriceRating';
 import ProductListItem from './ProductListItem';
 import ProductListItemDraft from './ProductListItemDraft';
 
@@ -32,14 +32,12 @@ type TProductsListProps = TActiveList | TDraftList;
 
 function ProductsList({ productsList, listType }: TProductsListProps) {
     const [category, setCategory] = useState<TCategoriesIds | ''>('');
-    const [priceFrom, setPriceFrom] = useState('0.00');
-    const [priceTo, setPriceTo] = useState('500.00');
+    const [price, setPrice] = useState(0);
     const [rating, setRating] = useState(0);
 
     const resetFilters = () => {
         setCategory('');
-        setPriceFrom('0.00');
-        setPriceTo('500.00');
+        setPrice(0);
         setRating(0);
     };
 
@@ -49,16 +47,15 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
                 return null;
             }
         }
+        if (price > 0) {
+            if (product.price !== price) {
+                return null;
+            }
+        }
         if (category) {
             if (product.category !== category) {
                 return null;
             }
-        }
-        if (parseFloat(product.price) < parseFloat(priceFrom)) {
-            return null;
-        }
-        if (parseFloat(product.price) > parseFloat(priceTo)) {
-            return null;
         }
         return product;
     };
@@ -91,17 +88,11 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
                             category={category}
                             setCategory={setCategory}
                         />
-                        <PriceInput
+                        <PriceRating
                             title="Cena od:"
                             className="mb-3"
-                            price={priceFrom}
-                            setPrice={setPriceFrom}
-                        />
-                        <PriceInput
-                            title="Cena do:"
-                            className="mb-3"
-                            price={priceTo}
-                            setPrice={setPriceTo}
+                            price={price}
+                            setPrice={setPrice}
                         />
                         <StarRating rating={rating} setRating={setRating} />
                         <Button variant={'outline'} onClick={resetFilters}>

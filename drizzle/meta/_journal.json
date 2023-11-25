@@ -148,6 +148,13 @@
       "when": 1700231012164,
       "tag": "0020_busy_spectrum",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1700909530186,
+      "tag": "0021_nifty_pride",
+      "breakpoints": true
     }
   ]
 }

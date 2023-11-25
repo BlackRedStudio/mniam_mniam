@@ -26,7 +26,7 @@ export async function addProductToUserListAction(formData: FormData) {
         const image = formData.get('image') as File;
 
         const rating = parseInt(formData.get('rating') as string);
-        const price = formData.get('price') as string;
+        const price = parseInt(formData.get('price') as string);
         const category = formData.get('category') as string;
         let status = formData.get('status') as TUserProduct['status'];
 

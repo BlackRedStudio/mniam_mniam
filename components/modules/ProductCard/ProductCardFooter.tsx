@@ -29,7 +29,7 @@ function ProductCardFooter({
             <Button
                 className="w-full"
                 onClick={() => handleAddProduct('visible')}
-                variant={'outline'}>
+                variant={'orange'}>
                 Zapisz ocenę i dodaj do mojej listy
             </Button>
             {currentUserProduct?.status === 'visible' ||

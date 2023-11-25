@@ -1,7 +1,6 @@
 import { relations } from 'drizzle-orm';
 import {
     boolean,
-    decimal,
     mysqlTable,
     timestamp,
     tinyint,
@@ -15,8 +14,8 @@ export const userProductsTable = mysqlTable('userProducts', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
     userId: varchar('userId', { length: 255 }).notNull(),
     productId: varchar('productId', { length: 255 }).notNull(),
-    rating: tinyint('rating').notNull(),
-    price: decimal('price', { precision: 7, scale: 2 }).notNull(),
+    rating: tinyint('rating').default(0).notNull(),
+    price: tinyint('price').default(0).notNull(),
     category: varchar('category', {
         length: 256,
     }).notNull(),

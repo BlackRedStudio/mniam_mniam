@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import Header from '@/components/layout/Header';
+import Loader from '@/components/ui/Loader';
 
 type TAuthenticatedLayoutProps = {
     children: ReactNode;
@@ -13,7 +14,9 @@ async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
             <Header />
             <main>
                 <ScrollArea className="h-[calc(100vh-90px)]">
-                    {children}
+                    <Suspense fallback={<Loader />}>
+                        {children}
+                    </Suspense>
                 </ScrollArea>
             </main>
         </>

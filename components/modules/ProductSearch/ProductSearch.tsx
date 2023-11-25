@@ -81,7 +81,7 @@ function ProductSearch() {
                 />
             </div>
             <Button
-                className="mt-5 w-full"
+                className="mt-1 w-full"
                 onClick={async () => {
                     setLoading(true);
                     setProductList(null);

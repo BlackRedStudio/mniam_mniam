@@ -46,6 +46,8 @@ function ProductScannerWrapper() {
         }
     }, []);
 
+    const isDisabled = (code.length !== 8 && code.length !== 13);
+
     return (
         <>
             <div className="mb-3 text-center">
@@ -96,8 +98,9 @@ function ProductScannerWrapper() {
                 />
             </div>
             <Button
-                className="mt-5 w-full"
-                disabled={code.length !== 8 && code.length !== 13}
+                className="mt-1 w-full"
+                disabled={isDisabled}
+                variant={isDisabled ? 'default' : 'orange'}
                 onClick={() => {
                     router.push(`/product/${code}`);
                 }}>

@@ -47,7 +47,7 @@ export type TProductStatus = 'active' | 'draft';
 export type TProductStatistics = {
     averageRating: string,
     averagePrice: string,
-    peopleRateCount: number,
+    peopleCount: number,
 };
 
 export type Unpacked<T> = T extends (infer U)[] ? U : T;

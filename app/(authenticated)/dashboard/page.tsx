@@ -15,7 +15,7 @@ async function DashboardPage() {
 
     return (
         <section>
-            <H2 className="mb-6 text-center">
+            <H2 className="mb-3 text-center">
                 Witaj {userName},<br />
                 co dzisiaj smakujemy?
             </H2>

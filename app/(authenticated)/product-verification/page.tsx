@@ -9,7 +9,7 @@ async function ProductVerificationPage() {
     return (
         <section>
             <H2 className="mb-5 text-center">
-                Produkty oczekujące weryfikacji:
+                Produkty oczekujące na weryfikację:
             </H2>
             {res.success ? (
                 <ProductsList

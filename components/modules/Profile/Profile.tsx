@@ -15,6 +15,7 @@ import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import SignUpButton from '@/components/ui/SignUpButton';
+import { Separator } from '@/components/ui/Separator';
 
 type TProfile = {
     user: TUser;
@@ -92,6 +93,27 @@ function Profile({ user }: TProfile) {
                 {<FormError formErrors={formErrors?.email} />}
             </div>
             <div className="mb-4">
+                <Label htmlFor="password">Hasło</Label>
+                <Input
+                    type="password"
+                    name="password"
+                    className="mt-1"
+                    placeholder="Wpisz swoje hasło"
+                />
+                {<FormError formErrors={formErrors?.password} />}
+            </div>
+            <div className='mb-4'>
+                <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
+                <Input
+                    type="password"
+                    name="passwordConfirm"
+                    className="mt-1"
+                    placeholder="Wpisz ponownie swoje hasło"
+                />
+                {<FormError formErrors={formErrors?.passwordConfirm} />}
+            </div>
+            <Separator className='my-6' />
+            <div className="mb-4">
                 <Label htmlFor="avatar">Zmień swój Avatar</Label>
                 <Input
                     type="file"
@@ -106,26 +128,6 @@ function Profile({ user }: TProfile) {
                     Usuń swój Avatar
                 </Button>
             )}
-            <div className="mb-4">
-                <Label htmlFor="password">Hasło</Label>
-                <Input
-                    type="password"
-                    name="password"
-                    className="mt-1"
-                    placeholder="Wpisz swoje hasło"
-                />
-                {<FormError formErrors={formErrors?.password} />}
-            </div>
-            <div className="mb-4">
-                <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
-                <Input
-                    type="password"
-                    name="passwordConfirm"
-                    className="mt-1"
-                    placeholder="Wpisz ponownie swoje hasło"
-                />
-                {<FormError formErrors={formErrors?.passwordConfirm} />}
-            </div>
             <SignUpButton title="Zmień dane profilowe" />
         </form>
     );

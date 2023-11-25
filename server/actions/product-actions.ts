@@ -106,7 +106,7 @@ export async function getProductAction(ean: string) {
         let productStatistics: TProductStatistics = {
             averageRating: 'Brak',
             averagePrice: 'Brak',
-            peopleRateCount: 0,
+            peopleCount: 0,
         };
         if (productDB) {
             productStatistics = UserProductService.getStatistics(
@@ -131,7 +131,11 @@ export async function getProductAction(ean: string) {
 
 export async function getProductsAction(status: TProductStatus) {
     try {
-        await checkSession();
+        if(status === 'draft') {
+            await checkSession(true);
+        } else {
+            await checkSession();
+        }
 
         const productsList = await ProductRepository.first({status});
 
