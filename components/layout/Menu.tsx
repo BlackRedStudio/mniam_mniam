@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { App as CapacitorApp } from '@capacitor/app';
-import { Capacitor } from '@capacitor/core';
 import { signOut, useSession } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
@@ -19,10 +18,6 @@ import {
 import { Icons } from '@/components/modules/Icons';
 
 import AlertModal from '../modules/Modal';
-
-const checkAppLaunchUrl = async () => {
-    await CapacitorApp.exitApp();
-};
 
 function Menu() {
     const { toast } = useToast();
@@ -83,11 +78,6 @@ function Menu() {
                         Wyloguj się
                     </DropdownMenuItem>
                 </AlertModal>
-                {Capacitor.isNativePlatform() && (
-                    <DropdownMenuItem onClick={checkAppLaunchUrl}>
-                        Wyjdź z aplikacji
-                    </DropdownMenuItem>
-                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -23,7 +23,8 @@ export async function api<Res>(
     url: string,
     method: THTTPMethod = 'GET',
     body?: Record<string, string> | null,
-) {
+    isMultiPartFormData: boolean = false
+): Promise<Res> {
     const headers = {
         'User-Agent': 'Mniam App',
         Accept: 'application/json',
@@ -34,13 +35,19 @@ export async function api<Res>(
         body = null;
     }
 
+    let bodyContent = undefined;
+
+    if(body) {
+        bodyContent = isMultiPartFormData ? body : JSON.stringify(body);
+    }
+
     const response = await fetch(url, {
         method,
-        body: body ? JSON.stringify(body) : undefined,
+        body: bodyContent as BodyInit,
         headers,
     });
 
-    const data = (await response.json()) as Res;
+    const data = (await response.json());
 
     return data;
 }

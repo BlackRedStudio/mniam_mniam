@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 import { getNameInitials } from '@/lib/utils/utils';
@@ -21,12 +22,14 @@ function AvatarElement() {
         : 'MM';
 
     return (
-        <Avatar>
-            <AvatarImage src={session.user.image || ''} />
-            <AvatarFallback>
-                {!session.user?.image ? nameInitials : null}
-            </AvatarFallback>
-        </Avatar>
+        <Link href="/profile">
+            <Avatar>
+                <AvatarImage src={session.user.image || ''} />
+                <AvatarFallback>
+                    {!session.user?.image ? nameInitials : null}
+                </AvatarFallback>
+            </Avatar>
+        </Link>
     );
 }
 
