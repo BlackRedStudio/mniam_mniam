@@ -38,15 +38,11 @@ function ProductScannerWrapper() {
             ) {
                 setDevices(availableVideoDevices);
                 setDeviceId(availableVideoDevices[0]?.deviceId);
-            } else {
-                setDeviceId('NO_CAMERA_FOUND');
             }
         };
 
         if (typeof navigator.mediaDevices !== 'undefined') {
             getMediaDevices();
-        } else {
-            setDeviceId('NO_CAMERA_FOUND');
         }
     }, []);
 
@@ -79,19 +75,11 @@ function ProductScannerWrapper() {
                         setScannerEnabled={setScannerEnabled}
                     />
                 )}
-                {deviceId === 'NO_CAMERA_FOUND' && (
-                    <div className="text-destructive">
-                        Brak kamery, odśwież aplikację, lub spróbuj na innym
-                        urządzeniu
-                    </div>
-                )}
-                {deviceId !== 'NO_CAMERA_FOUND' && (
-                    <Button onClick={() => setScannerEnabled(!scannerEnabled)}>
-                        {scannerEnabled
-                            ? 'Zakończ skanowanie'
-                            : 'Rozpocznij skanowanie'}
-                    </Button>
-                )}
+                <Button onClick={() => setScannerEnabled(!scannerEnabled)}>
+                    {scannerEnabled
+                        ? 'Zakończ skanowanie'
+                        : 'Rozpocznij skanowanie'}
+                </Button>
             </div>
             <div className="mb-4">
                 <Label htmlFor="code">
