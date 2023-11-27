@@ -20,13 +20,16 @@ export function getNameInitials(userName: string) {
 }
 
 export function splitWords(sentence: string) {
-    return sentence.split(/(?=[A-Z])/).join(' ').toLowerCase();
+    return sentence
+        .split(/(?=[A-Z])/)
+        .join(' ')
+        .toLowerCase();
 }
 
 export async function api<Res>(
     url: string,
     method: THTTPMethod = 'GET',
-    body?: Record<string, string | File> | FormData | null
+    body?: Record<string, string | File> | FormData | null,
 ): Promise<Res> {
     const headers = {
         'User-Agent': 'Mniam App',
@@ -40,7 +43,7 @@ export async function api<Res>(
 
     let bodyContent = undefined;
 
-    if(body) {
+    if (body) {
         bodyContent = body instanceof FormData ? body : JSON.stringify(body);
     }
 
@@ -50,26 +53,10 @@ export async function api<Res>(
         headers,
     });
 
-    const data = (await response.json());
+    const data = await response.json();
 
     return data;
 }
-
-// export function handleCurrencyInput(value: string) {
-//     if (value.match(/[^0-9.]/g)) {
-//         return null;
-//     }
-
-//     const splittedVal = value.split('.');
-
-//     if (splittedVal.length < 3) {
-//         if (splittedVal.length > 1 && splittedVal[1].length > 2) {
-//             return null;
-//         }
-//         return value;
-//     }
-//     return null;
-// }
 
 export function handleMultiplePersonText(persons: number) {
     let textVariant = 2;

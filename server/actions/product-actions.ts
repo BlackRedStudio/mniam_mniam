@@ -17,6 +17,7 @@ import UserProductService from '../services/UserProductService';
 import ParsedError from '../errors/ParsedError';
 import UserProductRepository from '../repositories/UserProductRepository';
 import ProductRepository from '../repositories/ProductRepository';
+import { TProductInsert } from '../schemas';
 
 // search product by name using DB, or if not exist using API
 export async function searchProductAction(name: string) {

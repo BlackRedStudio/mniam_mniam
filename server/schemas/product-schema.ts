@@ -11,7 +11,6 @@ export const productsTable = mysqlTable('products', {
     quantity: varchar('quantity', { length: 255 }).notNull(),
     status: varchar('status', { length: 255 }).$type<TProductStatus>().notNull().default('active'),
     img: text('img').notNull(),
-    openFoodFactsLink: text('openFoodFactsLink').default(''),
     imgOpenFoodFacts: text('imgOpenFoodFacts').default(''),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
