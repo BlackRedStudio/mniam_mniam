@@ -33,6 +33,30 @@ export type TOpenFoodFactsProductSearchRes = {
     products: TOpenFoodFactsProduct[] | [];
 } | null;
 
+export type TOpenFoodFactsAddProductRes = {
+    status: 0 | 1;
+    status_verbose: string;
+} | null;
+
+export type TOpenFoodFactsUploadPhotoProductRes = {
+    files: {
+        url: string;
+        filename: string;
+        name: string;
+        thumbnailUrl: string;
+        code: string;
+    }[];
+    image: {
+        thumb_url: string;
+        imgid: number;
+        crop_url: string;
+    };
+    imgid: number;
+    status: string;
+    imagefield: string;
+    code: string;
+} | null;
+
 export type TCategories = typeof categories;
 export type TCategoriesIds = TCategories[number]['id'];
 
@@ -40,14 +64,18 @@ export type TLogin = 'credentials' | 'google' | 'github';
 
 export type TUserRole = 'user' | 'admin';
 
-export type TUserProductStatus = 'visible' | 'invisible' | 'draft' | 'draftVisible';
+export type TUserProductStatus =
+    | 'visible'
+    | 'invisible'
+    | 'draft'
+    | 'draftVisible';
 
 export type TProductStatus = 'active' | 'draft';
 
 export type TProductStatistics = {
-    averageRating: string,
-    averagePrice: string,
-    peopleCount: number,
+    averageRating: string;
+    averagePrice: string;
+    peopleCount: number;
 };
 
 export type Unpacked<T> = T extends (infer U)[] ? U : T;

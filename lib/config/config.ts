@@ -48,7 +48,7 @@ export const categories = [
         label: 'Chipsy',
     },
     {
-        id: 'saltySacks',
+        id: 'saltySnacks',
         label: 'Przekąski słone',
     },
     {

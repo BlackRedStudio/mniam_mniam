@@ -23,6 +23,7 @@ import {
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
 import Loader from '@/components/ui/Loader';
+import LegalNotice from '@/components/ui/LegalNotice';
 
 type TProductVerificationCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -134,6 +135,7 @@ function ProductVerificationCard({
         <>
             <Card>
                 <CardHeader>
+                    <LegalNotice />
                     <div className="block text-center">
                         Weryfikujesz produkt o numerze EAN:
                         <br /> <strong className="text-lg">{_id}</strong>

@@ -19,11 +19,14 @@ export function getNameInitials(userName: string) {
     return nameInitials.toUpperCase();
 }
 
+export function splitWords(sentence: string) {
+    return sentence.split(/(?=[A-Z])/).join(' ').toLowerCase();
+}
+
 export async function api<Res>(
     url: string,
     method: THTTPMethod = 'GET',
-    body?: Record<string, string> | null,
-    isMultiPartFormData: boolean = false
+    body?: Record<string, string | File> | FormData | null
 ): Promise<Res> {
     const headers = {
         'User-Agent': 'Mniam App',
@@ -31,14 +34,14 @@ export async function api<Res>(
     };
 
     if (method === 'GET' && body) {
-        url += '?' + new URLSearchParams(body);
+        url += '?' + new URLSearchParams(body as Record<string, string>);
         body = null;
     }
 
     let bodyContent = undefined;
 
     if(body) {
-        bodyContent = isMultiPartFormData ? body : JSON.stringify(body);
+        bodyContent = body instanceof FormData ? body : JSON.stringify(body);
     }
 
     const response = await fetch(url, {

@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/Card';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
+import LegalNotice from '@/components/ui/LegalNotice';
 
 import StarRating from '../../ui/StarRating';
 import CategorySelector from './CategorySelector';
@@ -33,7 +34,6 @@ import PriceRating from './PriceRating';
 import ProductCardBadge from './ProductCardBadge';
 import ProductCardFooter from './ProductCardFooter';
 import ProductCardImage from './ProductCardImage';
-import { Separator } from '@/components/ui/Separator';
 
 type TProductCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -148,8 +148,8 @@ function ProductCard({
         try {
             FileResizer.imageFileResizer(
                 file,
-                400,
-                400,
+                640,
+                640,
                 'JPEG',
                 79,
                 0,
@@ -161,8 +161,8 @@ function ProductCard({
                     }
                 },
                 'file',
-                100,
-                100,
+                640,
+                160,
             );
         } catch (err) {
             toast({
@@ -176,6 +176,7 @@ function ProductCard({
         <>
             <Card>
                 <CardHeader>
+                    {isSomethingMissing && <LegalNotice />}
                     <ProductCardBadge
                         peopleRateCount={productStatistics.peopleCount}
                         isSomethingMissing={isSomethingMissing}
@@ -262,6 +263,15 @@ function ProductCard({
                         }
                         currentUserProduct={currentUserProduct}
                     />
+                    {product_name || brands || quantity || image_url ? (
+                        <div className="mt-7">
+                            <a
+                                href={`https://world.openfoodfacts.org/product/${_id}`}
+                                target="_blank">
+                                Link do produktu źrodłowego
+                            </a>
+                        </div>
+                    ) : null}
                 </CardFooter>
             </Card>
         </>

@@ -1,6 +1,12 @@
+import OpenFoodAPIService from "@/server/services/OpenFoodAPIService";
+
 export default async function DebugPage() {
+
+    // await OpenFoodAPIService.uploadProductPhoto('2000323317661', 'https://mniam-app.s3.eu-central-1.amazonaws.com/products/5000159407236.jpg');
+
     return (
-        <div className="flex flex-wrap gap-3">
+        <>
+            <div className="flex flex-wrap gap-3">
             <div className="text-center">
                 <div className="h-20 w-20 bg-success"></div>
                 Success
@@ -42,5 +48,7 @@ export default async function DebugPage() {
                 Orange
             </div>
         </div>
+
+        </>
     );
 }

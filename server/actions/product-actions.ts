@@ -45,7 +45,7 @@ export async function searchProductAction(name: string) {
 
         return {
             success: true as const,
-            message: 'Pobrano produkt.',
+            message: 'Pobrano produkty.',
             extendedSearch,
             products,
         };
@@ -77,7 +77,7 @@ export async function searchProductExtendedAction(name: string) {
 
         return {
             success: true as const,
-            message: 'Pobrano produkt.',
+            message: 'Pobrano produkty.',
             products,
         };
     } catch (e) {
@@ -212,6 +212,15 @@ export async function acceptProductVerificationAction(formData: FormData) {
         await ProductRepository.update(product.id, productValues);
 
         await UserProductRepository.makeActive(product.id);
+
+        // inner try-catch block, because we don't want to break our function if something goes wrong
+        try {
+            await OpenFoodAPIService.addProduct(ean, name, brands, quantity, product.userProducts[0].category);
+
+            await OpenFoodAPIService.uploadProductPhoto(ean, imgUrl);
+        } catch (apiError) {
+            console.log(apiError);
+        }
 
         revalidateProductPaths(ean);
 
