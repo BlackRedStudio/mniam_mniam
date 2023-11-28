@@ -9,6 +9,7 @@ type TAuthenticatedLayoutProps = {
 };
 
 async function AuthenticatedLayout({ children }: TAuthenticatedLayoutProps) {
+
     return (
         <>
             <Header />

@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `darkMode` boolean DEFAULT false;

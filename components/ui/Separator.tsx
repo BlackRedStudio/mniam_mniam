@@ -16,7 +16,7 @@ const Separator = React.forwardRef<
         ref,
     ) => (
         <div className="relative flex justify-center items-center">
-            <div className="absolute flex bg-white px-5 space-x-1.5">
+            <div className="absolute flex bg-white dark:bg-background px-5 space-x-1.5">
                 <Icons.cakeSlice className='text-destructive' />
                 <Icons.lollipop className='text-blue' />
                 <Icons.donut className='text-orange' />

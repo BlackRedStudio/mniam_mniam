@@ -114,3 +114,21 @@ export async function deleteAvatarAction() {
         return {...new CriticalError(e)};
     }
 }
+
+export async function switchDarkModeAction() {
+    try {
+        const session = await checkSession();
+        const darkMode = !session.user.darkMode;
+
+        await UserRepository.update(session.user.id, {darkMode});
+
+        revalidatePath('/');
+
+        return {
+            success: true as const,
+            message: 'Tryb ciemny został przełączony',
+        };
+    } catch (e) {
+        return {...new CriticalError(e)};
+    }
+}

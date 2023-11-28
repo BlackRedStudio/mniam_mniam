@@ -8,6 +8,7 @@ type TProviderLayoutProps = {
 };
 
 function Providers({ children }: TProviderLayoutProps) {
+
     return <SessionProvider>{children}</SessionProvider>;
 }
 

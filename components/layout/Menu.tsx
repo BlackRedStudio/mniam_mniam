@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { switchDarkModeAction } from '@/server/actions/user-actions';
 import { App as CapacitorApp } from '@capacitor/app';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -18,11 +19,13 @@ import {
 import { Icons } from '@/components/modules/Icons';
 
 import AlertModal from '../modules/Modal';
+import { Label } from '../ui/Label';
+import { Switch } from '../ui/Switch';
 
 function Menu() {
     const { toast } = useToast();
     const router = useRouter();
-    const { data: session } = useSession();
+    const { data: session, update } = useSession();
 
     useEffect(() => {
         CapacitorApp.addListener('backButton', ({ canGoBack }) => {
@@ -33,6 +36,14 @@ function Menu() {
             }
         });
     }, []);
+
+    const handleDarkMode = async () => {
+        await update({
+            darkMode: !session?.user.darkMode,
+        });
+
+        await switchDarkModeAction();
+    };
 
     return (
         <DropdownMenu>
@@ -58,6 +69,15 @@ function Menu() {
                         </DropdownMenuItem>
                     </Link>
                 )}
+                <DropdownMenuItem>
+                    <Label htmlFor="darkMode">Tryb ciemny</Label>
+                    <Switch
+                        onCheckedChange={handleDarkMode}
+                        checked={session?.user.darkMode || false}
+                        id="darkMode"
+                        className="ml-3"
+                    />
+                </DropdownMenuItem>
                 <AlertModal
                     title="Czy napewno chcesz się wylogować?"
                     accept={async () => {

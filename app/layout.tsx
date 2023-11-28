@@ -3,9 +3,11 @@ import '/global.css';
 import { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { Inter as FontSans } from 'next/font/google';
+import { getServerSession } from 'next-auth';
 
 import { cn } from '@/lib/utils/utils';
 import { Toaster } from '@/components/ui/Toaster';
+import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import Providers from './providers';
 
@@ -23,8 +25,14 @@ type TRootLayoutProps = {
 };
 
 async function RootLayout({ children }: TRootLayoutProps) {
+
+    const session = await getServerSession(authOptions);
+
     return (
-        <html lang="pl" className="mx-auto max-w-screen-sm">
+        <html lang="pl" className={cn(
+            'mx-auto max-w-screen-sm',
+            session?.user.darkMode ? 'dark' : 'light',
+        )}>
             <body
                 className={cn(
                     'mx-auto min-h-screen max-w-[700px] overflow-hidden bg-background font-sans antialiased',

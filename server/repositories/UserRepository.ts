@@ -47,7 +47,7 @@ class UserRepository {
         });
     }
 
-    static async update(id: string, userValues: Omit<TUserInsert, 'id'>) {
+    static async update(id: string, userValues: Omit<TUserInsert, 'id' | 'email'>) {
         await DB.update(usersTable)
             .set(userValues)
             .where(eq(usersTable.id, id));

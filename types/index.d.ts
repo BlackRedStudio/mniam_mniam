@@ -16,16 +16,19 @@ declare module "next-auth" {
       /** The user's postal address. */
       id: string,
       role: TUserRole,
+      darkMode: boolean,
     } & DefaultSession["user"]
   }
 
   interface User {
     role?: TUserRole | null;
+    darkMode?: boolean | null;
   }
 }
 declare module "next-auth/jwt" {
   interface JWT {
     uid: string,
     role: TUserRole,
+    darkMode: boolean,
   }
 }

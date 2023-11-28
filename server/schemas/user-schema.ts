@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
+import { boolean, mysqlTable, timestamp, varchar } from 'drizzle-orm/mysql-core';
 
 import { accountsTable, userProductsTable } from '.';
 import { TUserRole } from '@/types/types';
@@ -15,6 +15,7 @@ export const usersTable = mysqlTable('users', {
         fsp: 3,
     }).defaultNow(),
     image: varchar('image', { length: 255 }),
+    darkMode: boolean('darkMode').default(false),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,
