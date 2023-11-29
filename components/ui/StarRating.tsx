@@ -17,11 +17,11 @@ type TRatingColorClassMap = {
 };
 
 const ratingColorClassMap: TRatingColorClassMap = {
-    1: 'fill-destructive stroke-none',
-    2: 'fill-orange stroke-none',
-    3: 'fill-yellow stroke-none',
-    4: 'fill-success stroke-none',
-    5: 'fill-blue stroke-none',
+    1: 'fill-destructive stroke-destructive',
+    2: 'fill-orange stroke-orange',
+    3: 'fill-yellow stroke-yellow',
+    4: 'fill-success stroke-success',
+    5: 'fill-blue stroke-blue',
 };
 
 function StarRating({
