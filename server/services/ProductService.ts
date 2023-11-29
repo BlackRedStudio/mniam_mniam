@@ -7,12 +7,10 @@ import { Upload } from '@aws-sdk/lib-storage';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 
-import {
-    TProduct,
-} from '../schemas';
+import { TProduct } from '../schemas';
+import OpenFoodAPIService from './OpenFoodAPIService';
 
 class ProductService {
-
     static async uploadPhoto(src: string | File, ean: string) {
         const s3Client = new S3Client({});
 
@@ -35,6 +33,26 @@ class ProductService {
             (await upload.done()) as CompleteMultipartUploadCommandOutput;
 
         return res.Location;
+    }
+
+    static async getOpenFoodsProducts(name: string) {
+        const productsApiPL =
+            (await OpenFoodAPIService.searchProduct(name, 'pl')) ?? [];
+
+        const EANs = productsApiPL.map(product => product?._id);
+
+        const productsApiEN =
+            (await OpenFoodAPIService.searchProduct(name, 'en')) ?? [];
+
+        const products = [
+            ...productsApiPL,
+            // remove products with same EAN as in PL
+            ...productsApiEN?.filter(
+                product => EANs.indexOf(product?._id) === -1,
+            ),
+        ];
+
+        return products;
     }
 
     static mapToApiProduct(product: TProduct): TOpenFoodFactsProduct {

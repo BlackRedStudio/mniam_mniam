@@ -11,13 +11,12 @@ import { productValidator } from '@/lib/validators/product-validator';
 
 import CriticalError from '../errors/CriticalError';
 import Error from '../errors/Error';
+import ParsedError from '../errors/ParsedError';
 import { checkSession, revalidateProductPaths } from '../helpers/helpers';
+import ProductRepository from '../repositories/ProductRepository';
+import UserProductRepository from '../repositories/UserProductRepository';
 import ProductService from '../services/ProductService';
 import UserProductService from '../services/UserProductService';
-import ParsedError from '../errors/ParsedError';
-import UserProductRepository from '../repositories/UserProductRepository';
-import ProductRepository from '../repositories/ProductRepository';
-import { TProductInsert } from '../schemas';
 
 // search product by name using DB, or if not exist using API
 export async function searchProductAction(name: string) {
@@ -33,15 +32,10 @@ export async function searchProductAction(name: string) {
             );
             extendedSearch = true;
         } else {
-            const productsApiPL =
-                (await OpenFoodAPIService.searchProduct(name, 'pl')) ?? [];
-            const productsApiEN =
-                (await OpenFoodAPIService.searchProduct(name, 'en')) ?? [];
-
-            products = [...productsApiPL, ...productsApiEN];
+            products = await ProductService.getOpenFoodsProducts(name);
         }
         if (!products || products.length === 0) {
-            return {...new Error('Nie znaleziono produktów')};
+            return { ...new Error('Nie znaleziono produktów') };
         }
 
         return {
@@ -51,29 +45,17 @@ export async function searchProductAction(name: string) {
             products,
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
 
 // search product By Name using API
 export async function searchProductExtendedAction(name: string) {
     try {
-        const productsApiPL =
-            (await OpenFoodAPIService.searchProduct(name, 'pl')) ?? [];
-        const EANs = productsApiPL.map(product => product?._id);
-        const productsApiEN =
-            (await OpenFoodAPIService.searchProduct(name, 'en')) ?? [];
-
-        const products = [
-            ...productsApiPL,
-            // remove products with same EAN as in PL
-            ...productsApiEN?.filter(
-                product => EANs.indexOf(product?._id) === -1,
-            ),
-        ];
+        const products = await ProductService.getOpenFoodsProducts(name);
 
         if (!products || products.length === 0) {
-            return {...new Error('Nie znaleziono produktów')};
+            return { ...new Error('Nie znaleziono produktów') };
         }
 
         return {
@@ -82,7 +64,7 @@ export async function searchProductExtendedAction(name: string) {
             products,
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
 
@@ -92,7 +74,9 @@ export async function getProductAction(ean: string) {
 
         let product: TOpenFoodFactsProduct | undefined;
 
-        const productDB = await ProductRepository.firstWithUserProducts({ean});
+        const productDB = await ProductRepository.firstWithUserProducts({
+            ean,
+        });
 
         if (productDB) {
             product = ProductService.mapToApiProduct(productDB);
@@ -101,7 +85,7 @@ export async function getProductAction(ean: string) {
         }
 
         if (!product) {
-            return {...new Error('Nie znaleziono produktów')};
+            return { ...new Error('Nie znaleziono produktów') };
         }
 
         let productStatistics: TProductStatistics = {
@@ -126,22 +110,22 @@ export async function getProductAction(ean: string) {
             product,
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
 
 export async function getProductsAction(status: TProductStatus) {
     try {
-        if(status === 'draft') {
+        if (status === 'draft') {
             await checkSession(true);
         } else {
             await checkSession();
         }
 
-        const productsList = await ProductRepository.first({status});
+        const productsList = await ProductRepository.first({ status });
 
         if (productsList.length === 0) {
-            return {...new Error('Nie znaleziono produktów')};
+            return { ...new Error('Nie znaleziono produktów') };
         }
 
         return {
@@ -150,7 +134,7 @@ export async function getProductsAction(status: TProductStatus) {
             productsList,
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
 
@@ -169,9 +153,9 @@ export async function acceptProductVerificationAction(formData: FormData) {
         if (image === 'null') {
             isImage = false;
         }
-        const product = await ProductRepository.firstWithUserProducts({ean});
+        const product = await ProductRepository.firstWithUserProducts({ ean });
 
-        if (!product) return {...new Error('Produkt nie istnieje')};
+        if (!product) return { ...new Error('Produkt nie istnieje') };
 
         const parsed = productValidator
             .partial({
@@ -186,18 +170,21 @@ export async function acceptProductVerificationAction(formData: FormData) {
             });
 
         if (!parsed.success) {
-            return {...new ParsedError(parsed.error.formErrors.fieldErrors)};
+            return { ...new ParsedError(parsed.error.formErrors.fieldErrors) };
         }
 
         let imgUrl = product.img;
 
         if (isImage) {
-            const photoUrl = await ProductService.uploadPhoto(image, product.ean);
+            const photoUrl = await ProductService.uploadPhoto(
+                image,
+                product.ean,
+            );
 
             if (photoUrl) {
                 imgUrl = photoUrl;
             } else {
-                return {...new Error('Wystąpił błąd z przesłaniem zdjęcia.')};
+                return { ...new Error('Wystąpił błąd z przesłaniem zdjęcia.') };
             }
         }
 
@@ -216,7 +203,13 @@ export async function acceptProductVerificationAction(formData: FormData) {
 
         // inner try-catch block, because we don't want to break our function if something goes wrong
         try {
-            await OpenFoodAPIService.addProduct(ean, name, brands, quantity, product.userProducts[0].category);
+            await OpenFoodAPIService.addProduct(
+                ean,
+                name,
+                brands,
+                quantity,
+                product.userProducts[0].category,
+            );
 
             await OpenFoodAPIService.uploadProductPhoto(ean, imgUrl);
         } catch (apiError) {
@@ -230,7 +223,7 @@ export async function acceptProductVerificationAction(formData: FormData) {
             message: 'Produkt został zatwierdzony poprawnie',
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
 
@@ -238,9 +231,9 @@ export async function rejectProductVerificationAction(ean: string) {
     try {
         await checkSession(true);
 
-        const product = await ProductRepository.firstWithUserProducts({ean});
+        const product = await ProductRepository.firstWithUserProducts({ ean });
 
-        if(!product) return {...new Error('Produkt nie istnieje')};
+        if (!product) return { ...new Error('Produkt nie istnieje') };
 
         await UserProductRepository.deleteByProductId(product.id);
         await ProductRepository.delete(product.id);
@@ -252,6 +245,6 @@ export async function rejectProductVerificationAction(ean: string) {
             message: 'Produkt został odrzucony poprawnie.',
         };
     } catch (e) {
-        return {...new CriticalError(e)};
+        return { ...new CriticalError(e) };
     }
 }
