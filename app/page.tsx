@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 
-import H1 from '@/components/ui/H1';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
+import Logo from '@/components/layout/Logo';
 
 import LoginTab from '../components/modules/LoginTab';
 import RegisterTab from '../components/modules/RegisterTab';
@@ -17,7 +17,9 @@ async function HomePage() {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-start p-4">
-            <H1>Mniam Mniam</H1>
+            <div className="mb-5">
+                <Logo />
+            </div>
             <Tabs defaultValue="login" className="w-full">
                 <TabsList className="mb-5 w-full">
                     <TabsTrigger className="w-1/2" value="login">
