@@ -1,3 +1,6 @@
+import Link from 'next/link';
+
+import { Button } from '@/components/ui/Button';
 import H2 from '@/components/ui/H2';
 import H3 from '@/components/ui/H3';
 import { ScrollArea } from '@/components/ui/ScrollArea';
@@ -5,7 +8,7 @@ import Logo from '@/components/layout/Logo';
 
 async function privacyPolicyPage() {
     return (
-        <ScrollArea className="h-[calc(100vh-90px)]">
+        <ScrollArea className="h-[100vh]">
             <main className="flex min-h-screen flex-col items-center justify-start p-4">
                 <div className="mb-7">
                     <Logo />
@@ -15,7 +18,7 @@ async function privacyPolicyPage() {
                     Informacje o administratorze i przetwarzaniu danych
                     osobowych
                 </H3>
-                <ol className="list-decimal text-justify">
+                <ol className="list-decimal">
                     <li>
                         Administratorem danych osobowych jest firma Black Red
                         Studio, z siedzibą pod adresem ul. Trześniowska 61,
@@ -77,7 +80,7 @@ async function privacyPolicyPage() {
                 </ol>
                 <br />
                 <H3>Informacje o plikach cookies</H3>
-                <ol className="list-decimal text-justify">
+                <ol className="list-decimal">
                     <li>
                         Administratorem serwisu pod domeną
                         mniam-mniam.vercel.app jest firma Black Red Studio, z
@@ -105,7 +108,7 @@ async function privacyPolicyPage() {
                         cookies:
                     </li>
                 </ol>
-                <ul>
+                <ul className='list-disc pl-4'>
                     <li>
                         „niezbędne” pliki cookies, umożliwiające korzystanie z
                         usług dostępnych w ramach serwisu, np. uwierzytelniające
@@ -131,7 +134,7 @@ async function privacyPolicyPage() {
                         internetowej itp.;
                     </li>
                 </ul>
-                <ol start={5}>
+                <ol start={5} className='list-decimal'>
                     <li>
                         Serwis stosuje dwa zasadnicze rodzaje plików (cookies) –
                         sesyjne i stałe. Pliki sesyjne są tymczasowe,
@@ -177,6 +180,9 @@ async function privacyPolicyPage() {
                         lub na stronie jej producenta.
                     </li>
                 </ol>
+                <Link href="/delete-account">
+                    <Button className='mt-5'>Usuwanie konta</Button>
+                </Link>
             </main>
         </ScrollArea>
     );
