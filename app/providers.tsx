@@ -15,7 +15,7 @@ function Providers({ children }: TProviderLayoutProps) {
 
     useEffect(() => {
         CapacitorApp.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-            if(event.url.indexOf('api/auth/callback/google') > -1) {
+            if(event.url.indexOf('api/auth/callback') > -1) {
 
                 const slug = event.url.split('mniam-mniam.vercel.app').pop() || '/';
                 router.push(slug);
