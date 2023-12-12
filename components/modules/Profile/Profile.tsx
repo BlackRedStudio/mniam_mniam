@@ -14,8 +14,10 @@ import { Button } from '@/components/ui/Button';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
-import SignUpButton from '@/components/ui/SignUpButton';
 import { Separator } from '@/components/ui/Separator';
+import SignUpButton from '@/components/ui/SignUpButton';
+
+import { Icons } from '../Icons';
 
 type TProfile = {
     user: TUser;
@@ -25,6 +27,7 @@ function Profile({ user }: TProfile) {
     const { toast } = useToast();
     const { data: session, update } = useSession();
 
+    const [showPassword, setShowPassword] = useState(false);
     const [formErrors, setFormErrors] = useState<TProfileValidatorErrors>();
 
     if (!session) return null;
@@ -92,27 +95,49 @@ function Profile({ user }: TProfile) {
                 />
                 {<FormError formErrors={formErrors?.email} />}
             </div>
-            <div className="mb-4">
+            <div className="relative mb-4">
                 <Label htmlFor="password">Hasło</Label>
                 <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     className="mt-1"
                     placeholder="Wpisz swoje hasło"
                 />
                 {<FormError formErrors={formErrors?.password} />}
+                {showPassword ? (
+                    <Icons.eye
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(false)}
+                    />
+                ) : (
+                    <Icons.eyeOff
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(true)}
+                    />
+                )}
             </div>
-            <div className='mb-4'>
+            <div className="relative mb-4">
                 <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
                 <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="passwordConfirm"
                     className="mt-1"
                     placeholder="Wpisz ponownie swoje hasło"
                 />
                 {<FormError formErrors={formErrors?.passwordConfirm} />}
+                {showPassword ? (
+                    <Icons.eye
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(false)}
+                    />
+                ) : (
+                    <Icons.eyeOff
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(true)}
+                    />
+                )}
             </div>
-            <Separator className='my-6' />
+            <Separator className="my-6" />
             <div className="mb-4">
                 <Label htmlFor="avatar">Zmień swój Avatar</Label>
                 <Input
