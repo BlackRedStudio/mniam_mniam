@@ -54,7 +54,8 @@ class UserProductRepository {
             ),
             with: {
                 product: true,
-            }
+            },
+            orderBy: (userProductsTable, { desc }) => [desc(userProductsTable.dateUpdated)]
         });
 
         return userProductsList;

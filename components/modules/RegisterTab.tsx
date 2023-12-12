@@ -12,11 +12,13 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 
 import SignUpButton from '../ui/SignUpButton';
+import { Icons } from './Icons';
 
 function RegisterTab() {
     const { toast } = useToast();
     const router = useRouter();
 
+    const [showPassword, setShowPassword] = useState(false);
     const [formErrors, setFormErrors] =
         useState<TRegistrationValidatorErrors>();
 
@@ -76,27 +78,49 @@ function RegisterTab() {
                     />
                     {<FormError formErrors={formErrors?.email} />}
                 </div>
-                <div className="mb-4">
+                <div className="relative mb-4">
                     <Label htmlFor="password">Hasło</Label>
                     <Input
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         name="password"
                         className="mt-1"
                         placeholder="Wpisz swoje hasło"
                         required
                     />
                     {<FormError formErrors={formErrors?.password} />}
+                    {showPassword ? (
+                        <Icons.eye
+                            className="absolute bottom-[7px] right-[7px]"
+                            onClick={() => setShowPassword(false)}
+                        />
+                    ) : (
+                        <Icons.eyeOff
+                            className="absolute bottom-[7px] right-[7px]"
+                            onClick={() => setShowPassword(true)}
+                        />
+                    )}
                 </div>
-                <div className="mb-4">
+                <div className="relative mb-4">
                     <Label htmlFor="passwordConfirm">Powtórz hasło</Label>
                     <Input
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         name="passwordConfirm"
                         className="mt-1"
                         placeholder="Wpisz ponownie swoje hasło"
                         required
                     />
                     {<FormError formErrors={formErrors?.passwordConfirm} />}
+                    {showPassword ? (
+                        <Icons.eye
+                            className="absolute bottom-[7px] right-[7px]"
+                            onClick={() => setShowPassword(false)}
+                        />
+                    ) : (
+                        <Icons.eyeOff
+                            className="absolute bottom-[7px] right-[7px]"
+                            onClick={() => setShowPassword(true)}
+                        />
+                    )}
                 </div>
                 <SignUpButton title="Zarejestruj się" />
             </form>

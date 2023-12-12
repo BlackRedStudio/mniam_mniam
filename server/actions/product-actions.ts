@@ -122,7 +122,7 @@ export async function getProductsAction(status: TProductStatus) {
             await checkSession();
         }
 
-        const productsList = await ProductRepository.first({ status });
+        const productsList = await ProductRepository.many({ status });
 
         if (productsList.length === 0) {
             return { ...new Error('Nie znaleziono produktów') };

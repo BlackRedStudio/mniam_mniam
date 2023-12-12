@@ -116,7 +116,7 @@ function ProductCard({
         setLoading(false);
 
         if (res.success) {
-            router.push('/dashboard');
+            currentUserProduct ? router.push('/my-list') : router.push('/dashboard');
         }
     };
 

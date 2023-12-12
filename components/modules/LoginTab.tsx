@@ -11,12 +11,15 @@ import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Separator } from '@/components/ui/Separator';
 
+import { Icons } from './Icons';
+
 function LoginTab() {
     const { toast } = useToast();
     const router = useRouter();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async (type: TLogin) => {
@@ -62,10 +65,10 @@ function LoginTab() {
                     disabled={loading}
                 />
             </div>
-            <div>
+            <div className="relative">
                 <Label htmlFor="password">Hasło</Label>
                 <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     name="password"
                     className="mt-1"
                     placeholder="Wpisz swoje hasło"
@@ -73,6 +76,17 @@ function LoginTab() {
                     required
                     disabled={loading}
                 />
+                {showPassword ? (
+                    <Icons.eye
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(false)}
+                    />
+                ) : (
+                    <Icons.eyeOff
+                        className="absolute bottom-[7px] right-[7px]"
+                        onClick={() => setShowPassword(true)}
+                    />
+                )}
             </div>
             <Button
                 className="mt-6 w-full py-7"

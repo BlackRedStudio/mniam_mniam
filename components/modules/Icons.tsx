@@ -1,4 +1,4 @@
-import { ChevronsUpDown, Loader2, Menu, Star, DollarSign, CakeSlice, Lollipop, Donut } from 'lucide-react';
+import { ChevronsUpDown, Loader2, Menu, Star, DollarSign, CakeSlice, Lollipop, Donut, Eye, EyeOff } from 'lucide-react';
 
 export const Icons = {
     spinner: Loader2,
@@ -9,4 +9,6 @@ export const Icons = {
     cakeSlice: CakeSlice,
     lollipop: Lollipop,
     donut: Donut,
+    eye: Eye,
+    eyeOff: EyeOff,
 };

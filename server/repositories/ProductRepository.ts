@@ -1,4 +1,4 @@
-import { and, eq, like, sql } from 'drizzle-orm';
+import { and, eq, like } from 'drizzle-orm';
 
 import { TProductStatus } from '@/types/types';
 
@@ -6,7 +6,6 @@ import { DB } from '../helpers/DB';
 import {
     productsTable,
     TProductInsert,
-    userProductsTable,
 } from '../schemas';
 
 type TFindProduct = {
@@ -24,13 +23,14 @@ class ProductRepository {
         return product;
     }
 
-    static async first({ id, status, ean }: TFindProduct) {
+    static async many({ id, status, ean }: TFindProduct) {
         const product = await DB.query.productsTable.findMany({
             where: and(
                 id ? eq(productsTable.id, id) : undefined,
                 status ? eq(productsTable.status, status) : undefined,
                 ean ? eq(productsTable.ean, ean) : undefined,
             ),
+            orderBy: (productsTable, {desc}) => [desc(productsTable.dateUpdated)]
         });
 
         return product;
