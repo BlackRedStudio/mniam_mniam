@@ -5,7 +5,6 @@ import { TProductStatus } from '@/types/types';
 import { DB } from '../helpers/DB';
 import {
     productsTable,
-    TProduct,
     TProductInsert,
     userProductsTable,
 } from '../schemas';
@@ -45,13 +44,7 @@ class ProductRepository {
                 ean ? eq(productsTable.ean, ean) : undefined,
             ),
             with: {
-                userProducts: {
-                    extras: {
-                        price: sql<string>`cast(${userProductsTable.price} as CHAR)`.as(
-                            'price',
-                        ),
-                    },
-                },
+                userProducts: true
             },
         });
 

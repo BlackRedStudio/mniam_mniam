@@ -176,6 +176,13 @@
       "when": 1701195879446,
       "tag": "0024_quick_millenium_guard",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1702380387563,
+      "tag": "0025_white_professor_monster",
+      "breakpoints": true
     }
   ]
 }

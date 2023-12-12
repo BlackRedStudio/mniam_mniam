@@ -132,3 +132,20 @@ export async function switchDarkModeAction() {
         return {...new CriticalError(e)};
     }
 }
+
+export async function switchCamera__Action(camera: string) {
+    try {
+        const session = await checkSession();
+
+        await UserRepository.update(session.user.id, {camera});
+
+        revalidatePath('/');
+
+        return {
+            success: true as const,
+            message: 'Kamera została zapisana poprawnie.',
+        };
+    } catch (e) {
+        return {...new CriticalError(e)};
+    }
+}

@@ -20,6 +20,7 @@ function CommunityRating({
     if (!isNaN(parseInt(averagePrice))) {
 
         let roundedPrice = Math.round(parseFloat(averagePrice));
+
         for(roundedPrice; roundedPrice > 0; roundedPrice--) {
             priceIcons.push(<Icons.dollarSign key={roundedPrice} className='mr-[-4px]' />)
         }

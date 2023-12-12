@@ -19,7 +19,7 @@ async function DashboardPage() {
                 Witaj {userName},<br />
                 co dzisiaj smakujemy?
             </H2>
-            <ProductScannerWrapper />
+            <ProductScannerWrapper camera={session.user.camera} />
             <Separator className="my-8" />
             <ProductSearch />
         </section>

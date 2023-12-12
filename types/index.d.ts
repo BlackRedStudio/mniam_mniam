@@ -17,12 +17,14 @@ declare module "next-auth" {
       id: string,
       role: TUserRole,
       darkMode: boolean,
+      camera: string,
     } & DefaultSession["user"]
   }
 
   interface User {
     role?: TUserRole | null;
     darkMode?: boolean | null;
+    camera?: string | null;
   }
 }
 declare module "next-auth/jwt" {
@@ -30,5 +32,6 @@ declare module "next-auth/jwt" {
     uid: string,
     role: TUserRole,
     darkMode: boolean,
+    camera: string,
   }
 }
