@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { switchDarkModeAction } from '@/server/actions/user-actions';
-import { App as CapacitorApp } from '@capacitor/app';
+import { App as CapacitorApp, URLOpenListenerEvent } from '@capacitor/app';
 import { signOut, useSession } from 'next-auth/react';
 
 import { useToast } from '@/lib/hooks/use-toast';
@@ -35,6 +35,13 @@ function Menu() {
                 window.history.back();
             }
         });
+
+        CapacitorApp.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
+            const slug = event.url.split('.app').pop();
+            alert(JSON.stringify(slug));
+            alert(slug);
+          });
+
     }, []);
 
     const handleDarkMode = async () => {
