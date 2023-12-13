@@ -78,6 +78,9 @@ function Menu() {
                         className="ml-3"
                     />
                 </DropdownMenuItem>
+                <Link href="/ticket">
+                    <DropdownMenuItem>Zgłoś uwagę/pomysł</DropdownMenuItem>
+                </Link>
                 <AlertModal
                     title="Czy napewno chcesz się wylogować?"
                     accept={async () => {

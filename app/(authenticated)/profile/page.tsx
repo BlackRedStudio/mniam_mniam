@@ -13,9 +13,9 @@ async function profilePage() {
     if (!user) return null;
 
     return (
-        <>
+        <section>
             <Profile user={user} />
-        </>
+        </section>
     );
 }
 

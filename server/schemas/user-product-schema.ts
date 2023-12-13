@@ -35,7 +35,7 @@ export const userProductsTable = mysqlTable('userProducts', {
 
 export const userProductsRelations = relations(userProductsTable, ({ one }) => ({
     user: one(usersTable, {
-        fields: [userProductsTable.productId],
+        fields: [userProductsTable.userId],
         references: [usersTable.id],
     }),
     product: one(productsTable, {

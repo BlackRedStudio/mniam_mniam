@@ -230,11 +230,13 @@ function ProductVerificationCard({
                         {loading && <Loader className="mt-4" />}
                         <Button
                             className="w-full"
+                            disabled={loading}
                             onClick={() => handleAcceptProduct()}>
                             Akceptuj produkt
                         </Button>
                         <Button
                             className="w-full"
+                            disabled={loading}
                             onClick={() => handleRejectVerification()}
                             variant={'destructive'}>
                             Odrzuć produkt

@@ -21,23 +21,23 @@ async function deleteAccountPage() {
                         className="text-orange">
                         team@blackredstudio.com
                     </a>{' '}
-                    zawierającą hasło,{' '}
+                    zawierającą frazę,{' '}
                     <strong>
                         proszę o usunięcie mojego konta z aplikacji Mniam App
                     </strong>{' '}
-                    lub podobne hasło. Wszystkie Twoje dane oraz lista produktów
+                    lub podobną. Wszystkie Twoje dane oraz lista produktów
                     i ich oceny zostaną usunięte w ciągu najbliższych 5 dni
                     roboczych.
                     <br />
                     <br />
                     Kasowanie konta możesz odwołać w dowolnym momencie o ile
                     jeszcze nie doszło do jego kasacji, wtedy należy wysłać na
-                    podany wcześniej adres email wiadomość z hasłem:{' '}
+                    podany wcześniej adres email wiadomość z frazą:{' '}
                     <strong>
                         proszę jednak o nie usuwanie mojego konta z aplikacji
                         Mniam App
                     </strong>{' '}
-                    lub podobnym.
+                    lub podobną.
                 </H3>
             </main>
         </ScrollArea>

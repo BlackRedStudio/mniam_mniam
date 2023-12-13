@@ -81,7 +81,7 @@ function Profile({ user }: TProfile) {
                     defaultValue={user.name ?? user.email}
                     required
                 />
-                {<FormError formErrors={formErrors?.name} />}
+                <FormError formErrors={formErrors?.name} />
             </div>
             <div className="mb-4">
                 <Label htmlFor="email">Email</Label>
@@ -93,7 +93,7 @@ function Profile({ user }: TProfile) {
                     defaultValue={user.email}
                     required
                 />
-                {<FormError formErrors={formErrors?.email} />}
+                <FormError formErrors={formErrors?.email} />
             </div>
             <div className="relative mb-4">
                 <Label htmlFor="password">Hasło</Label>
@@ -103,7 +103,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     placeholder="Wpisz swoje hasło"
                 />
-                {<FormError formErrors={formErrors?.password} />}
+                <FormError formErrors={formErrors?.password} />
                 {showPassword ? (
                     <Icons.eye
                         className="absolute bottom-[7px] right-[7px]"
@@ -124,7 +124,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     placeholder="Wpisz ponownie swoje hasło"
                 />
-                {<FormError formErrors={formErrors?.passwordConfirm} />}
+                <FormError formErrors={formErrors?.passwordConfirm} />
                 {showPassword ? (
                     <Icons.eye
                         className="absolute bottom-[7px] right-[7px]"
@@ -146,7 +146,7 @@ function Profile({ user }: TProfile) {
                     className="mt-1"
                     accept="image/jpeg, image/jpg"
                 />
-                {<FormError formErrors={formErrors?.image} />}
+                <FormError formErrors={formErrors?.image} />
             </div>
             {user.image && (
                 <Button className="mb-5" onClick={e => handleDeleteAvatar(e)}>

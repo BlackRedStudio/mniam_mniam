@@ -183,6 +183,13 @@
       "when": 1702380387563,
       "tag": "0025_white_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1702477801201,
+      "tag": "0026_overjoyed_meteorite",
+      "breakpoints": true
     }
   ]
 }

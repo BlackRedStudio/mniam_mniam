@@ -13,6 +13,7 @@ import CriticalError from '../errors/CriticalError';
 import Error from '../errors/Error';
 import { checkSession } from '../helpers/helpers';
 import UserRepository from '../repositories/UserRepository';
+import { ticketValidator } from '@/lib/validators/ticket-validator';
 
 export async function registerUserAction(formData: FormData) {
     try {
@@ -147,5 +148,31 @@ export async function switchCamera__Action(camera: string) {
         };
     } catch (e) {
         return {...new CriticalError(e)};
+    }
+}
+
+export async function submitTicket__Action(formData: FormData) {
+    try {
+        await checkSession();
+
+        const message = formData.get('message') as string;
+        const attachment = formData.get('attachment') as File | 'null';
+
+        const parsed = ticketValidator
+            .safeParse({
+                message,
+                image: attachment,
+            });
+
+        if (!parsed.success) {
+            return { ...new ParsedError(parsed.error.formErrors.fieldErrors) };
+        }
+
+        return {
+            success: true as const,
+            message: 'Wiadomość została wysłana poprawnie.',
+        };
+    } catch (e) {
+        return { ...new CriticalError(e) };
     }
 }
