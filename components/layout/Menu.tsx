@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/DropdownMenu';
 import { Icons } from '@/components/modules/Icons';
 
-import AlertModal from '../modules/Modal';
+import AlertModal from '../modules/AlertModal';
 import { Label } from '../ui/Label';
 import { Switch } from '../ui/Switch';
 

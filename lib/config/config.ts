@@ -1,77 +1,162 @@
-export const categories = [
+import { Icons } from '@/components/modules/Icons';
+
+export type TCategoryType =
+    | 'drinks'
+    | 'sweets'
+    | 'snacks'
+    | 'readyMade'
+    | 'main'
+    | 'other';
+
+type TCategoryTypeItem = {
+    id: TCategoryType;
+    label: string;
+};
+
+export const categoryTypes: TCategoryTypeItem[] = [
     {
-        id: 'jelly',
-        label: 'Żelki',
+        id: 'main',
+        label: 'Główne',
     },
     {
-        id: 'chocolates',
-        label: 'Czekolady',
+        id: 'sweets',
+        label: 'Słodkości',
     },
     {
-        id: 'bars',
-        label: 'Batony',
-    },
-    {
-        id: 'cookies',
-        label: 'Ciastka',
-    },
-    {
-        id: 'candies',
-        label: 'Cukierki',
-    },
-    {
-        id: 'iceCreams',
-        label: 'Lody',
-    },
-    {
-        id: 'chewingGums',
-        label: 'Gumy',
-    },
-    {
-        id: 'otherSweets',
-        label: 'Inne słodycze',
-    },
-    {
-        id: 'cereals',
-        label: 'Płatki śniadaniowe',
+        id: 'snacks',
+        label: 'Przekąski',
     },
     {
         id: 'drinks',
         label: 'Napoje',
     },
     {
-        id: 'alcohols',
-        label: 'Alkohole',
-    },
-    {
-        id: 'chips',
-        label: 'Chipsy',
-    },
-    {
-        id: 'saltySnacks',
-        label: 'Przekąski słone',
-    },
-    {
-        id: 'tea',
-        label: 'Herbaty',
-    },
-    {
-        id: 'coffee',
-        label: 'Kawy',
-    },
-    {
-        id: 'dairy',
-        label: 'Nabiał',
-    },
-    {
-        id: 'frozenProducts',
-        label: 'Produkty mrożone',
+        id: 'readyMade',
+        label: 'Dania gotowe',
     },
     {
         id: 'other',
         label: 'Pozostałe',
     },
-] as const;
+];
+
+type TCategoriesItem = {
+    id: string;
+    label: string;
+    icon: keyof typeof Icons;
+    type: TCategoryType;
+};
+
+export const categories: TCategoriesItem[] = [
+    {
+        id: 'alcohols',
+        label: 'Alkohole',
+        icon: 'martini',
+        type: 'drinks',
+    },
+    {
+        id: 'bars',
+        label: 'Batony',
+        icon: 'chocolateBar',
+        type: 'sweets',
+    },
+    {
+        id: 'chips',
+        label: 'Chipsy',
+        icon: 'chips',
+        type: 'snacks',
+    },
+    {
+        id: 'cookies',
+        label: 'Ciastka',
+        icon: 'cakeSlice',
+        type: 'sweets',
+    },
+    {
+        id: 'candies',
+        label: 'Cukierki',
+        icon: 'candy',
+        type: 'sweets',
+    },
+    {
+        id: 'chocolates',
+        label: 'Czekolady',
+        icon: 'chocolate',
+        type: 'sweets',
+    },
+    {
+        id: 'chewingGums',
+        label: 'Gumy',
+        icon: 'shell',
+        type: 'sweets',
+    },
+    {
+        id: 'tea',
+        label: 'Herbaty',
+        icon: 'coffee',
+        type: 'drinks',
+    },
+    {
+        id: 'coffee',
+        label: 'Kawy',
+        icon: 'coffee',
+        type: 'drinks',
+    },
+    {
+        id: 'frozenProducts',
+        label: 'Mrożonki',
+        icon: 'snowflake',
+        type: 'readyMade',
+    },
+    {
+        id: 'dairy',
+        label: 'Nabiał',
+        icon: 'milk',
+        type: 'main',
+    },
+    {
+        id: 'drinks',
+        label: 'Napoje',
+        icon: 'cupSoda',
+        type: 'drinks',
+    },
+    {
+        id: 'iceCreams',
+        label: 'Lody',
+        icon: 'iceCream',
+        type: 'sweets',
+    },
+    {
+        id: 'cereals',
+        label: 'Płatki',
+        icon: 'cereals',
+        type: 'main',
+    },
+    {
+        id: 'other',
+        label: 'Pozostałe',
+        icon: 'utensils',
+        type: 'other',
+    },
+    {
+        id: 'saltySnacks',
+        label: 'Przekąski',
+        icon: 'popcorn',
+        type: 'snacks',
+    },
+    {
+        id: 'otherSweets',
+        label: 'Słodycze',
+        icon: 'lollipop',
+        type: 'sweets',
+    },
+    {
+        id: 'jelly',
+        label: 'Żelki',
+        icon: 'bean',
+        type: 'sweets',
+    },
+];
 
 // 10 MB
 export const MAX_FILE_SIZE = 10485760;

@@ -1,4 +1,31 @@
-import { ChevronsUpDown, Loader2, Menu, Star, DollarSign, CakeSlice, Lollipop, Donut, Eye, EyeOff } from 'lucide-react';
+import {
+    CakeSlice,
+    Candy,
+    ChevronsUpDown,
+    Coffee,
+    CupSoda,
+    DollarSign,
+    Donut,
+    Eye,
+    EyeOff,
+    IceCream,
+    Loader2,
+    Lollipop,
+    Martini,
+    Menu,
+    Milk,
+    Shell,
+    Snowflake,
+    Star,
+    Utensils,
+    Popcorn,
+    Bean,
+} from 'lucide-react';
+
+import Cereals from '../Icons/Cereals';
+import Chips from '../Icons/Chips';
+import Chocolate from '../Icons/Chocolate';
+import ChocolateBar from '../Icons/ChocolateBar';
 
 export const Icons = {
     spinner: Loader2,
@@ -11,4 +38,19 @@ export const Icons = {
     donut: Donut,
     eye: Eye,
     eyeOff: EyeOff,
+    martini: Martini,
+    milk: Milk,
+    coffee: Coffee,
+    cupSoda: CupSoda,
+    candy: Candy,
+    utensils: Utensils,
+    snowflake: Snowflake,
+    iceCream: IceCream,
+    shell: Shell,
+    cereals: Cereals,
+    chips: Chips,
+    chocolate: Chocolate,
+    chocolateBar: ChocolateBar,
+    popcorn: Popcorn,
+    bean: Bean,
 };

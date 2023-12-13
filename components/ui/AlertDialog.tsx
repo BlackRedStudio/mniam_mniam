@@ -25,14 +25,19 @@ const AlertDialogOverlay = React.forwardRef<
         ref={ref}
     />
 ));
+
+interface IDialogContentProps {
+    overlayClick?: React.MouseEventHandler<HTMLDivElement>;
+}
+
 AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
 const AlertDialogContent = React.forwardRef<
-    React.ElementRef<typeof AlertDialogPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+    React.ElementRef<typeof AlertDialogPrimitive.Content> & IDialogContentProps,
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & IDialogContentProps
+>(({ className, overlayClick, ...props }, ref) => (
     <AlertDialogPortal>
-        <AlertDialogOverlay />
+        <AlertDialogOverlay onClick={overlayClick} />
         <AlertDialogPrimitive.Content
             ref={ref}
             className={cn(
@@ -85,11 +90,13 @@ const AlertDialogTitle = React.forwardRef<
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
+type TAlertDialogDescription = React.ForwardRefExoticComponent<AlertDialogPrimitive.AlertDialogDescriptionProps & React.RefAttributes<HTMLDivElement>>;
+
 const AlertDialogDescription = React.forwardRef<
-    React.ElementRef<typeof AlertDialogPrimitive.Description>,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Description>
+    React.ElementRef<TAlertDialogDescription>,
+    React.ComponentPropsWithoutRef<TAlertDialogDescription>
 >(({ className, ...props }, ref) => (
-    <AlertDialogPrimitive.Description
+    <div
         ref={ref}
         className={cn('text-sm text-muted-foreground', className)}
         {...props}
