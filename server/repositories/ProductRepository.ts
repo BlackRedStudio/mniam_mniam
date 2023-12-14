@@ -51,7 +51,7 @@ class ProductRepository {
         return product;
     }
 
-    static async update(id: string, productValues: Omit<TProductInsert, 'id'>,) {
+    static async update(id: string, productValues: Omit<TProductInsert, 'id'>) {
 
         const res = await DB.update(productsTable)
             .set(productValues)

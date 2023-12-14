@@ -1,16 +1,17 @@
-import { ChangeEvent } from 'react';
+import { SetStateAction } from 'react';
 import Image from 'next/image';
 
 import { cn } from '@/lib/utils/utils';
 import { CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+
+import ImageUploadField from '../ImageUploadField';
 
 type TProductCardImageProps = {
     image_url?: string;
     product_name?: string;
     isDraft: boolean;
     image: File | null;
-    handleSelectImage: (e: ChangeEvent<HTMLInputElement>) => void;
+    setImage: (value: SetStateAction<File | null>) => void;
 };
 
 function ProductCardImage({
@@ -18,7 +19,7 @@ function ProductCardImage({
     product_name,
     isDraft,
     image,
-    handleSelectImage,
+    setImage,
 }: TProductCardImageProps) {
     return (
         <CardContent>
@@ -35,34 +36,20 @@ function ProductCardImage({
                     />
                 </div>
             ) : (
-                <>
-                    {image ? (
-                        <>
-                            <div className="text-success">Pogląd obrazka</div>
-                            <div className="relative h-[300px] w-full">
-                                <Image
-                                    src={URL.createObjectURL(image)}
-                                    fill
-                                    className="object-contain"
-                                    alt="Pogląd obrazka"
-                                />
-                            </div>
-                        </>
-                    ) : (
+                <ImageUploadField
+                    image={image}
+                    className="mt-1"
+                    imageHeight={640}
+                    imageWidth={640}
+                    setImage={setImage}
+                    capture={true}
+                    destructiveElement={
                         <div className="text-destructive">
                             Brak obrazka <br />
                             (akceptowany format to jpeg/jpg)
                         </div>
-                    )}
-                    <Input
-                        type="file"
-                        name="image"
-                        className="mt-1"
-                        onChange={handleSelectImage}
-                        accept="image/*"
-                        capture
-                    />
-                </>
+                    }
+                />
             )}
         </CardContent>
     );

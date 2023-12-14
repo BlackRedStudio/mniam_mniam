@@ -1,13 +1,12 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     addProductToUserListAction,
     deleteProductFromUserListAction,
 } from '@/server/actions/user-product-actions';
 import { TUserProduct } from '@/server/schemas';
-import FileResizer from 'react-image-file-resizer';
 
 import {
     TCategoriesIds,
@@ -138,40 +137,6 @@ function ProductCard({
         setLoading(false);
     };
 
-    const handleSelectImage = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setImage(null);
-            return;
-        }
-        const file = e.target.files[0];
-
-        try {
-            FileResizer.imageFileResizer(
-                file,
-                640,
-                640,
-                'JPEG',
-                79,
-                0,
-                file => {
-                    if (file instanceof File) {
-                        setImage(file);
-                    } else {
-                        throw new Error('Zły format pliku');
-                    }
-                },
-                'file',
-                640,
-                160,
-            );
-        } catch (err) {
-            toast({
-                title: 'Problem z plikiem, spróbuj ponownie lub zmień na inny plik.',
-                variant: 'destructive',
-            });
-        }
-    };
-
     return (
         <>
             <Card>
@@ -233,7 +198,7 @@ function ProductCard({
                     product_name={product_name}
                     isDraft={isDraft}
                     image={image}
-                    handleSelectImage={handleSelectImage}
+                    setImage={setImage}
                 />
                 <CardFooter className="flex-col">
                     <CommunityRating productStatistics={productStatistics} />

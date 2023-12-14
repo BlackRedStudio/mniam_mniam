@@ -1,13 +1,12 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import {
     acceptProductVerificationAction,
     rejectProductVerificationAction,
 } from '@/server/actions/product-actions';
-import FileResizer from 'react-image-file-resizer';
 
 import { TOpenFoodFactsProduct } from '@/types/types';
 import { useToast } from '@/lib/hooks/use-toast';
@@ -22,8 +21,10 @@ import {
 } from '@/components/ui/Card';
 import FormError from '@/components/ui/FormError';
 import { Input } from '@/components/ui/Input';
-import Loader from '@/components/ui/Loader';
 import LegalNotice from '@/components/ui/LegalNotice';
+import Loader from '@/components/ui/Loader';
+
+import ImageUploadField from '../ImageUploadField';
 
 type TProductVerificationCard = {
     product: NonNullable<TOpenFoodFactsProduct>;
@@ -97,40 +98,6 @@ function ProductVerificationCard({
         }
     };
 
-    const handleSelectImage = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setImageState(null);
-            return;
-        }
-        const file = e.target.files[0];
-
-        try {
-            FileResizer.imageFileResizer(
-                file,
-                400,
-                400,
-                'JPEG',
-                79,
-                0,
-                file => {
-                    if (file instanceof File) {
-                        setImageState(file);
-                    } else {
-                        throw new Error('Zły format pliku');
-                    }
-                },
-                'file',
-                100,
-                100,
-            );
-        } catch (err) {
-            toast({
-                title: 'Problem z plikiem, spróbuj ponownie lub zmień na inny plik.',
-                variant: 'destructive',
-            });
-        }
-    };
-
     return (
         <>
             <Card>
@@ -197,32 +164,14 @@ function ProductVerificationCard({
                             alt={product_name ?? ''}
                         />
                     </div>
-                    {imageState && (
-                        <>
-                            <div className="mt-5 text-center text-success">
-                                Nowy obrazek
-                            </div>
-                            <div className="relative h-[300px] w-full">
-                                <Image
-                                    src={URL.createObjectURL(imageState)}
-                                    fill
-                                    className="object-contain"
-                                    alt="Pogląd obrazka"
-                                />
-                            </div>
-                        </>
-                    )}
-                    <Input
-                        type="file"
-                        name="image"
-                        className="mt-5"
-                        onChange={handleSelectImage}
-                        accept="image/*"
-                        capture
-                    />
-                    <FormError
-                        className="mb-2"
-                        formErrors={formErrors?.image}
+                    <ImageUploadField
+                        image={imageState}
+                        formErrorImage={formErrors?.image}
+                        imageHeight={640}
+                        imageWidth={640}
+                        setImage={setImageState}
+                        capture={true}
+                        textSuccess="Nowy obrazek"
                     />
                 </CardContent>
                 <CardFooter className="flex-col">
