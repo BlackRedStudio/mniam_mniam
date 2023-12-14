@@ -1,0 +1,1 @@
+ALTER TABLE `tickets` ADD `author` varchar(255) DEFAULT 'user' NOT NULL;

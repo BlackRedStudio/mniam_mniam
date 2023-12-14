@@ -8,13 +8,13 @@ import { cn } from '@/lib/utils/utils';
 import { Card, CardHeader } from '@/components/ui/Card';
 import H3 from '@/components/ui/H3';
 
-type TProductListItemDraftProps = {
+type TProductsListItemDraftProps = {
     product: TProduct;
 };
 
-function ProductListItemDraft({
+function ProductsListItemDraft({
     product: { ean, name, quantity, img, status },
-}: TProductListItemDraftProps) {
+}: TProductsListItemDraftProps) {
     const itemUrl = `/product-verification/${ean}`;
 
     return (
@@ -43,4 +43,4 @@ function ProductListItemDraft({
     );
 }
 
-export default ProductListItemDraft;
+export default ProductsListItemDraft;

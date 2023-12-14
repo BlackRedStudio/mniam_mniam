@@ -9,13 +9,13 @@ import { Card, CardHeader } from '@/components/ui/Card';
 import H3 from '@/components/ui/H3';
 import StarRating from '@/components/ui/StarRating';
 
-type TProductListItemProps = {
+type TProductsListItemProps = {
     userProduct: TUserProductWithProduct;
 };
 
-function ProductListItem({
+function ProductsListItem({
     userProduct: { status, rating, product },
-}: TProductListItemProps) {
+}: TProductsListItemProps) {
     const itemUrl = `/product/${product.ean}`;
 
     return (
@@ -55,4 +55,4 @@ function ProductListItem({
     );
 }
 
-export default ProductListItem;
+export default ProductsListItem;

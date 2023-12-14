@@ -3,6 +3,10 @@ import { typeToFlattenedError, z } from 'zod';
 import { imageValidator } from './image-validator';
 
 export const ticketValidator = z.object({
+    subject: z
+        .string()
+        .min(3, 'Tytuł musi zawierać minimum 3 znaki')
+        .max(512, 'Tytuł nie może być dłuższy niż 512 znaków'),
     message: z
         .string()
         .min(10, 'Treść wiadomości musi mieć minimum 10 znaków')

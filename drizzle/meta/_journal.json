@@ -190,6 +190,20 @@
       "when": 1702477801201,
       "tag": "0026_overjoyed_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1702551205389,
+      "tag": "0027_charming_power_pack",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "5",
+      "when": 1702551666787,
+      "tag": "0028_productive_lionheart",
+      "breakpoints": true
     }
   ]
 }

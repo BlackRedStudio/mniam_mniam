@@ -1,0 +1,1 @@
+ALTER TABLE `tickets` MODIFY COLUMN `dateCreated` timestamp(3) NOT NULL DEFAULT (now());

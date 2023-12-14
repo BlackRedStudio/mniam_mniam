@@ -16,8 +16,8 @@ import StarRating from '@/components/ui/StarRating';
 import { Icons } from '../Icons';
 import CategorySelector from '../ProductCard/CategorySelector';
 import PriceRating from '../ProductCard/PriceRating';
-import ProductListItem from './ProductListItem';
-import ProductListItemDraft from './ProductListItemDraft';
+import ProductsListItem from './ProductsListItem';
+import ProductsListItemDraft from './ProductsListItemDraft';
 
 type TActiveList = {
     productsList: TUserProductWithProduct[];
@@ -66,11 +66,11 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
         list = productsList
             .filter(product => handleFilters(product))
             .map(product => (
-                <ProductListItem key={product.id} userProduct={product} />
+                <ProductsListItem key={product.id} userProduct={product} />
             ));
     } else {
         list = productsList.map(product => (
-            <ProductListItemDraft key={product.id} product={product} />
+            <ProductsListItemDraft key={product.id} product={product} />
         ));
     }
 

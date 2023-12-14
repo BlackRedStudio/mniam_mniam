@@ -72,6 +72,8 @@ export type TUserProductStatus =
 
 export type TProductStatus = 'active' | 'draft';
 
+export type TTicketAuthor = 'user' | 'admin';
+
 export type TProductStatistics = {
     averageRating: string;
     averagePrice: string;
