@@ -119,3 +119,5 @@ export type TRankingType = {
         | 'propsAddedCount'
         | 'imgUploadedCount';
 };
+
+export type TSortingType = 'rating' | 'price' | 'name' | null;

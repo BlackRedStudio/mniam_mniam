@@ -3,21 +3,12 @@
 import { useState } from 'react';
 import { TProduct, TUserProductWithProduct } from '@/server/schemas';
 
-import { TCategoriesIds } from '@/types/types';
-import { Button } from '@/components/ui/Button';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/Collapsible';
-import H3 from '@/components/ui/H3';
-import StarRating from '@/components/ui/StarRating';
+import { TCategoriesIds, TSortingType } from '@/types/types';
 
-import { Icons } from '../Icons';
-import CategorySelector from '../ProductCard/CategorySelector';
-import PriceRating from '../ProductCard/PriceRating';
+import ProductsListFilter from './ProductsListFilter';
 import ProductsListItem from './ProductsListItem';
 import ProductsListItemDraft from './ProductsListItemDraft';
+import ProductsListSort from './ProductsListSort';
 
 type TActiveList = {
     productsList: TUserProductWithProduct[];
@@ -34,12 +25,10 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
     const [category, setCategory] = useState<TCategoriesIds | ''>('');
     const [price, setPrice] = useState(0);
     const [rating, setRating] = useState(0);
-
-    const resetFilters = () => {
-        setCategory('');
-        setPrice(0);
-        setRating(0);
-    };
+    const [sorting, setSorting] = useState<TSortingType>(null);
+    const [sortingDirection, setSortingDirection] = useState<'ASC' | 'DESC'>(
+        'ASC',
+    );
 
     const handleFilters = (product: TUserProductWithProduct) => {
         if (rating > 0) {
@@ -60,11 +49,32 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
         return product;
     };
 
+    const handleSorting = (
+        a: TUserProductWithProduct,
+        b: TUserProductWithProduct,
+    ) => {
+        if (sorting === 'name') {
+            if (sortingDirection === 'ASC') {
+                return a.product.name < b.product.name ? -1 : 1;
+            }
+            return a.product.name > b.product.name ? -1 : 1;
+        }
+        if (sorting === 'price' || sorting === 'rating') {
+            if (sortingDirection === 'ASC') {
+                return a[sorting] < b[sorting] ? -1 : 1;
+            }
+            return a[sorting] > b[sorting] ? -1 : 1;
+        }
+
+        return 0;
+    };
+
     let list = null;
 
     if (listType === 'active') {
         list = productsList
             .filter(product => handleFilters(product))
+            .sort(handleSorting)
             .map(product => (
                 <ProductsListItem key={product.id} userProduct={product} />
             ));
@@ -77,29 +87,22 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
     return (
         <>
             {listType === 'active' && (
-                <Collapsible className="mb-5 rounded-lg border p-3">
-                    <CollapsibleTrigger className="flex w-full items-center justify-start">
-                        <Icons.chevronsUpDown />
-                        <H3>Filtry</H3>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                        <CategorySelector
-                            className="mt-4"
-                            category={category}
-                            setCategory={setCategory}
-                        />
-                        <PriceRating
-                            title="Cena od:"
-                            className="mb-3"
-                            price={price}
-                            setPrice={setPrice}
-                        />
-                        <StarRating rating={rating} setRating={setRating} />
-                        <Button variant={'outline'} onClick={resetFilters}>
-                            Resetuj filtry
-                        </Button>
-                    </CollapsibleContent>
-                </Collapsible>
+                <>
+                    <ProductsListFilter
+                        category={category}
+                        setCategory={setCategory}
+                        price={price}
+                        setPrice={setPrice}
+                        rating={rating}
+                        setRating={setRating}
+                    />
+                    <ProductsListSort
+                        sorting={sorting}
+                        setSorting={setSorting}
+                        sortingDirection={sortingDirection}
+                        setSortingDirection={setSortingDirection}
+                    />
+                </>
             )}
             <div className="grid grid-cols-3 gap-2">{list}</div>
         </>
