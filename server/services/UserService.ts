@@ -80,16 +80,33 @@ class UserService {
             let firstRateCount = 0;
             let propsAddedCount = 0;
             let imgUploadedCount = 0;
+            let mniamPoints = 0;
 
             user.userProducts.forEach(userProduct => {
-                if(userProduct.firstRate) firstRateCount++;
-                if(userProduct.propsAdded) propsAddedCount++;
-                if(userProduct.imgUploaded) imgUploadedCount++;
+                let mniamPoint = 1;
+
+                if(userProduct.firstRate) {
+                    firstRateCount++;
+                    mniamPoint++;
+                }
+                if(userProduct.propsAdded) {
+                    propsAddedCount++;
+                    // for people how added attributes it will be +5 extra points
+                    mniamPoint += 3;
+                }
+                if(userProduct.imgUploaded) {
+                    imgUploadedCount++;
+                    // for people how uploaded photos it will be +7 extra points
+                    mniamPoint += 2;
+                }
+
+                mniamPoints += mniamPoint;
             });
 
             return {
                 name: user.name,
                 image: user.image,
+                mniamPoints,
                 totalProductsRateCount: user.userProducts.length,
                 firstRateCount,
                 propsAddedCount,
@@ -97,7 +114,7 @@ class UserService {
             }
         });
         
-        return usersWithCounters.filter(user => user.totalProductsRateCount > 0);
+        return usersWithCounters.filter(user => user.mniamPoints > 0);
     }
 }
 

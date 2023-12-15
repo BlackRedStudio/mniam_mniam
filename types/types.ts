@@ -86,6 +86,7 @@ export type TProductStatistics = {
 export type TUserRankingCounter = {
     name: string | null;
     image: string | null;
+    mniamPoints: number;
     totalProductsRateCount: number;
     firstRateCount: number;
     propsAddedCount: number;
@@ -109,9 +110,10 @@ export type FilterType = {
 
 export type TRankingType = {
     icon: keyof typeof Icons;
-    type: 'total' | 'first' | 'attributes' | 'photo';
+    type: 'mniamPoints' | 'total' | 'first' | 'attributes' | 'photo';
     name: string;
     key:
+        | 'mniamPoints'
         | 'totalProductsRateCount'
         | 'firstRateCount'
         | 'propsAddedCount'

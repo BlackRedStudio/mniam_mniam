@@ -167,6 +167,12 @@ export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];
 export const rankingTypes: TRankingType[] = [
     {
         icon: 'star',
+        type: 'mniamPoints',
+        name: 'Mniam Punkty',
+        key: 'mniamPoints',
+    },
+    {
+        icon: 'plusCircle',
         type: 'total',
         name: 'Ocenione produkty',
         key: 'totalProductsRateCount',

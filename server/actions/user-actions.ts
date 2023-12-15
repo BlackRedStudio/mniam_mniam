@@ -155,17 +155,17 @@ export async function switchDarkModeAction() {
     }
 }
 
-export async function getUserRanking__Action() {
+export async function getUserRanking__Action(single = false) {
     try {
-        await checkSession();
+        const session = await checkSession();
 
-        const users = await UserRepository.allWithRankingInfo();
+        const users = await UserRepository.allWithRankingInfo(session.user.id, single);
 
         const ranking = await UserService.prepareUsersCounters(users);
 
         return {
             success: true as const,
-            message: 'Rankingi uzytkowników pobrane.',
+            message: 'Ranking uzytkowników pobrany.',
             ranking,
         };
     } catch (e) {

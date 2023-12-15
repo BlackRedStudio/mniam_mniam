@@ -18,7 +18,7 @@ function Ranking({ ranking }: TRankingProps) {
 
     const {data: session} = useSession();
 
-    const [type, setType] = useState<TRankingType['type']>('total');
+    const [type, setType] = useState<TRankingType['type']>('mniamPoints');
 
     const currentRankingType = rankingTypes.find(v => v.type === type);
 

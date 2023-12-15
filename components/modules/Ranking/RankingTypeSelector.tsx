@@ -13,7 +13,7 @@ type TRankingTypeSelectorProps = {
 
 function RankingTypeSelector({ type, setType }: TRankingTypeSelectorProps) {
     return (
-        <div className="flex justify-center space-x-3">
+        <div className="flex justify-center space-x-2">
             {rankingTypes.map(v => {
                 const TypeIcon = Icons[v.icon];
 

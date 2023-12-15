@@ -46,12 +46,13 @@ class UserRepository {
         return !!user;
     }
 
-    static async allWithRankingInfo() {
+    static async allWithRankingInfo(userId: string, single: boolean) {
         const users = await DB.query.usersTable.findMany({
             columns: {
                 name: true,
                 image: true,
             },
+            where: single ? eq(usersTable.id, userId) : undefined,
             with: {
                 userProducts: {
                     columns: {

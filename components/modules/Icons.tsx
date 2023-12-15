@@ -23,6 +23,7 @@ import {
     Image,
     Pencil,
     Medal,
+    PlusCircle,
 } from 'lucide-react';
 
 import Cereals from '../Icons/Cereals';
@@ -59,4 +60,5 @@ export const Icons = {
     image: Image,
     pencil: Pencil,
     medal: Medal,
+    plusCircle: PlusCircle,
 };
