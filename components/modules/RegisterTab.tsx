@@ -61,7 +61,7 @@ function RegisterTab() {
                         type="text"
                         name="name"
                         className="mt-1"
-                        placeholder="Wpisz swoje imię oraz nazwisko"
+                        placeholder="Wpisz swój nick lub ksywę"
                         required
                     />
                     {<FormError formErrors={formErrors?.name} />}

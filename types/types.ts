@@ -1,4 +1,5 @@
 import { categories } from '@/lib/config/config';
+import { LucideIcon } from 'lucide-react';
 
 export type THTTPMethod =
     | 'GET'
@@ -80,4 +81,25 @@ export type TProductStatistics = {
     peopleCount: number;
 };
 
+export type TUserRankingCounter = {
+    name: string | null;
+    image: string | null;
+    firstRateCount: number;
+    propsAddedCount: number;
+    imgUploadedCount: number;
+};
+
 export type Unpacked<T> = T extends (infer U)[] ? U : T;
+
+export type FilterOptionType = {
+    label: string;
+    value: string;
+    icon?: LucideIcon;
+};
+
+export type FilterType = {
+    id: string;
+    type: 'input' | 'select';
+    placeholder: string;
+    options?: FilterOptionType[];
+};

@@ -77,7 +77,7 @@ function Profile({ user }: TProfile) {
                     type="text"
                     name="name"
                     className="mt-1"
-                    placeholder="Wpisz swoje imię oraz nazwisko"
+                    placeholder="Wpisz swój nick lub ksywę"
                     defaultValue={user.name ?? user.email}
                     required
                 />

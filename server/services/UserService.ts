@@ -7,7 +7,8 @@ import sharp from 'sharp';
 
 import bcrypt from 'bcrypt';
 import { TUserInsert } from '../schemas';
-import UserRepository from '../repositories/UserRepository';
+import UserRepository, { TAllWithRankingsInfoReturn } from '../repositories/UserRepository';
+import { TUserRankingCounter } from '@/types/types';
 
 class UserService {
 
@@ -71,6 +72,31 @@ class UserService {
             email,
             image: userValues.image,
         };
+    }
+
+    static async prepareUsersCounters(users: TAllWithRankingsInfoReturn): Promise<TUserRankingCounter[]> {
+
+        const usersWithCounters = users.map(user => {
+            let firstRateCount = 0;
+            let propsAddedCount = 0;
+            let imgUploadedCount = 0;
+
+            user.userProducts.forEach(userProduct => {
+                if(userProduct.firstRate) firstRateCount++;
+                if(userProduct.propsAdded) propsAddedCount++;
+                if(userProduct.imgUploaded) imgUploadedCount++;
+            });
+
+            return {
+                name: user.name,
+                image: user.image,
+                firstRateCount,
+                propsAddedCount,
+                imgUploadedCount,
+            }
+        });
+        
+        return usersWithCounters;
     }
 }
 

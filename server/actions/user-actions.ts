@@ -34,13 +34,13 @@ export async function registerUserAction(formData: FormData) {
             return { ...new ParsedError(parsed.error.formErrors.fieldErrors) };
         }
 
-        const user = await UserRepository.firstWithAccounts({ email });
+        const userExists = await UserRepository.isUserExists(email, name);
 
         // user and password exist
-        if (user) {
+        if (userExists) {
             return {
                 ...new Error(
-                    'Użytkownik z danym adresem email już istnieje w bazie danych',
+                    'Użytkownik z danym adresem email lub nazwą istnieje w bazie danych',
                 ),
             };
         }
@@ -86,13 +86,16 @@ export async function updateProfileAction(formData: FormData) {
             return { ...new ParsedError(parsed.error.formErrors.fieldErrors) };
         }
 
-        const user = await UserRepository.firstWithAccounts({ email });
+        const userExists = await UserRepository.isUserExists(email, name);
 
-        // if user email has changed
-        if (user && session.user.email !== email) {
+        // if user email / name has changed
+        if (
+            (userExists && session.user.email !== email) ||
+            (userExists && session.user.name !== name)
+        ) {
             return {
                 ...new Error(
-                    'Użytkownik z danym adresem email już istnieje w bazie danych',
+                    'Użytkownik z danym adresem email lub nazwą użytkownika już istnieją w bazie danych',
                 ),
             };
         }
@@ -146,6 +149,24 @@ export async function switchDarkModeAction() {
         return {
             success: true as const,
             message: 'Tryb ciemny został przełączony',
+        };
+    } catch (e) {
+        return { ...new CriticalError(e) };
+    }
+}
+
+export async function getUserRankings__Action() {
+    try {
+        await checkSession();
+
+        const users = await UserRepository.allWithRankingsInfo();
+
+        const ranking = await UserService.prepareUsersCounters(users);
+
+        return {
+            success: true as const,
+            message: 'Rankingi uzytkowników pobrane.',
+            ranking,
         };
     } catch (e) {
         return { ...new CriticalError(e) };
