@@ -25,7 +25,7 @@ async function DashboardPage() {
             </H2>
             <ProductScannerWrapper camera={session.user.camera} />
             <Separator className="my-8" />
-            {res.ranking && <RankingText ranking={res.ranking[0]} />}
+            {res.ranking?.length ? <RankingText ranking={res.ranking[0]} /> : 'Dodaj nazwę użytkownika aby wziąć udział w rankingu'}
             {session.user.role === 'admin' && (
                 <>
                     <Separator className="my-8" />

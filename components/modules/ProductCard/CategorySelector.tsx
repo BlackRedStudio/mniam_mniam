@@ -52,6 +52,7 @@ function CategorySelector({
                             </Button>
                             {categoryTypes.map(catType => (
                                 <Button
+                                    key={catType.id}
                                     variant={
                                         catType.id === categoryType
                                             ? 'default'

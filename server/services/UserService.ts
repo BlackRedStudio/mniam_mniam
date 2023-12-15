@@ -114,7 +114,7 @@ class UserService {
             }
         });
         
-        return usersWithCounters.filter(user => user.mniamPoints > 0);
+        return usersWithCounters.filter(user => user.mniamPoints > 0 && user.name);
     }
 }
 

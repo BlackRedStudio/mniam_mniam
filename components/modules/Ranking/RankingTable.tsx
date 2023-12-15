@@ -28,7 +28,7 @@ function RankingTable({
             <Table>
                 <TableCaption>
                     (Widoczni są tylko Ci użytkownicy którzy mają przynajmniej 1
-                    punkt)
+                    punkt oraz uzupełnioną nazwę użytkownika)
                 </TableCaption>
                 <TableHeader>
                     <TableRow>
