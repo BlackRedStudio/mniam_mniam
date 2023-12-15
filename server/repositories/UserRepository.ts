@@ -8,8 +8,8 @@ type TFindUser = {
     email?: string;
 };
 
-export type TAllWithRankingsInfoReturn = Awaited<
-    ReturnType<typeof UserRepository.allWithRankingsInfo>
+export type TAllWithRankingInfoReturn = Awaited<
+    ReturnType<typeof UserRepository.allWithRankingInfo>
 >;
 
 class UserRepository {
@@ -46,7 +46,7 @@ class UserRepository {
         return !!user;
     }
 
-    static async allWithRankingsInfo() {
+    static async allWithRankingInfo() {
         const users = await DB.query.usersTable.findMany({
             columns: {
                 name: true,

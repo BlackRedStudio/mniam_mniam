@@ -20,14 +20,9 @@ import {
     Utensils,
     Popcorn,
     Bean,
-    ChevronsLeft,
-    ChevronLeft,
-    ChevronRight,
-    ChevronsRight,
-    X,
-    ArrowUpDown,
-    PlusCircle,
-    Check,
+    Image,
+    Pencil,
+    Medal,
 } from 'lucide-react';
 
 import Cereals from '../Icons/Cereals';
@@ -61,12 +56,7 @@ export const Icons = {
     chocolateBar: ChocolateBar,
     popcorn: Popcorn,
     bean: Bean,
-    chevronsLeft: ChevronsLeft,
-    chevronLeft: ChevronLeft,
-    chevronRight: ChevronRight,
-    chevronsRight: ChevronsRight,
-    x: X,
-    arrowUpDown: ArrowUpDown,
-    plusCircle: PlusCircle,
-    check: Check,
+    image: Image,
+    pencil: Pencil,
+    medal: Medal,
 };

@@ -1,4 +1,5 @@
 import { Icons } from '@/components/modules/Icons';
+import { TRankingType } from '@/types/types';
 
 export type TCategoryType =
     | 'drinks'
@@ -162,3 +163,30 @@ export const categories: TCategoriesItem[] = [
 export const MAX_FILE_SIZE = 10485760;
 
 export const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg'];
+
+export const rankingTypes: TRankingType[] = [
+    {
+        icon: 'star',
+        type: 'total',
+        name: 'Ocenione produkty',
+        key: 'totalProductsRateCount',
+    },
+    {
+        icon: 'medal',
+        type: 'first',
+        name: 'Pierwsze oceny produktów',
+        key: 'firstRateCount',
+    },
+    {
+        icon: 'pencil',
+        type: 'attributes',
+        name: 'Uzupełnione atrybuty produktów',
+        key: 'propsAddedCount',
+    },
+    {
+        icon: 'image',
+        type: 'photo',
+        name: 'Przesłane zdjęcia produktów',
+        key: 'imgUploadedCount',
+    },
+]

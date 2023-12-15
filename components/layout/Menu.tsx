@@ -62,8 +62,8 @@ function Menu() {
                 <Link href="/my-list">
                     <DropdownMenuItem>Moja lista</DropdownMenuItem>
                 </Link>
-                <Link href="/rankings">
-                    <DropdownMenuItem>Rankingi</DropdownMenuItem>
+                <Link href="/ranking">
+                    <DropdownMenuItem>Ranking</DropdownMenuItem>
                 </Link>
                 {session?.user.role === 'admin' && (
                     <Link href="/product-verification">

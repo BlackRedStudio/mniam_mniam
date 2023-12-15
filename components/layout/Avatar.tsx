@@ -5,16 +5,16 @@ import { useSession } from 'next-auth/react';
 
 import { getNameInitials } from '@/lib/utils/utils';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar';
+import { Avatar as AvatarEl, AvatarFallback, AvatarImage } from '../ui/Avatar';
 
-function AvatarElement() {
+function Avatar() {
     const { data: session } = useSession();
 
     if (!session)
         return (
-            <Avatar>
+            <AvatarEl>
                 <AvatarFallback />
-            </Avatar>
+            </AvatarEl>
         );
 
     const nameInitials = session.user?.name
@@ -23,14 +23,14 @@ function AvatarElement() {
 
     return (
         <Link href="/profile">
-            <Avatar>
+            <AvatarEl>
                 <AvatarImage src={session.user.image || ''} />
                 <AvatarFallback>
                     {!session.user?.image ? nameInitials : null}
                 </AvatarFallback>
-            </Avatar>
+            </AvatarEl>
         </Link>
     );
 }
 
-export default AvatarElement;
+export default Avatar;

@@ -1,5 +1,7 @@
-import { categories } from '@/lib/config/config';
 import { LucideIcon } from 'lucide-react';
+
+import { categories } from '@/lib/config/config';
+import { Icons } from '@/components/modules/Icons';
 
 export type THTTPMethod =
     | 'GET'
@@ -84,6 +86,7 @@ export type TProductStatistics = {
 export type TUserRankingCounter = {
     name: string | null;
     image: string | null;
+    totalProductsRateCount: number;
     firstRateCount: number;
     propsAddedCount: number;
     imgUploadedCount: number;
@@ -102,4 +105,15 @@ export type FilterType = {
     type: 'input' | 'select';
     placeholder: string;
     options?: FilterOptionType[];
+};
+
+export type TRankingType = {
+    icon: keyof typeof Icons;
+    type: 'total' | 'first' | 'attributes' | 'photo';
+    name: string;
+    key:
+        | 'totalProductsRateCount'
+        | 'firstRateCount'
+        | 'propsAddedCount'
+        | 'imgUploadedCount';
 };

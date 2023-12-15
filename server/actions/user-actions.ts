@@ -155,11 +155,11 @@ export async function switchDarkModeAction() {
     }
 }
 
-export async function getUserRankings__Action() {
+export async function getUserRanking__Action() {
     try {
         await checkSession();
 
-        const users = await UserRepository.allWithRankingsInfo();
+        const users = await UserRepository.allWithRankingInfo();
 
         const ranking = await UserService.prepareUsersCounters(users);
 

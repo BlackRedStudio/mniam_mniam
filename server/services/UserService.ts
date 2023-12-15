@@ -7,7 +7,7 @@ import sharp from 'sharp';
 
 import bcrypt from 'bcrypt';
 import { TUserInsert } from '../schemas';
-import UserRepository, { TAllWithRankingsInfoReturn } from '../repositories/UserRepository';
+import UserRepository, { TAllWithRankingInfoReturn } from '../repositories/UserRepository';
 import { TUserRankingCounter } from '@/types/types';
 
 class UserService {
@@ -74,7 +74,7 @@ class UserService {
         };
     }
 
-    static async prepareUsersCounters(users: TAllWithRankingsInfoReturn): Promise<TUserRankingCounter[]> {
+    static async prepareUsersCounters(users: TAllWithRankingInfoReturn): Promise<TUserRankingCounter[]> {
 
         const usersWithCounters = users.map(user => {
             let firstRateCount = 0;
@@ -90,13 +90,14 @@ class UserService {
             return {
                 name: user.name,
                 image: user.image,
+                totalProductsRateCount: user.userProducts.length,
                 firstRateCount,
                 propsAddedCount,
                 imgUploadedCount,
             }
         });
         
-        return usersWithCounters;
+        return usersWithCounters.filter(user => user.totalProductsRateCount > 0);
     }
 }
 
