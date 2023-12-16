@@ -38,6 +38,13 @@ function Menu() {
     }, []);
 
     const handleDarkMode = async () => {
+
+        if(!session?.user.darkMode) {
+            document.documentElement.classList.remove('dark')
+        } else {
+            document.documentElement.classList.add('dark')
+        }
+
         await update({
             darkMode: !session?.user.darkMode,
         });
@@ -50,7 +57,7 @@ function Menu() {
             <DropdownMenuTrigger className="pointer-events-auto">
                 <Icons.menu className="h-9 w-9 stroke-1" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-4 w-44">
+            <DropdownMenuContent className="mr-4 w-54">
                 <DropdownMenuLabel>Menu główne</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <Link href="/dashboard">
@@ -61,6 +68,9 @@ function Menu() {
                 </Link>
                 <Link href="/my-list">
                     <DropdownMenuItem>Moja lista</DropdownMenuItem>
+                </Link>
+                <Link href="/list">
+                    <DropdownMenuItem>Twoje ocenione produkty</DropdownMenuItem>
                 </Link>
                 <Link href="/ranking">
                     <DropdownMenuItem>Ranking</DropdownMenuItem>
