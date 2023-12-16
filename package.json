@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "ssl": "local-ssl-proxy --key C:/signed_keys/server.key --cert C:/signed_keys/server.crt --source 3400 --target 3000",
     "build": "next build",
     "start": "next start",
     "test": "jest",

@@ -14,6 +14,8 @@ import ParsedError from '../errors/ParsedError';
 import { checkSession } from '../helpers/helpers';
 import UserRepository from '../repositories/UserRepository';
 import UserService from '../services/UserService';
+import { usersTable } from '../schemas';
+import { DB } from '../helpers/DB';
 
 export async function registerUserAction(formData: FormData) {
     try {
@@ -173,7 +175,7 @@ export async function getUserRanking__Action(single = false) {
     }
 }
 
-export async function switchCamera__Action(camera: string) {
+export async function switchCamera__Action(camera: number) {
     try {
         const session = await checkSession();
 

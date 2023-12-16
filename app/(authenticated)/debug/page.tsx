@@ -1,5 +1,4 @@
-export default async function DebugPage() {
-    
+export default function DebugPage() {
     return (
         <>
             <div className="flex flex-wrap gap-3">

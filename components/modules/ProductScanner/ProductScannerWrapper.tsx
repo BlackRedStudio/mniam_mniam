@@ -6,6 +6,7 @@ import { switchCamera__Action } from '@/server/actions/user-actions';
 import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/Button';
+import Loader from '@/components/ui/Loader';
 
 import { Input } from '../../ui/Input';
 import { Label } from '../../ui/Label';
@@ -17,17 +18,17 @@ import {
     SelectValue,
 } from '../../ui/Select';
 import BarcodeScanner from './BarcodeScanner';
-import Loader from '@/components/ui/Loader';
 
 type TProductScannerWrapperProps = {
-    camera: string;
+    camera: number;
 };
 
 function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
     const { update } = useSession();
 
     const [code, setCode] = useState('');
-    const [deviceId, setDeviceId] = useState(camera);
+    const [deviceNumber, setDeviceNumber] = useState(camera);
+    const [deviceId, setDeviceId] = useState('');
     const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
     const [scannerEnabled, setScannerEnabled] = useState(false);
     const router = useRouter();
@@ -46,7 +47,8 @@ function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
                 availableVideoDevices[0]?.deviceId
             ) {
                 setDevices(availableVideoDevices);
-                setDeviceId(deviceId || availableVideoDevices[0]?.deviceId);
+                setDeviceNumber(deviceNumber || 0);
+                setDeviceId(availableVideoDevices[deviceNumber || 0].deviceId);
             }
         };
 
@@ -55,12 +57,12 @@ function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
         }
     }, []);
 
-    const switchCamera = async (value: string) => {
-        setDeviceId(value);
+    const switchCamera = async (value: number) => {
+        setDeviceNumber(value);
+        setDeviceId(devices[value]?.deviceId);
         await update({
             camera: value,
         });
-
         await switchCamera__Action(value);
     };
 
@@ -72,8 +74,8 @@ function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
             <div className="mb-3 text-center">
                 {devices.length > 0 && (
                     <Select
-                        onValueChange={value => switchCamera(value)}
-                        value={deviceId}>
+                        onValueChange={value => switchCamera(parseInt(value))}
+                        value={String(deviceNumber)}>
                         <SelectTrigger className="mb-5 w-full">
                             <SelectValue placeholder="Rozwiń listę" />
                         </SelectTrigger>
@@ -82,7 +84,7 @@ function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
                                 return (
                                     <SelectItem
                                         key={device.deviceId}
-                                        value={device.deviceId}>
+                                        value={String(index)}>
                                         Wejście Video nr: {index + 1}
                                     </SelectItem>
                                 );

@@ -3,6 +3,7 @@ import {
     boolean,
     mysqlTable,
     timestamp,
+    tinyint,
     varchar,
 } from 'drizzle-orm/mysql-core';
 
@@ -26,7 +27,7 @@ export const usersTable = mysqlTable('users', {
     }).defaultNow(),
     image: varchar('image', { length: 255 }),
     darkMode: boolean('darkMode').default(false),
-    camera: varchar('camera', { length: 512 }).default(''),
+    camera: tinyint('camera').default(0).notNull(),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,

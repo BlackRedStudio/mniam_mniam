@@ -25,7 +25,7 @@ export const authOptions = {
                     id: profile.sub,
                     role: 'user',
                     darkMode: false,
-                    camera: '',
+                    camera: 0,
                     image: profile.picture,
                 };
             },
@@ -40,7 +40,7 @@ export const authOptions = {
                     id: profile.id.toString(),
                     role: 'user',
                     darkMode: false,
-                    camera: '',
+                    camera: 0,
                     image: profile.avatar_url,
                 };
             },
@@ -95,7 +95,7 @@ export const authOptions = {
                 token.uid = user.id;
                 token.role = user.role || 'user';
                 token.darkMode = user.darkMode || true;
-                token.camera = user.camera || '';
+                token.camera = user.camera || 0;
             }
 
             return token;
