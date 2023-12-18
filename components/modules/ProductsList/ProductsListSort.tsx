@@ -1,6 +1,6 @@
 import { SetStateAction } from 'react';
 
-import { TSortingType } from '@/types/types';
+import { TSortingDirection, TSortingType } from '@/types/types';
 import { Button } from '@/components/ui/Button';
 import {
     Collapsible,
@@ -14,9 +14,9 @@ import { Icons } from '../Icons';
 type TProductsListSortProps = {
     sorting: TSortingType;
     setSorting: (sortingType: SetStateAction<TSortingType>) => void;
-    sortingDirection: 'ASC' | 'DESC';
+    sortingDirection: TSortingDirection;
     setSortingDirection: (
-        sortingDirection: SetStateAction<'ASC' | 'DESC'>,
+        sortingDirection: SetStateAction<TSortingDirection>,
     ) => void;
 };
 

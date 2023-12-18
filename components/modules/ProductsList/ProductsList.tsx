@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { TProduct, TUserProductWithProduct } from '@/server/schemas';
 
-import { TCategoriesIds, TSortingType } from '@/types/types';
+import { TCategoriesIds, TSortingDirection, TSortingType } from '@/types/types';
 
 import ProductsListFilter from './ProductsListFilter';
 import ProductsListItem from './ProductsListItem';
@@ -22,13 +23,36 @@ type TDraftList = {
 type TProductsListProps = TActiveList | TDraftList;
 
 function ProductsList({ productsList, listType }: TProductsListProps) {
-    const [category, setCategory] = useState<TCategoriesIds | ''>('');
-    const [price, setPrice] = useState(0);
-    const [rating, setRating] = useState(0);
-    const [sorting, setSorting] = useState<TSortingType>(null);
-    const [sortingDirection, setSortingDirection] = useState<'ASC' | 'DESC'>(
-        'ASC',
+    const pathName = usePathname();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const [category, setCategory] = useState<TCategoriesIds | ''>(
+        searchParams.get('category') || '',
     );
+    const [price, setPrice] = useState(
+        parseInt(searchParams.get('price') || '0'),
+    );
+    const [rating, setRating] = useState(
+        parseInt(searchParams.get('rating') || '0'),
+    );
+    const [sorting, setSorting] = useState<TSortingType>(
+        (searchParams.get('sorting') as TSortingType) || null,
+    );
+    const [sortingDirection, setSortingDirection] = useState<TSortingDirection>(
+        (searchParams.get('sortingDirection') as TSortingDirection) || 'ASC',
+    );
+
+    useEffect(() => {
+        const URLParams = new URLSearchParams(searchParams);
+        URLParams.set('rating', String(rating));
+        URLParams.set('price', String(price));
+        URLParams.set('category', category);
+        URLParams.set('sorting', sorting || '');
+        URLParams.set('sortingDirection', sortingDirection);
+
+        router.replace(`${pathName}?${URLParams}`, {scroll: false});
+    }, [rating, price, category, sorting, sortingDirection]);
 
     const handleFilters = (product: TUserProductWithProduct) => {
         if (rating > 0) {

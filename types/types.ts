@@ -121,3 +121,5 @@ export type TRankingType = {
 };
 
 export type TSortingType = 'rating' | 'price' | 'name' | null;
+
+export type TSortingDirection = 'ASC' | 'DESC';

@@ -29,7 +29,8 @@ import {
     ArrowDownWideNarrow,
     RotateCw,
     Flashlight,
-    FlashlightOff
+    FlashlightOff,
+    ChefHat,
 } from 'lucide-react';
 
 import Cereals from '../Icons/Cereals';
@@ -73,4 +74,5 @@ export const Icons = {
     rotateCw: RotateCw,
     flashlight: Flashlight,
     flashlightOff: FlashlightOff,
+    chefHat: ChefHat,
 };

@@ -98,6 +98,12 @@ export const categories: TCategoriesItem[] = [
         type: 'drinks',
     },
     {
+        id: 'otherReadyMade',
+        label: 'Inne gotowe',
+        icon: 'chefHat',
+        type: 'readyMade',
+    },
+    {
         id: 'coffee',
         label: 'Kawy',
         icon: 'coffee',
