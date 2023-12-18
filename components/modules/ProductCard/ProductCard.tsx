@@ -206,7 +206,7 @@ function ProductCard({
                         className="mb-2"
                         formErrors={formErrors?.rating}
                     />
-                    <StarRating rating={rating} setRating={setRating} />
+                    <StarRating className='mt-6' hints rating={rating} setRating={setRating} />
                     <FormError
                         className="mb-2"
                         formErrors={formErrors?.category}

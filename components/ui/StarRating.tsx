@@ -7,6 +7,7 @@ import { Icons } from '@/components/modules/Icons';
 type TStarRatingProps = {
     rating: number;
     setRating?: Dispatch<SetStateAction<number>>;
+    hints?: boolean;
     showHeader?: boolean;
     bigStars?: boolean;
     className?: string;
@@ -24,9 +25,22 @@ const ratingColorClassMap: TRatingColorClassMap = {
     5: 'fill-blue stroke-blue',
 };
 
+type TStarHintsMap = {
+    [key: number]: string;
+};
+
+const starHints: TStarHintsMap = {
+    1: 'Fee, bardzo mi nie smakuje.',
+    2: 'Nie smakuje mi.',
+    3: 'Przeciętny produkt.',
+    4: 'Bardzo dobry produkt.',
+    5: 'Wyśmienity produkt, mój ulubiony.',
+};
+
 function StarRating({
     rating,
     setRating,
+    hints = false,
     showHeader = true,
     bigStars = true,
     className,
@@ -61,8 +75,9 @@ function StarRating({
     }
 
     return (
-        <div className={cn('mb-4 flex w-full', className)}>
+        <div className={cn('mb-4 flex w-full relative', className)}>
             {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
+            {hints && <div className='absolute top-[-32px] right-0 text-sm'>{starHints[rating]}</div>}
             {stars}
         </div>
     );
