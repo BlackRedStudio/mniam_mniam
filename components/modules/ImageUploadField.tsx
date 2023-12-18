@@ -1,4 +1,4 @@
-import { ChangeEvent, ReactNode, SetStateAction } from 'react';
+import { ChangeEvent, ReactNode, SetStateAction, useState } from 'react';
 import Image from 'next/image';
 import FileResizer from 'react-image-file-resizer';
 
@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils/utils';
 
 import FormError from '../ui/FormError';
 import { Input } from '../ui/Input';
+import { Icons } from './Icons';
 
 type TImageUploadFieldProps = {
     image: File | null;
@@ -21,6 +22,8 @@ type TImageUploadFieldProps = {
     className?: string;
     name?: string;
 };
+
+let rotation = 0;
 
 function ImageUploadField({
     image,
@@ -37,32 +40,39 @@ function ImageUploadField({
 }: TImageUploadFieldProps) {
     const { toast } = useToast();
 
+    const [file, setFile] = useState<File|null>(null);
+        
+    const processImage = (file: File) => {
+        FileResizer.imageFileResizer(
+            file,
+            imageWidth,
+            imageHeight,
+            'JPEG',
+            79,
+            rotation,
+            file => {
+                if (file instanceof File) {
+                    setImage(file);
+                } else {
+                    throw new Error('Zły format pliku');
+                }
+            },
+            'file',
+            100,
+            100,
+        );
+    }
+
     const handleSelectImage = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
             setImage(null);
             return;
         }
-        const file = e.target.files[0];
-
+        const uploadedFile = e.target.files[0];
+        
         try {
-            FileResizer.imageFileResizer(
-                file,
-                imageWidth,
-                imageHeight,
-                'JPEG',
-                79,
-                0,
-                file => {
-                    if (file instanceof File) {
-                        setImage(file);
-                    } else {
-                        throw new Error('Zły format pliku');
-                    }
-                },
-                'file',
-                100,
-                100,
-            );
+            setFile(uploadedFile);
+            processImage(uploadedFile);
         } catch (err) {
             toast({
                 title: 'Problem z plikiem, spróbuj ponownie lub zmień na inny plik.',
@@ -71,12 +81,25 @@ function ImageUploadField({
         }
     };
 
+    const handleRotation = () => {
+
+        if(!file) return false;
+
+        rotation += 90;
+        if(rotation >= 360) rotation = 0;
+
+        processImage(file);
+    }
+
     return (
         <div>
             {image ? (
                 <>
-                    <div className="mt-5 text-center text-success">
-                        {textSuccess}
+                    <div className="mt-5 mb-2 flex justify-between">
+                        <div className="text-center text-success">
+                            {textSuccess}
+                        </div>
+                        <Icons.rotateCw className='cursor-pointer' onClick={handleRotation} />
                     </div>
                     <div className="relative h-[300px] w-full">
                         <Image

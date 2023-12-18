@@ -27,6 +27,9 @@ import {
     WholeWord,
     ArrowUpWideNarrow,
     ArrowDownWideNarrow,
+    RotateCw,
+    Flashlight,
+    FlashlightOff
 } from 'lucide-react';
 
 import Cereals from '../Icons/Cereals';
@@ -67,4 +70,7 @@ export const Icons = {
     wholeWord: WholeWord,
     arrowUpWideNarrow: ArrowUpWideNarrow,
     arrowDownWideNarrow: ArrowDownWideNarrow,
+    rotateCw: RotateCw,
+    flashlight: Flashlight,
+    flashlightOff: FlashlightOff,
 };
