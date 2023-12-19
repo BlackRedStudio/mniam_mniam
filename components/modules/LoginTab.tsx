@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
@@ -17,8 +17,8 @@ function LoginTab() {
     const { toast } = useToast();
     const router = useRouter();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const emailInputRef = useRef<HTMLInputElement>(null);
+    const passwordInputRef = useRef<HTMLInputElement>(null);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -26,8 +26,8 @@ function LoginTab() {
         setLoading(true);
         if (type === 'credentials') {
             const res = await signIn('credentials', {
-                email,
-                password,
+                email: emailInputRef.current?.value,
+                password: passwordInputRef.current?.value,
                 redirect: false,
             });
             if (res?.error) {
@@ -56,11 +56,11 @@ function LoginTab() {
             <div className="mb-4">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                    ref={emailInputRef}
                     type="email"
                     name="email"
                     className="mt-1"
                     placeholder="Wpisz swój email"
-                    onChange={e => setEmail(e.target.value)}
                     required
                     disabled={loading}
                 />
@@ -68,11 +68,11 @@ function LoginTab() {
             <div className="relative">
                 <Label htmlFor="password">Hasło</Label>
                 <Input
+                    ref={passwordInputRef}
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     className="mt-1"
                     placeholder="Wpisz swoje hasło"
-                    onChange={e => setPassword(e.target.value)}
                     required
                     disabled={loading}
                 />

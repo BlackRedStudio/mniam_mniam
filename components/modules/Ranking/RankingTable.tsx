@@ -24,7 +24,7 @@ function RankingTable({
     session,
 }: TRankingTableProps) {
     return (
-        <div className="w-[calc(100vw-32px)] rounded-md border">
+        <div className="w-[calc(100vw-32px)] rounded-md border pb-3">
             <Table>
                 <TableCaption>
                     (Widoczni są tylko Ci użytkownicy którzy mają przynajmniej 1

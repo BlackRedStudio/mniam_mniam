@@ -55,6 +55,7 @@ export const authOptions = {
                 password: {},
             },
             async authorize(credentials) {
+
                 if (!credentials) return null;
 
                 const user = await UserRepository.firstWithAccounts({
@@ -102,7 +103,7 @@ export const authOptions = {
 
             return token;
         },
-        async session({ session, token, user, newSession }) {
+        async session({ session, token }) {
             if (session?.user) {
                 session.user.id = token.uid;
                 session.user.role = token.role;

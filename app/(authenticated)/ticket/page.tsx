@@ -11,8 +11,8 @@ async function ticketPage() {
         <section>
             <H2 className="mb-3">Zgłoś uwagę lub pomysł</H2>
             <p>
-                Za pomocą poniższego formularza, możesz zgłosić wszelkie
-                znalezione błedy, a także podzielić się swoimi przemyśleniami,
+                Za pomocą poniższego formularza możesz zgłosić wszelkie
+                znalezione błędy, a także podzielić się swoimi przemyśleniami,
                 sugestiami lub nowymi pomysłami dotyczącymi naszej aplikacji.
             </p>
             <TicketForm />

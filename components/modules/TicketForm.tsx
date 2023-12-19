@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { submitTicket__Action } from '@/server/actions/ticket-actions';
 
 import { useToast } from '@/lib/hooks/use-toast';
@@ -18,7 +17,6 @@ import ImageUploadField from './ImageUploadField';
 function TicketForm() {
     const { toast } = useToast();
 
-    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const [subject, setSubject] = useState('');
@@ -43,6 +41,11 @@ function TicketForm() {
 
         if (!res.success && res.errors) {
             setFormErrors(res.errors);
+        } else {
+            setMessage('');
+            setSubject('');
+            setAttachment(null);
+            setFormErrors({});
         }
 
         toast({

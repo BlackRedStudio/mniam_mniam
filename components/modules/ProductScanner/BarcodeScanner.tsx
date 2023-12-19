@@ -53,11 +53,11 @@ const BarcodeScanner = ({
             </div>
             <div className="absolute right-0 top-0 z-10 rounded-bl-xl bg-white p-1 text-primary">
                 {torchStatus === 'off' && (
-                    <Icons.flashlight className="h-8 w-8" onClick={torchOn} />
+                    <Icons.flashlight className="h-8 w-8 dark:text-secondary" onClick={torchOn} />
                 )}
                 {torchStatus === 'on' && (
                     <Icons.flashlightOff
-                        className="h-8 w-8"
+                        className="h-8 w-8 dark:text-secondary"
                         onClick={torchOff}
                     />
                 )}

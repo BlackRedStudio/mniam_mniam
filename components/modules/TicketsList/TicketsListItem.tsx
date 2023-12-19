@@ -34,7 +34,7 @@ function TicketsListItem({ ticket }: TTicketsListItemProps) {
                         />
                     </div>
                 )}
-                <p>{ticket.message}</p>
+                <p className="whitespace-pre-line">{ticket.message}</p>
             </CardContent>
         </Card>
     );
