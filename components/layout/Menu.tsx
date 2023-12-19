@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { switchDarkModeAction } from '@/server/actions/user-actions';
@@ -26,6 +26,7 @@ function Menu() {
     const { toast } = useToast();
     const router = useRouter();
     const { data: session, update } = useSession();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         CapacitorApp.addListener('backButton', ({ canGoBack }) => {
@@ -36,20 +37,33 @@ function Menu() {
             }
         });
     }, []);
+    
+    useEffect(() => {
+        if (session?.user.darkMode) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [session?.user.darkMode]);
 
     const handleDarkMode = async () => {
-
-        if(!session?.user.darkMode) {
-            document.documentElement.classList.remove('dark')
-        } else {
-            document.documentElement.classList.add('dark')
+        setLoading(true);
+        try {
+            if (!session?.user.darkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+    
+            await switchDarkModeAction();
+            
+            await update({
+                darkMode: !session?.user.darkMode,
+            });
+        } catch(error) {
+            console.log(error);
         }
-
-        await update({
-            darkMode: !session?.user.darkMode,
-        });
-
-        await switchDarkModeAction();
+        setLoading(false);
     };
 
     return (
@@ -57,7 +71,7 @@ function Menu() {
             <DropdownMenuTrigger className="pointer-events-auto">
                 <Icons.menu className="h-9 w-9 stroke-1" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-4 w-54">
+            <DropdownMenuContent className="w-54 mr-4">
                 <DropdownMenuLabel>Menu główne</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <Link href="/dashboard">
@@ -87,6 +101,7 @@ function Menu() {
                     <Switch
                         onCheckedChange={handleDarkMode}
                         checked={session?.user.darkMode || false}
+                        disabled={loading}
                         id="darkMode"
                         className="ml-3"
                     />

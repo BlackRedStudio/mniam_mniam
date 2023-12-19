@@ -143,10 +143,7 @@ export async function switchDarkModeAction() {
     try {
         const session = await checkSession();
         const darkMode = !session.user.darkMode;
-
         await UserRepository.update(session.user.id, { darkMode });
-
-        revalidatePath('/');
 
         return {
             success: true as const,

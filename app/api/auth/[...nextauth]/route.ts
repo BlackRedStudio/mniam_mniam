@@ -77,6 +77,7 @@ export const authOptions = {
         }),
     ],
     callbacks: {
+        // {user} is passed only on sign in
         async jwt({ token, trigger, session, user }) {
             if (trigger === 'update') {
                 if (session?.email) {
@@ -91,16 +92,17 @@ export const authOptions = {
                 token.darkMode = session.darkMode;
                 token.camera = session.camera;
             }
+
             if (user) {
                 token.uid = user.id;
                 token.role = user.role || 'user';
-                token.darkMode = user.darkMode || true;
+                token.darkMode = user.darkMode || false;
                 token.camera = user.camera || 0;
             }
 
             return token;
         },
-        async session({ session, token }) {
+        async session({ session, token, user, newSession }) {
             if (session?.user) {
                 session.user.id = token.uid;
                 session.user.role = token.role;

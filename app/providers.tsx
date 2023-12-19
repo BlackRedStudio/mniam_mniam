@@ -13,7 +13,6 @@ function Providers({ children }: TProviderLayoutProps) {
     const router = useRouter();
 
     useEffect(() => {
-        
         CapacitorApp.addListener(
             'appUrlOpen',
             (event: URLOpenListenerEvent) => {

@@ -35,6 +35,8 @@ function ProductScannerWrapper({ camera }: TProductScannerWrapperProps) {
 
     useEffect(() => {
         const getMediaDevices = async () => {
+            await navigator.mediaDevices.getUserMedia({video: true});
+            
             const availableDevices =
                 await navigator.mediaDevices.enumerateDevices();
 
