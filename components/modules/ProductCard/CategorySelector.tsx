@@ -84,7 +84,7 @@ function CategorySelector({
                                                 className={
                                                     cat.id === category
                                                         ? 'bg-orange fill-white text-white'
-                                                        : ''
+                                                        : 'dark:fill-white'
                                                 }
                                                 onClick={() => {
                                                     setCategory(cat.id);
