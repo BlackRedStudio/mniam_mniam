@@ -27,7 +27,6 @@ export const usersTable = mysqlTable('users', {
     }).defaultNow(),
     image: varchar('image', { length: 255 }),
     darkMode: boolean('darkMode').default(false),
-    camera: tinyint('camera').default(0).notNull(),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
         fsp: 3,

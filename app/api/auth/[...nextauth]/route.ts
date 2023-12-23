@@ -25,7 +25,6 @@ export const authOptions = {
                     id: profile.sub,
                     role: 'user',
                     darkMode: false,
-                    camera: 0,
                     image: profile.picture,
                 };
             },
@@ -40,7 +39,6 @@ export const authOptions = {
                     id: profile.id.toString(),
                     role: 'user',
                     darkMode: false,
-                    camera: 0,
                     image: profile.avatar_url,
                 };
             },
@@ -91,14 +89,12 @@ export const authOptions = {
                     token.picture = session.image;
                 }
                 token.darkMode = session.darkMode;
-                token.camera = session.camera;
             }
 
             if (user) {
                 token.uid = user.id;
                 token.role = user.role || 'user';
                 token.darkMode = user.darkMode || false;
-                token.camera = user.camera || 0;
             }
 
             return token;
@@ -108,7 +104,6 @@ export const authOptions = {
                 session.user.id = token.uid;
                 session.user.role = token.role;
                 session.user.darkMode = token.darkMode;
-                session.user.camera = token.camera;
             }
             return session;
         },

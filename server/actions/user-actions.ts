@@ -171,20 +171,3 @@ export async function getUserRanking__Action(single = false) {
         return { ...new CriticalError(e) };
     }
 }
-
-export async function switchCamera__Action(camera: number) {
-    try {
-        const session = await checkSession();
-
-        await UserRepository.update(session.user.id, { camera });
-
-        revalidatePath('/');
-
-        return {
-            success: true as const,
-            message: 'Kamera została zapisana poprawnie.',
-        };
-    } catch (e) {
-        return { ...new CriticalError(e) };
-    }
-}
