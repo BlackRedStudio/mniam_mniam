@@ -3,7 +3,6 @@ import {
     boolean,
     mysqlTable,
     timestamp,
-    tinyint,
     varchar,
 } from 'drizzle-orm/mysql-core';
 

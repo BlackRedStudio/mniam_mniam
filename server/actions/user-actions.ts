@@ -14,8 +14,7 @@ import ParsedError from '../errors/ParsedError';
 import { checkSession } from '../helpers/helpers';
 import UserRepository from '../repositories/UserRepository';
 import UserService from '../services/UserService';
-import { usersTable } from '../schemas';
-import { DB } from '../helpers/DB';
+import fs from 'fs';
 
 export async function registerUserAction(formData: FormData) {
     try {

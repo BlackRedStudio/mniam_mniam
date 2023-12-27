@@ -1,10 +1,9 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { App as CapacitorApp, URLOpenListenerEvent } from '@capacitor/app';
 import { SessionProvider } from 'next-auth/react';
-import CameraContext from '@/lib/context/CameraContext';
 
 type TProviderLayoutProps = {
     children: ReactNode;
@@ -12,8 +11,6 @@ type TProviderLayoutProps = {
 
 function Providers({ children }: TProviderLayoutProps) {
     const router = useRouter();
-    
-    const [camera, setCamera] = useState(0);
 
     useEffect(() => {
         CapacitorApp.addListener(
@@ -28,11 +25,7 @@ function Providers({ children }: TProviderLayoutProps) {
         );
     }, []);
 
-    return <SessionProvider>
-        <CameraContext.Provider value={{camera, setCamera}}>
-        {children}
-        </CameraContext.Provider>
-    </SessionProvider>;
+    return <SessionProvider>{children}</SessionProvider>;
 }
 
 export default Providers;

@@ -6,13 +6,11 @@ import { useToast } from '@/lib/hooks/use-toast';
 import { Icons } from '../Icons';
 
 type TBarcodeScannerProps = {
-    deviceId: string;
     setCode: Dispatch<SetStateAction<string>>;
     setScannerEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
 const BarcodeScanner = ({
-    deviceId,
     setCode,
     setScannerEnabled,
 }: TBarcodeScannerProps) => {
@@ -22,7 +20,6 @@ const BarcodeScanner = ({
         ref,
         torch: { on: torchOn, off: torchOff, status: torchStatus },
     } = useZxing({
-        deviceId: deviceId || undefined,
         onDecodeResult(result) {
             setCode(result.getText());
             setScannerEnabled(false);
