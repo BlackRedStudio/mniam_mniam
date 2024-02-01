@@ -20,9 +20,10 @@ class UserService {
 
         const fileCropped = await sharp(await file.arrayBuffer())
             .resize({
-                width: 50,
-                height: 50,
+                width: 100,
+                height: 100,
             })
+            .jpeg({ quality: 95 })
             .toBuffer();
 
         const upload = new Upload({

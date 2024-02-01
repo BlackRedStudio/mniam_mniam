@@ -18,6 +18,7 @@ import { Separator } from '@/components/ui/Separator';
 import SignUpButton from '@/components/ui/SignUpButton';
 
 import { Icons } from '../Icons';
+import ImageUploadField from '../ImageUploadField';
 
 type TProfile = {
     user: TUser;
@@ -29,10 +30,17 @@ function Profile({ user }: TProfile) {
 
     const [showPassword, setShowPassword] = useState(false);
     const [formErrors, setFormErrors] = useState<TProfileValidatorErrors>();
+    const [avatar, setAvatar] = useState<File | null>(null);
 
     if (!session) return null;
 
     const handleProfileForm = async (formData: FormData) => {
+        
+        // re-set field value from binary input to controlled formatted avatar photo
+        if(avatar) {
+            formData.set('avatar', avatar);
+        }
+
         const res = await updateProfileAction(formData);
 
         if (!res.success && res.errors) {
@@ -140,13 +148,21 @@ function Profile({ user }: TProfile) {
             <Separator className="my-6" />
             <div className="mb-4">
                 <Label htmlFor="avatar">Zmień swój Avatar</Label>
-                <Input
-                    type="file"
+                <ImageUploadField
+                    image={avatar}
                     name="avatar"
                     className="mt-1"
-                    accept="image/jpeg, image/jpg"
+                    imageHeight={100}
+                    imageWidth={100}
+                    quality={95}
+                    setImage={setAvatar}
+                    extraPreviewClass='h-[100px]'
+                    destructiveElement={
+                        <div className="text-destructive">
+                            (akceptowany format to jpeg/jpg/png)
+                        </div>
+                    }
                 />
-                <FormError formErrors={formErrors?.image} />
             </div>
             {user.image && (
                 <Button className="mb-5" onClick={e => handleDeleteAvatar(e)}>

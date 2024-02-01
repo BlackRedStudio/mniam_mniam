@@ -21,6 +21,8 @@ type TImageUploadFieldProps = {
     capture?: boolean;
     className?: string;
     name?: string;
+    extraPreviewClass?: string;
+    quality?: number;
 };
 
 let rotation = 0;
@@ -37,18 +39,20 @@ function ImageUploadField({
     capture = false,
     className,
     name = 'image',
+    extraPreviewClass = '',
+    quality = 79,
 }: TImageUploadFieldProps) {
     const { toast } = useToast();
 
-    const [file, setFile] = useState<File|null>(null);
-        
+    const [file, setFile] = useState<File | null>(null);
+
     const processImage = (file: File) => {
         FileResizer.imageFileResizer(
             file,
             imageWidth,
             imageHeight,
             'JPEG',
-            79,
+            quality,
             rotation,
             file => {
                 if (file instanceof File) {
@@ -61,7 +65,7 @@ function ImageUploadField({
             100,
             100,
         );
-    }
+    };
 
     const handleSelectImage = (e: ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) {
@@ -69,7 +73,7 @@ function ImageUploadField({
             return;
         }
         const uploadedFile = e.target.files[0];
-        
+
         try {
             setFile(uploadedFile);
             processImage(uploadedFile);
@@ -82,26 +86,32 @@ function ImageUploadField({
     };
 
     const handleRotation = () => {
-
-        if(!file) return false;
+        if (!file) return false;
 
         rotation += 90;
-        if(rotation >= 360) rotation = 0;
+        if (rotation >= 360) rotation = 0;
 
         processImage(file);
-    }
+    };
 
     return (
         <div>
             {image ? (
                 <>
-                    <div className="mt-5 mb-2 flex justify-between">
+                    <div className="mb-2 mt-5 flex justify-between">
                         <div className="text-center text-success">
                             {textSuccess}
                         </div>
-                        <Icons.rotateCw className='cursor-pointer' onClick={handleRotation} />
+                        <Icons.rotateCw
+                            className="cursor-pointer"
+                            onClick={handleRotation}
+                        />
                     </div>
-                    <div className="relative h-[300px] w-full">
+                    <div
+                        className={cn(
+                            'relative h-[300px] w-full',
+                            extraPreviewClass,
+                        )}>
                         <Image
                             src={URL.createObjectURL(image)}
                             fill
