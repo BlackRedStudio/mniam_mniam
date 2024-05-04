@@ -80,7 +80,8 @@ function ProductScannerWrapper() {
                 variant={isDisabled ? 'default' : 'orange'}
                 onClick={() => {
                     router.push(`/product/${code}`);
-                }}>
+                }}
+            >
                 Wyszukaj produkt
             </Button>
         </>

@@ -4,7 +4,6 @@ import H2 from '@/components/ui/H2';
 import Ranking from '@/components/modules/Ranking/Ranking';
 
 async function rankingPage() {
-
     const res = await getUserRanking__Action();
 
     return (

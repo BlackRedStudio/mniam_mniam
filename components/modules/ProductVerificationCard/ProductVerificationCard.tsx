@@ -180,14 +180,16 @@ function ProductVerificationCard({
                         <Button
                             className="w-full"
                             disabled={loading}
-                            onClick={() => handleAcceptProduct()}>
+                            onClick={() => handleAcceptProduct()}
+                        >
                             Akceptuj produkt
                         </Button>
                         <Button
                             className="w-full"
                             disabled={loading}
                             onClick={() => handleRejectVerification()}
-                            variant={'destructive'}>
+                            variant={'destructive'}
+                        >
                             Odrzuć produkt
                         </Button>
                     </div>

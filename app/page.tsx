@@ -39,7 +39,9 @@ async function HomePage() {
                         <RegisterTab />
                     </TabsContent>
                 </Tabs>
-                <Link href="/privacy-policy" className='mt-6'>Polityka prywatności</Link>
+                <Link href="/privacy-policy" className="mt-6">
+                    Polityka prywatności
+                </Link>
             </main>
         </ScrollArea>
     );

@@ -24,7 +24,8 @@ function ProductsListItemDraft({
                     className={cn(
                         'relative space-y-0 overflow-hidden p-2',
                         status === 'draft' ? 'opacity-50' : '',
-                    )}>
+                    )}
+                >
                     <div className="relative h-24">
                         <Image
                             src={img}

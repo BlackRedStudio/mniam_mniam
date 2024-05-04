@@ -19,13 +19,17 @@ async function DashboardPage() {
 
     return (
         <section>
-            <H2 className="mb-3 text-center text-ellipsis overflow-hidden max-w-xs mx-auto">
+            <H2 className="mx-auto mb-3 max-w-xs overflow-hidden text-ellipsis text-center">
                 Witaj {userName},<br />
                 co dzisiaj smakujemy?
             </H2>
             <ProductScannerWrapper />
             <Separator className="my-8" />
-            {res.ranking?.length ? <RankingText ranking={res.ranking[0]} /> : 'Dodaj nazwę użytkownika aby wziąć udział w rankingu'}
+            {res.ranking?.length ? (
+                <RankingText ranking={res.ranking[0]} />
+            ) : (
+                'Dodaj nazwę użytkownika aby wziąć udział w rankingu'
+            )}
             {session.user.role === 'admin' && (
                 <>
                     <Separator className="my-8" />

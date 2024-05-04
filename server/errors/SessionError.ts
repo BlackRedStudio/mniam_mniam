@@ -1,5 +1,4 @@
 class SessionError {
-
     message: string;
 
     constructor() {

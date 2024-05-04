@@ -12,7 +12,8 @@ const H3 = ({ children, className }: TH3Props) => (
         className={cn(
             'scroll-m-20 text-lg font-semibold tracking-tight',
             className,
-        )}>
+        )}
+    >
         {children}
     </h3>
 );

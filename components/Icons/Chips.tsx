@@ -6,7 +6,8 @@ const Chips = (props: React.SVGProps<SVGSVGElement>) => (
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 307.09 307.09"
         xmlSpace="preserve"
-        {...props}>
+        {...props}
+    >
         <g>
             <path
                 d="M253.641,272.134c17.922-48.311,17.922-188.87,0.001-237.178L258.9,7.113c0.332-1.755-0.136-3.566-1.276-4.942

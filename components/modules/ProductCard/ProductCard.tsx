@@ -115,7 +115,9 @@ function ProductCard({
         setLoading(false);
 
         if (res.success) {
-            currentUserProduct ? router.push('/my-list') : router.push('/dashboard');
+            currentUserProduct
+                ? router.push('/my-list')
+                : router.push('/dashboard');
         }
     };
 
@@ -206,7 +208,12 @@ function ProductCard({
                         className="mb-2"
                         formErrors={formErrors?.rating}
                     />
-                    <StarRating className='mt-6' hints rating={rating} setRating={setRating} />
+                    <StarRating
+                        className="mt-6"
+                        hints
+                        rating={rating}
+                        setRating={setRating}
+                    />
                     <FormError
                         className="mb-2"
                         formErrors={formErrors?.category}
@@ -232,7 +239,8 @@ function ProductCard({
                         <div className="mt-7">
                             <a
                                 href={`https://world.openfoodfacts.org/product/${_id}`}
-                                target="_blank">
+                                target="_blank"
+                            >
                                 Link do produktu źrodłowego
                             </a>
                         </div>

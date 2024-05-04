@@ -1,8 +1,9 @@
 import { TProductStatistics } from '@/types/types';
 import { handleMultiplePersonText } from '@/lib/utils/utils';
 import H3 from '@/components/ui/H3';
-import { Icons } from '../Icons';
 import { Separator } from '@/components/ui/Separator';
+
+import { Icons } from '../Icons';
 
 type TCommunityRatingProps = {
     productStatistics: TProductStatistics;
@@ -18,11 +19,12 @@ function CommunityRating({
         averageRating = 'Brak';
     }
     if (!isNaN(parseInt(averagePrice))) {
-
         let roundedPrice = Math.round(parseFloat(averagePrice));
 
-        for(roundedPrice; roundedPrice > 0; roundedPrice--) {
-            priceIcons.push(<Icons.dollarSign key={roundedPrice} className='mr-[-4px]' />)
+        for (roundedPrice; roundedPrice > 0; roundedPrice--) {
+            priceIcons.push(
+                <Icons.dollarSign key={roundedPrice} className="mr-[-4px]" />,
+            );
         }
     }
 
@@ -39,11 +41,10 @@ function CommunityRating({
             <H3 className="mt-2 text-base">
                 ({peopleCount} {peopleText} ten produkt)
             </H3>
-            <H3 className="mt-4 text-base flex justify-center">
+            <H3 className="mt-4 flex justify-center text-base">
                 Średnia cena: {priceIcons.length > 0 ? priceIcons : 'Brak'}
             </H3>
-            <Separator className='my-9' />
-
+            <Separator className="my-9" />
         </div>
     );
 }

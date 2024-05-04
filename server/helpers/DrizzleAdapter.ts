@@ -1,9 +1,8 @@
+import { accountsTable } from '@/server/schemas/account-schema';
+import { usersTable } from '@/server/schemas/user-schema';
 import type { Adapter } from '@auth/core/adapters';
 import { and, eq } from 'drizzle-orm';
 import { PlanetScaleDatabase } from 'drizzle-orm/planetscale-serverless';
-
-import { usersTable } from '@/server/schemas/user-schema';
-import { accountsTable } from '@/server/schemas/account-schema';
 
 export function DrizzleAdapter(client: PlanetScaleDatabase): Adapter {
     return {
@@ -43,7 +42,10 @@ export function DrizzleAdapter(client: PlanetScaleDatabase): Adapter {
                 throw new Error('No user id.');
             }
 
-            await client.update(usersTable).set(data).where(eq(usersTable.id, data.id));
+            await client
+                .update(usersTable)
+                .set(data)
+                .where(eq(usersTable.id, data.id));
 
             return await client
                 .select()
@@ -68,7 +70,10 @@ export function DrizzleAdapter(client: PlanetScaleDatabase): Adapter {
                             eq(accountsTable.provider, account.provider),
                         ),
                     )
-                    .leftJoin(usersTable, eq(accountsTable.userId, usersTable.id))
+                    .leftJoin(
+                        usersTable,
+                        eq(accountsTable.userId, usersTable.id),
+                    )
                     .then(res => res[0])) ?? null;
 
             if (!dbAccount) {

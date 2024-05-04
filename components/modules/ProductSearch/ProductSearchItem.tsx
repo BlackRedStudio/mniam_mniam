@@ -17,7 +17,7 @@ function ProductSearchItem({
             <Image
                 src={image_small_url}
                 loading="eager"
-                className="object-contain max-h-24"
+                className="max-h-24 object-contain"
                 width={100}
                 height={100}
                 alt={product_name || ''}
@@ -28,7 +28,7 @@ function ProductSearchItem({
             <Image
                 src={image_url}
                 loading="eager"
-                className="object-contain max-h-24"
+                className="max-h-24 object-contain"
                 width={100}
                 height={100}
                 alt={product_name || ''}

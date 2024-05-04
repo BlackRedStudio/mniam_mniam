@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import { TRankingType, TUserRankingCounter } from '@/types/types';
 import { rankingTypes } from '@/lib/config/config';
@@ -8,15 +9,13 @@ import H3 from '@/components/ui/H3';
 
 import RankingTable from './RankingTable';
 import RankingTypeSelector from './RankingTypeSelector';
-import { useSession } from 'next-auth/react';
 
 type TRankingProps = {
     ranking: TUserRankingCounter[];
 };
 
 function Ranking({ ranking }: TRankingProps) {
-
-    const {data: session} = useSession();
+    const { data: session } = useSession();
 
     const [type, setType] = useState<TRankingType['type']>('mniamPoints');
 

@@ -13,7 +13,6 @@ type TPriceRatingProps = {
 };
 
 function PriceRating({ title, className, price, setPrice }: TPriceRatingProps) {
-
     const handleClick = (priceValue: number) => {
         if (priceValue > 0 && priceValue < 4) {
             setPrice(priceValue);
@@ -25,10 +24,7 @@ function PriceRating({ title, className, price, setPrice }: TPriceRatingProps) {
         priceIcons.push(
             <Icons.dollarSign
                 key={i}
-                className={cn(
-                    "h-9 w-9",
-                    price < i ? "text-gray-400" : ''
-                )}
+                className={cn('h-9 w-9', price < i ? 'text-gray-400' : '')}
                 onClick={() => handleClick(i)}
             />,
         );

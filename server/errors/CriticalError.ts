@@ -1,8 +1,7 @@
-import AdminError from "./AdminError";
-import SessionError from "./SessionError";
+import AdminError from './AdminError';
+import SessionError from './SessionError';
 
 class CriticalError {
-
     success: false;
 
     message: string;
@@ -10,10 +9,9 @@ class CriticalError {
     errors: null;
 
     constructor(e: unknown) {
-
-        if(e instanceof SessionError) {
+        if (e instanceof SessionError) {
             this.message = e.message;
-        } else if(e instanceof AdminError) {
+        } else if (e instanceof AdminError) {
             this.message = e.message;
         } else {
             this.message = 'Błąd aplikacji skontaktuj się z administratorem.';

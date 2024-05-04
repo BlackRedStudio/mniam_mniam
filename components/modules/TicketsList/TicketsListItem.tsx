@@ -15,10 +15,14 @@ type TTicketsListItemProps = {
 
 function TicketsListItem({ ticket }: TTicketsListItemProps) {
     return (
-        <Card className={ticket.author === 'admin' ? `border-orange`: ``}>
+        <Card className={ticket.author === 'admin' ? `border-orange` : ``}>
             <CardHeader className="p-3">
-                {ticket.author === 'admin' && <CardTitle className='text-xl text-orange'>Od Admina:</CardTitle>}
-                <CardTitle className='text-xl'>{ticket.subject}</CardTitle>
+                {ticket.author === 'admin' && (
+                    <CardTitle className="text-xl text-orange">
+                        Od Admina:
+                    </CardTitle>
+                )}
+                <CardTitle className="text-xl">{ticket.subject}</CardTitle>
                 <CardDescription>
                     <small>{ticket.dateCreated.toLocaleString()}</small>
                 </CardDescription>

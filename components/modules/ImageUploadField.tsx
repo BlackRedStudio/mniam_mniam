@@ -111,7 +111,8 @@ function ImageUploadField({
                         className={cn(
                             'relative h-[300px] w-full',
                             extraPreviewClass,
-                        )}>
+                        )}
+                    >
                         <Image
                             src={URL.createObjectURL(image)}
                             fill

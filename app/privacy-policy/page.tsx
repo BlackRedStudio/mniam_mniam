@@ -108,7 +108,7 @@ async function privacyPolicyPage() {
                         cookies:
                     </li>
                 </ol>
-                <ul className='list-disc pl-4'>
+                <ul className="list-disc pl-4">
                     <li>
                         „niezbędne” pliki cookies, umożliwiające korzystanie z
                         usług dostępnych w ramach serwisu, np. uwierzytelniające
@@ -134,7 +134,7 @@ async function privacyPolicyPage() {
                         internetowej itp.;
                     </li>
                 </ul>
-                <ol start={5} className='list-decimal'>
+                <ol start={5} className="list-decimal">
                     <li>
                         Serwis stosuje dwa zasadnicze rodzaje plików (cookies) –
                         sesyjne i stałe. Pliki sesyjne są tymczasowe,
@@ -181,7 +181,7 @@ async function privacyPolicyPage() {
                     </li>
                 </ol>
                 <Link href="/delete-account">
-                    <Button className='mt-5'>Usuwanie konta</Button>
+                    <Button className="mt-5">Usuwanie konta</Button>
                 </Link>
             </main>
         </ScrollArea>

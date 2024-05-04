@@ -25,7 +25,8 @@ function ProductsListItem({
                     className={cn(
                         'relative space-y-0 overflow-hidden p-2',
                         status === 'draftVisible' ? 'opacity-50' : '',
-                    )}>
+                    )}
+                >
                     <div className="relative h-24">
                         <Image
                             src={product.img}

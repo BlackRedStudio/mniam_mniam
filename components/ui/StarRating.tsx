@@ -75,9 +75,13 @@ function StarRating({
     }
 
     return (
-        <div className={cn('mb-4 flex w-full relative', className)}>
+        <div className={cn('relative mb-4 flex w-full', className)}>
             {showHeader && <H3 className="mr-2 w-24">Ocena:</H3>}
-            {hints && <div className='absolute top-[-32px] right-0 text-sm'>{starHints[rating]}</div>}
+            {hints && (
+                <div className="absolute right-0 top-[-32px] text-sm">
+                    {starHints[rating]}
+                </div>
+            )}
             {stars}
         </div>
     );

@@ -20,7 +20,8 @@ function RankingTypeSelector({ type, setType }: TRankingTypeSelectorProps) {
                 return (
                     <Button
                         variant={type === v.type ? 'orange' : 'outline'}
-                        onClick={() => setType(v.type)}>
+                        onClick={() => setType(v.type)}
+                    >
                         <TypeIcon />
                     </Button>
                 );

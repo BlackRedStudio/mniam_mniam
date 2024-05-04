@@ -3,10 +3,7 @@ import { and, eq, like } from 'drizzle-orm';
 import { TProductStatus } from '@/types/types';
 
 import { DB } from '../helpers/DB';
-import {
-    productsTable,
-    TProductInsert,
-} from '../schemas';
+import { productsTable, TProductInsert } from '../schemas';
 
 type TFindProduct = {
     id?: string;
@@ -30,7 +27,9 @@ class ProductRepository {
                 status ? eq(productsTable.status, status) : undefined,
                 ean ? eq(productsTable.ean, ean) : undefined,
             ),
-            orderBy: (productsTable, {desc}) => [desc(productsTable.dateUpdated)]
+            orderBy: (productsTable, { desc }) => [
+                desc(productsTable.dateUpdated),
+            ],
         });
 
         return product;
@@ -44,7 +43,7 @@ class ProductRepository {
                 ean ? eq(productsTable.ean, ean) : undefined,
             ),
             with: {
-                userProducts: true
+                userProducts: true,
             },
         });
 
@@ -52,7 +51,6 @@ class ProductRepository {
     }
 
     static async update(id: string, productValues: Omit<TProductInsert, 'id'>) {
-
         const res = await DB.update(productsTable)
             .set(productValues)
             .where(eq(productsTable.id, id));

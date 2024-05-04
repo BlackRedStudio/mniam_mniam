@@ -53,7 +53,6 @@ export const authOptions = {
                 password: {},
             },
             async authorize(credentials) {
-
                 if (!credentials) return null;
 
                 const user = await UserRepository.firstWithAccounts({

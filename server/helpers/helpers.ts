@@ -1,12 +1,15 @@
 import { revalidatePath } from 'next/cache';
+import {
+    CompleteMultipartUploadCommandOutput,
+    S3Client,
+} from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
 import { getServerSession } from 'next-auth';
 
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 import AdminError from '../errors/AdminError';
 import SessionError from '../errors/SessionError';
-import { CompleteMultipartUploadCommandOutput, S3Client } from '@aws-sdk/client-s3';
-import { Upload } from '@aws-sdk/lib-storage';
 
 export async function checkSession(onlyAdmin: boolean = false) {
     const session = await getServerSession(authOptions);
@@ -25,23 +28,22 @@ export function revalidateProductPaths(ean: string) {
 }
 
 export async function uploadFormImage(file: File, folder: string) {
-        const s3Client = new S3Client({});
+    const s3Client = new S3Client({});
 
-        const randomId = crypto.randomUUID();
-        const fileName = `${file.name}-${randomId}`;
+    const randomId = crypto.randomUUID();
+    const fileName = `${file.name}-${randomId}`;
 
-        const upload = new Upload({
-            client: s3Client,
-            params: {
-                Bucket: process.env.BUCKET_NAME,
-                Key: `${folder}/${fileName}.jpg`,
-                Body: file,
-                ContentType: 'image/jpeg',
-            },
-        });
+    const upload = new Upload({
+        client: s3Client,
+        params: {
+            Bucket: process.env.BUCKET_NAME,
+            Key: `${folder}/${fileName}.jpg`,
+            Body: file,
+            ContentType: 'image/jpeg',
+        },
+    });
 
-        const res =
-            (await upload.done()) as CompleteMultipartUploadCommandOutput;
+    const res = (await upload.done()) as CompleteMultipartUploadCommandOutput;
 
-        return res.Location;
+    return res.Location;
 }

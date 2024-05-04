@@ -91,13 +91,15 @@ function LoginTab() {
             <Button
                 className="mt-6 w-full py-7"
                 disabled={loading}
-                onClick={() => handleLogin('credentials')}>
+                onClick={() => handleLogin('credentials')}
+            >
                 Zaloguj się
             </Button>
             <Separator className="my-8" />
             <Button
                 className="mb-6 w-full border-2 bg-white py-7 text-primary"
-                onClick={() => handleLogin('google')}>
+                onClick={() => handleLogin('google')}
+            >
                 <img
                     loading="lazy"
                     height={24}
@@ -110,7 +112,8 @@ function LoginTab() {
             </Button>
             <Button
                 className="mb-6 w-full border-2 py-7"
-                onClick={() => handleLogin('github')}>
+                onClick={() => handleLogin('github')}
+            >
                 <img
                     loading="lazy"
                     height={24}

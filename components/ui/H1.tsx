@@ -12,7 +12,8 @@ const H1 = ({ children, className }: TH1Props) => (
         className={cn(
             'mb-7 scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
             className,
-        )}>
+        )}
+    >
         {children}
     </h1>
 );

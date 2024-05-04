@@ -39,15 +39,21 @@ function CategorySelector({
                     `Wybierz kategorię `}
             </Button>
             <AlertDialog open={open}>
-                <AlertDialogContent overlayClick={() => setOpen(false)} className='p-0 h-full'>
+                <AlertDialogContent
+                    overlayClick={() => setOpen(false)}
+                    className="h-full p-0"
+                >
                     <AlertDialogHeader>
-                        <AlertDialogTitle className='pt-3'>Wybierz kategorię</AlertDialogTitle>
-                        <div className='p-3'>
+                        <AlertDialogTitle className="pt-3">
+                            Wybierz kategorię
+                        </AlertDialogTitle>
+                        <div className="p-3">
                             <Button
                                 variant={
                                     categoryType === '' ? 'default' : 'outline'
                                 }
-                                onClick={() => setCategoryType('')}>
+                                onClick={() => setCategoryType('')}
+                            >
                                 Wszystkie
                             </Button>
                             {categoryTypes.map(catType => (
@@ -58,7 +64,8 @@ function CategorySelector({
                                             ? 'default'
                                             : 'outline'
                                     }
-                                    onClick={() => setCategoryType(catType.id)}>
+                                    onClick={() => setCategoryType(catType.id)}
+                                >
                                     {catType.label}
                                 </Button>
                             ))}
@@ -89,7 +96,8 @@ function CategorySelector({
                                                 onClick={() => {
                                                     setCategory(cat.id);
                                                     setOpen(false);
-                                                }}>
+                                                }}
+                                            >
                                                 <CardHeader className="px-1 py-3">
                                                     <CategoryIcon className="mx-auto mb-3 h-6 w-6" />
                                                     {cat.label}

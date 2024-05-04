@@ -15,11 +15,11 @@ const Separator = React.forwardRef<
         { className, orientation = 'horizontal', decorative = true, ...props },
         ref,
     ) => (
-        <div className="relative flex justify-center items-center">
-            <div className="absolute flex bg-white dark:bg-background px-5 space-x-1.5">
-                <Icons.cakeSlice className='text-destructive' />
-                <Icons.lollipop className='text-blue' />
-                <Icons.donut className='text-orange' />
+        <div className="relative flex items-center justify-center">
+            <div className="absolute flex space-x-1.5 bg-white px-5 dark:bg-background">
+                <Icons.cakeSlice className="text-destructive" />
+                <Icons.lollipop className="text-blue" />
+                <Icons.donut className="text-orange" />
             </div>
             <SeparatorPrimitive.Root
                 ref={ref}

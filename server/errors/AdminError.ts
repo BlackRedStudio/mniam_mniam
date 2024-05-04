@@ -1,5 +1,4 @@
 class AdminError {
-
     message: string;
 
     constructor() {

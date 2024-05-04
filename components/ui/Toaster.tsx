@@ -22,9 +22,13 @@ export function Toaster() {
                 ...props
             }) {
                 return (
-                    <Toast key={id} {...props} onClick={() => {
-                        dismiss(id);
-                    }}>
+                    <Toast
+                        key={id}
+                        {...props}
+                        onClick={() => {
+                            dismiss(id);
+                        }}
+                    >
                         <div className="grid gap-1">
                             {title && <ToastTitle>{title}</ToastTitle>}
                             {description && (

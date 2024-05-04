@@ -24,8 +24,7 @@ function TicketForm() {
     const [attachment, setAttachment] = useState<File | null>(null);
 
     const submitTicket = async () => {
-
-        if(!message || !subject) return;
+        if (!message || !subject) return;
 
         setLoading(true);
 
@@ -91,7 +90,8 @@ function TicketForm() {
             <Button
                 onClick={submitTicket}
                 className="w-full"
-                disabled={loading}>
+                disabled={loading}
+            >
                 Wyślij
             </Button>
             <p className="text-sm text-muted-foreground">

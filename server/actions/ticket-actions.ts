@@ -1,13 +1,14 @@
-'use server'
+'use server';
+
+import { revalidatePath } from 'next/cache';
 
 import { ticketValidator } from '@/lib/validators/ticket-validator';
 
 import CriticalError from '../errors/CriticalError';
 import ParsedError from '../errors/ParsedError';
 import { checkSession } from '../helpers/helpers';
-import TicketService from '../services/TicketService';
 import TicketRepository from '../repositories/TicketRepository';
-import { revalidatePath } from 'next/cache';
+import TicketService from '../services/TicketService';
 
 export async function getUserTickets__Action() {
     try {
@@ -39,8 +40,13 @@ export async function submitTicket__Action(formData: FormData) {
             attachment: attachment !== null ? attachment : undefined,
         });
 
-        TicketService.submitTicket(session.user.id, subject, message, attachment);
- 
+        TicketService.submitTicket(
+            session.user.id,
+            subject,
+            message,
+            attachment,
+        );
+
         if (!parsed.success) {
             return { ...new ParsedError(parsed.error.formErrors.fieldErrors) };
         }

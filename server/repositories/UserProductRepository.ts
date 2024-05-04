@@ -3,59 +3,73 @@ import { and, eq, inArray } from 'drizzle-orm';
 import { TUserProductStatus } from '@/types/types';
 
 import { DB } from '../helpers/DB';
-import {
-    TUserProductInsert,
-    userProductsTable,
-} from '../schemas';
-
+import { TUserProductInsert, userProductsTable } from '../schemas';
 
 type TFindUserProduct = {
-    id?: string,
-    productId?: string,
-    userId?: string,
-    statuses?: TUserProductStatus[]
-}
+    id?: string;
+    productId?: string;
+    userId?: string;
+    statuses?: TUserProductStatus[];
+};
 
 class UserProductRepository {
-
-    static async first({id, productId, userId, statuses}: TFindUserProduct) {
+    static async first({ id, productId, userId, statuses }: TFindUserProduct) {
         const userProduct = await DB.query.userProductsTable.findFirst({
             where: and(
                 id ? eq(userProductsTable.id, id) : undefined,
-                productId ? eq(userProductsTable.productId, productId) : undefined,
+                productId
+                    ? eq(userProductsTable.productId, productId)
+                    : undefined,
                 userId ? eq(userProductsTable.userId, userId) : undefined,
-                statuses ? inArray(userProductsTable.status, statuses) : undefined,
+                statuses
+                    ? inArray(userProductsTable.status, statuses)
+                    : undefined,
             ),
         });
 
         return userProduct;
     }
 
-    static async many({id, productId, userId, statuses}: TFindUserProduct) {
+    static async many({ id, productId, userId, statuses }: TFindUserProduct) {
         const userProductsList = await DB.query.userProductsTable.findMany({
             where: and(
                 id ? eq(userProductsTable.id, id) : undefined,
-                productId ? eq(userProductsTable.productId, productId) : undefined,
+                productId
+                    ? eq(userProductsTable.productId, productId)
+                    : undefined,
                 userId ? eq(userProductsTable.userId, userId) : undefined,
-                statuses ? inArray(userProductsTable.status, statuses) : undefined,
-            )
+                statuses
+                    ? inArray(userProductsTable.status, statuses)
+                    : undefined,
+            ),
         });
 
         return userProductsList;
     }
 
-    static async manyWithProduct({id, productId, userId, statuses}: TFindUserProduct) {
+    static async manyWithProduct({
+        id,
+        productId,
+        userId,
+        statuses,
+    }: TFindUserProduct) {
         const userProductsList = await DB.query.userProductsTable.findMany({
             where: and(
                 id ? eq(userProductsTable.id, id) : undefined,
-                productId ? eq(userProductsTable.productId, productId) : undefined,
+                productId
+                    ? eq(userProductsTable.productId, productId)
+                    : undefined,
                 userId ? eq(userProductsTable.userId, userId) : undefined,
-                statuses ? inArray(userProductsTable.status, statuses) : undefined,
+                statuses
+                    ? inArray(userProductsTable.status, statuses)
+                    : undefined,
             ),
             with: {
                 product: true,
             },
-            orderBy: (userProductsTable, { desc }) => [desc(userProductsTable.dateUpdated)]
+            orderBy: (userProductsTable, { desc }) => [
+                desc(userProductsTable.dateUpdated),
+            ],
         });
 
         return userProductsList;

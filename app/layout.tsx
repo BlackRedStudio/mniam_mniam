@@ -25,19 +25,22 @@ type TRootLayoutProps = {
 };
 
 async function RootLayout({ children }: TRootLayoutProps) {
-
     const session = await getServerSession(authOptions);
 
     return (
-        <html lang="pl" className={cn(
-            'mx-auto max-w-screen-sm',
-            session?.user.darkMode ? 'dark' : 'light',
-        )}>
+        <html
+            lang="pl"
+            className={cn(
+                'mx-auto max-w-screen-sm',
+                session?.user.darkMode ? 'dark' : 'light',
+            )}
+        >
             <body
                 className={cn(
                     'mx-auto min-h-screen max-w-[700px] overflow-hidden bg-background font-sans antialiased',
                     fontSans.variable,
-                )}>
+                )}
+            >
                 <Providers>{children}</Providers>
                 <Toaster />
             </body>

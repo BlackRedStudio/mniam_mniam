@@ -1,7 +1,9 @@
-import { mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
-import { userProductsTable } from '.';
 import { relations } from 'drizzle-orm';
+import { mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core';
+
 import { TProductStatus } from '@/types/types';
+
+import { userProductsTable } from '.';
 
 export const productsTable = mysqlTable('products', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -9,16 +11,19 @@ export const productsTable = mysqlTable('products', {
     name: varchar('name', { length: 512 }).notNull(),
     brands: varchar('brands', { length: 512 }).notNull(),
     quantity: varchar('quantity', { length: 255 }).notNull(),
-    status: varchar('status', { length: 255 }).$type<TProductStatus>().notNull().default('active'),
+    status: varchar('status', { length: 255 })
+        .$type<TProductStatus>()
+        .notNull()
+        .default('active'),
     img: text('img').notNull(),
     imgOpenFoodFacts: text('imgOpenFoodFacts').default(''),
     dateCreated: timestamp('dateCreated', {
         mode: 'date',
-        fsp: 3
+        fsp: 3,
     }).defaultNow(),
     dateUpdated: timestamp('dateUpdated', {
         mode: 'date',
-        fsp: 3
+        fsp: 3,
     }).defaultNow(),
 });
 

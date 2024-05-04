@@ -34,7 +34,8 @@ AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
 
 const AlertDialogContent = React.forwardRef<
     React.ElementRef<typeof AlertDialogPrimitive.Content> & IDialogContentProps,
-    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> & IDialogContentProps
+    React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Content> &
+        IDialogContentProps
 >(({ className, overlayClick, ...props }, ref) => (
     <AlertDialogPortal>
         <AlertDialogOverlay onClick={overlayClick} />
@@ -90,7 +91,10 @@ const AlertDialogTitle = React.forwardRef<
 ));
 AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
 
-type TAlertDialogDescription = React.ForwardRefExoticComponent<AlertDialogPrimitive.AlertDialogDescriptionProps & React.RefAttributes<HTMLDivElement>>;
+type TAlertDialogDescription = React.ForwardRefExoticComponent<
+    AlertDialogPrimitive.AlertDialogDescriptionProps &
+        React.RefAttributes<HTMLDivElement>
+>;
 
 const AlertDialogDescription = React.forwardRef<
     React.ElementRef<TAlertDialogDescription>,

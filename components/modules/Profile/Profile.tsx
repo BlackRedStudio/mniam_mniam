@@ -35,9 +35,8 @@ function Profile({ user }: TProfile) {
     if (!session) return null;
 
     const handleProfileForm = async (formData: FormData) => {
-        
         // re-set field value from binary input to controlled formatted avatar photo
-        if(avatar) {
+        if (avatar) {
             formData.set('avatar', avatar);
         }
 
@@ -156,7 +155,7 @@ function Profile({ user }: TProfile) {
                     imageWidth={100}
                     quality={95}
                     setImage={setAvatar}
-                    extraPreviewClass='h-[100px]'
+                    extraPreviewClass="h-[100px]"
                     destructiveElement={
                         <div className="text-destructive">
                             (akceptowany format to jpeg/jpg/png)

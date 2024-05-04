@@ -8,7 +8,7 @@ import {
 
 import { TUserRole } from '@/types/types';
 
-import { TUserProduct, accountsTable, userProductsTable } from '.';
+import { accountsTable, TUserProduct, userProductsTable } from '.';
 import { ticketsTable } from './ticket-schema';
 
 export const usersTable = mysqlTable('users', {
@@ -39,7 +39,7 @@ export const usersRelations = relations(usersTable, ({ many }) => ({
 }));
 
 export type TUserWithUserProduct = TUser & {
-    userProducts: TUserProduct[]
+    userProducts: TUserProduct[];
 };
 
 export type TUser = typeof usersTable.$inferSelect;

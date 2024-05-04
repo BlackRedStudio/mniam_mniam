@@ -6,7 +6,8 @@ const Cereals = (props: React.SVGProps<SVGSVGElement>) => (
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 317.366 317.366"
         xmlSpace="preserve"
-        {...props}>
+        {...props}
+    >
         <path
             d="M176.909,169.926c0-4.418,3.582-8,8-8h1.33c4.418,0,8,3.582,8,8s-3.582,8-8,8h-1.33
 	C180.49,177.926,176.909,174.344,176.909,169.926z M187.815,230.284c0,4.418,3.582,8,8,8h1.33c4.418,0,8-3.582,8-8s-3.582-8-8-8

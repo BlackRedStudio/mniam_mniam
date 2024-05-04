@@ -32,7 +32,8 @@ function ProductCardFooter({
             {loading && <Loader className="mt-4" />}
             <Button
                 className="w-full"
-                onClick={() => handleAddProduct(prevStatus)}>
+                onClick={() => handleAddProduct(prevStatus)}
+            >
                 Zapisz ocenę
             </Button>
             {!currentUserProduct ||
@@ -41,7 +42,8 @@ function ProductCardFooter({
                 <Button
                     className="w-full"
                     onClick={() => handleAddProduct('visible')}
-                    variant={'orange'}>
+                    variant={'orange'}
+                >
                     Zapisz ocenę i dodaj do mojej listy
                 </Button>
             ) : null}
@@ -50,7 +52,8 @@ function ProductCardFooter({
                 <Button
                     className="w-full"
                     onClick={() => handleDeleteProductFromList()}
-                    variant={'destructive'}>
+                    variant={'destructive'}
+                >
                     Usuń produkt z mojej listy
                 </Button>
             ) : null}

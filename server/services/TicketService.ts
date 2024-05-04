@@ -1,15 +1,19 @@
-import { uploadFormImage } from "../helpers/helpers";
-import TicketRepository from "../repositories/TicketRepository";
+import { uploadFormImage } from '../helpers/helpers';
+import TicketRepository from '../repositories/TicketRepository';
 
 class TicketService {
-    static async submitTicket(userId: string, subject: string, message: string, attachment?: File | null) {
-        
+    static async submitTicket(
+        userId: string,
+        subject: string,
+        message: string,
+        attachment?: File | null,
+    ) {
         let location = '';
 
-        if(attachment) {
+        if (attachment) {
             const res = await uploadFormImage(attachment, 'tickets');
 
-            if(res) location = res;
+            if (res) location = res;
         }
 
         await TicketRepository.insert({

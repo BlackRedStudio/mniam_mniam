@@ -1,5 +1,6 @@
 'use server';
 
+import fs from 'fs';
 import { revalidatePath } from 'next/cache';
 import bcrypt from 'bcrypt';
 
@@ -14,7 +15,6 @@ import ParsedError from '../errors/ParsedError';
 import { checkSession } from '../helpers/helpers';
 import UserRepository from '../repositories/UserRepository';
 import UserService from '../services/UserService';
-import fs from 'fs';
 
 export async function registerUserAction(formData: FormData) {
     try {
@@ -157,7 +157,10 @@ export async function getUserRanking__Action(single = false) {
     try {
         const session = await checkSession();
 
-        const users = await UserRepository.allWithRankingInfo(session.user.id, single);
+        const users = await UserRepository.allWithRankingInfo(
+            session.user.id,
+            single,
+        );
 
         const ranking = await UserService.prepareUsersCounters(users);
 

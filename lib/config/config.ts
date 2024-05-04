@@ -1,5 +1,5 @@
-import { Icons } from '@/components/modules/Icons';
 import { TRankingType } from '@/types/types';
+import { Icons } from '@/components/modules/Icons';
 
 export type TCategoryType =
     | 'drinks'
@@ -201,4 +201,4 @@ export const rankingTypes: TRankingType[] = [
         name: 'Przesłane zdjęcia produktów',
         key: 'imgUploadedCount',
     },
-]
+];

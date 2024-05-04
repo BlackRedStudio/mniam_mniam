@@ -6,7 +6,8 @@ const Chocolate = (props: React.SVGProps<SVGSVGElement>) => (
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 512 512"
         xmlSpace="preserve"
-        {...props}>
+        {...props}
+    >
         <g>
             <path
                 d="M474.803,351.766l-41.189-136.924c-1.557-5.06-6.256-8.554-11.553-8.554h-14.387V38.4

@@ -3,15 +3,17 @@ import {
     S3Client,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
+import bcrypt from 'bcrypt';
 import sharp from 'sharp';
 
-import bcrypt from 'bcrypt';
-import { TUserInsert } from '../schemas';
-import UserRepository, { TAllWithRankingInfoReturn } from '../repositories/UserRepository';
 import { TUserRankingCounter } from '@/types/types';
 
-class UserService {
+import UserRepository, {
+    TAllWithRankingInfoReturn,
+} from '../repositories/UserRepository';
+import { TUserInsert } from '../schemas';
 
+class UserService {
     static async uploadAvatar(file: File) {
         const s3Client = new S3Client({});
 
@@ -75,8 +77,9 @@ class UserService {
         };
     }
 
-    static async prepareUsersCounters(users: TAllWithRankingInfoReturn): Promise<TUserRankingCounter[]> {
-
+    static async prepareUsersCounters(
+        users: TAllWithRankingInfoReturn,
+    ): Promise<TUserRankingCounter[]> {
         const usersWithCounters = users.map(user => {
             let firstRateCount = 0;
             let propsAddedCount = 0;
@@ -86,16 +89,16 @@ class UserService {
             user.userProducts.forEach(userProduct => {
                 let mniamPoint = 1;
 
-                if(userProduct.firstRate) {
+                if (userProduct.firstRate) {
                     firstRateCount++;
                     mniamPoint++;
                 }
-                if(userProduct.propsAdded) {
+                if (userProduct.propsAdded) {
                     propsAddedCount++;
                     // for people how added attributes it will be +5 extra points
                     mniamPoint += 3;
                 }
-                if(userProduct.imgUploaded) {
+                if (userProduct.imgUploaded) {
                     imgUploadedCount++;
                     // for people how uploaded photos it will be +7 extra points
                     mniamPoint += 2;
@@ -112,10 +115,12 @@ class UserService {
                 firstRateCount,
                 propsAddedCount,
                 imgUploadedCount,
-            }
+            };
         });
-        
-        return usersWithCounters.filter(user => user.mniamPoints > 0 && user.name);
+
+        return usersWithCounters.filter(
+            user => user.mniamPoints > 0 && user.name,
+        );
     }
 }
 

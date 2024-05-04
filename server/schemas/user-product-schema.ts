@@ -7,8 +7,9 @@ import {
     varchar,
 } from 'drizzle-orm/mysql-core';
 
-import { TProduct, productsTable, usersTable } from '.';
 import { TUserProductStatus } from '@/types/types';
+
+import { productsTable, TProduct, usersTable } from '.';
 
 export const userProductsTable = mysqlTable('userProducts', {
     id: varchar('id', { length: 255 }).notNull().primaryKey(),
@@ -19,7 +20,10 @@ export const userProductsTable = mysqlTable('userProducts', {
     category: varchar('category', {
         length: 256,
     }).notNull(),
-    status: varchar('status', { length: 255 }).$type<TUserProductStatus>().notNull().default('invisible'),
+    status: varchar('status', { length: 255 })
+        .$type<TUserProductStatus>()
+        .notNull()
+        .default('invisible'),
     firstRate: boolean('firstRate').notNull().default(false),
     imgUploaded: boolean('imgUploaded').notNull().default(false),
     propsAdded: boolean('propsAdded').notNull().default(false),
@@ -33,21 +37,24 @@ export const userProductsTable = mysqlTable('userProducts', {
     }).defaultNow(),
 });
 
-export const userProductsRelations = relations(userProductsTable, ({ one }) => ({
-    user: one(usersTable, {
-        fields: [userProductsTable.userId],
-        references: [usersTable.id],
+export const userProductsRelations = relations(
+    userProductsTable,
+    ({ one }) => ({
+        user: one(usersTable, {
+            fields: [userProductsTable.userId],
+            references: [usersTable.id],
+        }),
+        product: one(productsTable, {
+            fields: [userProductsTable.productId],
+            references: [productsTable.id],
+        }),
     }),
-    product: one(productsTable, {
-        fields: [userProductsTable.productId],
-        references: [productsTable.id],
-    }),
-}));
+);
 
 export type TUserProduct = typeof userProductsTable.$inferSelect;
 
 export type TUserProductWithProduct = TUserProduct & {
-    product: TProduct
+    product: TProduct;
 };
 
 export type TUserProductInsert = typeof userProductsTable.$inferInsert;

@@ -36,17 +36,20 @@ function ProductsListSort({
                 <div className="my-4 flex justify-center space-x-2">
                     <Button
                         variant={sorting === 'name' ? 'orange' : 'outline'}
-                        onClick={() => setSorting('name')}>
+                        onClick={() => setSorting('name')}
+                    >
                         <Icons.wholeWord />
                     </Button>
                     <Button
                         variant={sorting === 'rating' ? 'orange' : 'outline'}
-                        onClick={() => setSorting('rating')}>
+                        onClick={() => setSorting('rating')}
+                    >
                         <Icons.star />
                     </Button>
                     <Button
                         variant={sorting === 'price' ? 'orange' : 'outline'}
-                        onClick={() => setSorting('price')}>
+                        onClick={() => setSorting('price')}
+                    >
                         <Icons.dollarSign />
                     </Button>
                 </div>
@@ -59,7 +62,8 @@ function ProductsListSort({
                                     ? 'orange'
                                     : 'outline'
                             }
-                            onClick={() => setSortingDirection('ASC')}>
+                            onClick={() => setSortingDirection('ASC')}
+                        >
                             <Icons.arrowUpWideNarrow />
                         </Button>
                         <Button
@@ -68,7 +72,8 @@ function ProductsListSort({
                                     ? 'orange'
                                     : 'outline'
                             }
-                            onClick={() => setSortingDirection('DESC')}>
+                            onClick={() => setSortingDirection('DESC')}
+                        >
                             <Icons.arrowDownWideNarrow />
                         </Button>
                     </div>

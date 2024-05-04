@@ -37,7 +37,7 @@ function Menu() {
             }
         });
     }, []);
-    
+
     useEffect(() => {
         if (session?.user.darkMode) {
             document.documentElement.classList.add('dark');
@@ -54,13 +54,13 @@ function Menu() {
             } else {
                 document.documentElement.classList.remove('dark');
             }
-    
+
             await switchDarkModeAction();
-            
+
             await update({
                 darkMode: !session?.user.darkMode,
             });
-        } catch(error) {
+        } catch (error) {
             console.log(error);
         }
         setLoading(false);
@@ -124,7 +124,8 @@ function Menu() {
                                 variant: 'success',
                             });
                         }
-                    }}>
+                    }}
+                >
                     <DropdownMenuItem onSelect={e => e.preventDefault()}>
                         Wyloguj się
                     </DropdownMenuItem>

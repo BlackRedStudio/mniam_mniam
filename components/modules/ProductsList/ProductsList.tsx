@@ -51,7 +51,7 @@ function ProductsList({ productsList, listType }: TProductsListProps) {
         URLParams.set('sorting', sorting || '');
         URLParams.set('sortingDirection', sortingDirection);
 
-        router.replace(`${pathName}?${URLParams}`, {scroll: false});
+        router.replace(`${pathName}?${URLParams}`, { scroll: false });
     }, [rating, price, category, sorting, sortingDirection]);
 
     const handleFilters = (product: TUserProductWithProduct) => {

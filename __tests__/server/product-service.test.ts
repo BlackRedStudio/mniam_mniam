@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import ProductRepository from "@/server/repositories/ProductRepository";
+import ProductRepository from '@/server/repositories/ProductRepository';
 
 describe('Product Service Test', () => {
     it('Should get product by name, from API', async () => {

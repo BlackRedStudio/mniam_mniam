@@ -22,19 +22,25 @@ function RankingRow({
 
     let positionClassName = 'font-medium';
 
-    if(index === 0) positionClassName = 'font-bold text-3xl';
-    if(index === 1) positionClassName = 'font-bold text-xl';
-    if(index === 2) positionClassName = 'font-bold text-base';
-
+    if (index === 0) positionClassName = 'font-bold text-3xl';
+    if (index === 1) positionClassName = 'font-bold text-xl';
+    if (index === 2) positionClassName = 'font-bold text-base';
 
     return (
-        <TableRow className={isCurrentUserRow ? 'bg-orange hover:bg-orange data-[state=selected]:bg-orange' : ''}>
+        <TableRow
+            className={
+                isCurrentUserRow
+                    ? 'bg-orange hover:bg-orange data-[state=selected]:bg-orange'
+                    : ''
+            }
+        >
             <TableCell
                 className={cn(
                     'p-3',
                     positionClassName,
                     isCurrentUserRow && 'text-white',
-                )}>
+                )}
+            >
                 {index + 1}
             </TableCell>
             <TableCell className="p-3">
@@ -55,7 +61,8 @@ function RankingRow({
                 className={cn(
                     'p-3 text-right',
                     isCurrentUserRow && 'text-white',
-                )}>
+                )}
+            >
                 {user[currentRankingType.key]}
             </TableCell>
         </TableRow>

@@ -59,7 +59,8 @@ function ProductSearch() {
                             }
 
                             setLoading(false);
-                        }}>
+                        }}
+                    >
                         Szukanie rozszerzone
                     </Button>
                 ) : null}
@@ -101,7 +102,8 @@ function ProductSearch() {
                     }
 
                     setLoading(false);
-                }}>
+                }}
+            >
                 Wyszukaj produkt po nazwie
             </Button>
             {loading && <Loader className="mt-4" />}
