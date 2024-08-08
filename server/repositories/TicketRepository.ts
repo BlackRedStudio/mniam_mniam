@@ -15,6 +15,10 @@ class TicketRepository {
         return id;
     }
 
+    static async insertRaw(ticket: TTicketInsert) {
+        await DB.insert(ticketsTable).values(ticket);
+    }
+
     static async many(userId: string) {
         const product = await DB.query.ticketsTable.findMany({
             where: eq(ticketsTable.userId, userId),

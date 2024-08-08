@@ -1,40 +1,38 @@
-import { relations } from 'drizzle-orm';
-import {
-    boolean,
-    mysqlTable,
-    timestamp,
-    tinyint,
-    varchar,
-} from 'drizzle-orm/mysql-core';
+import { relations, sql } from 'drizzle-orm';
+import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { TUserProductStatus } from '@/types/types';
 
 import { productsTable, TProduct, usersTable } from '.';
 
-export const userProductsTable = mysqlTable('userProducts', {
-    id: varchar('id', { length: 255 }).notNull().primaryKey(),
-    userId: varchar('userId', { length: 255 }).notNull(),
-    productId: varchar('productId', { length: 255 }).notNull(),
-    rating: tinyint('rating').default(0).notNull(),
-    price: tinyint('price').default(0).notNull(),
-    category: varchar('category', {
+export const userProductsTable = sqliteTable('userProducts', {
+    id: text('id', { length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text('userId', { length: 255 }).notNull(),
+    productId: text('productId', { length: 255 }).notNull(),
+    rating: integer('rating').default(0).notNull(),
+    price: integer('price').default(0).notNull(),
+    category: text('category', {
         length: 256,
     }).notNull(),
-    status: varchar('status', { length: 255 })
+    status: text('status', { length: 255 })
         .$type<TUserProductStatus>()
         .notNull()
         .default('invisible'),
-    firstRate: boolean('firstRate').notNull().default(false),
-    imgUploaded: boolean('imgUploaded').notNull().default(false),
-    propsAdded: boolean('propsAdded').notNull().default(false),
-    dateCreated: timestamp('dateCreated', {
-        mode: 'date',
-        fsp: 3,
-    }).defaultNow(),
-    dateUpdated: timestamp('dateUpdated', {
-        mode: 'date',
-        fsp: 3,
-    }).defaultNow(),
+    firstRate: integer('firstRate', { mode: 'boolean' })
+        .notNull()
+        .default(false),
+    imgUploaded: integer('imgUploaded', { mode: 'boolean' })
+        .notNull()
+        .default(false),
+    propsAdded: integer('propsAdded', { mode: 'boolean' })
+        .notNull()
+        .default(false),
+    dateCreated: integer('dateCreated', { mode: 'timestamp_ms' }).default(
+        sql`(CURRENT_TIMESTAMP)`,
+    ),
+    dateUpdated: integer('dateUpdated', { mode: 'timestamp_ms' }).default(
+        sql`(CURRENT_TIMESTAMP)`,
+    ),
 });
 
 export const userProductsRelations = relations(

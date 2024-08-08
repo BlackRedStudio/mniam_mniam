@@ -93,6 +93,10 @@ class UserProductRepository {
         });
     }
 
+    static async insertRaw(userProduct: TUserProductInsert) {
+        await DB.insert(userProductsTable).values(userProduct);
+    }
+
     static async makeActive(productId: string) {
         DB.transaction(async tx => {
             // update all userProducts draft statuses to invisible

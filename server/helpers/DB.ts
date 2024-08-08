@@ -1,13 +1,32 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import mysql from 'mysql2/promise';
-
+import { createClient } from '@libsql/client';
+import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from '../schemas';
 
-// create the connection
-const connection = await mysql.createConnection({
-    host: process.env.DATABASE_HOST,
-    database: process.env.DATABASE_USERNAME,
-    user: process.env.DATABASE_USERNAME,
-    password: process.env.DATABASE_PASSWORD,
-});
-export const DB = drizzle(connection, { schema, mode: 'default' });
+// Singleton function to ensure only one db instance is created
+async function singleton<Value>(
+    name: string,
+    value: () => Value,
+): Promise<Value> {
+    const globalAny: any = global;
+    globalAny.__singletons = globalAny.__singletons || {};
+
+    if (!globalAny.__singletons[name]) {
+        globalAny.__singletons[name] = await value();
+    }
+
+    return globalAny.__singletons[name];
+}
+
+// Function to create the database connection and apply migrations if needed
+async function createDatabaseConnection() {
+    const client = createClient({
+        url: process.env.TURSO_URL!,
+        authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+
+    return drizzle(client, { schema });
+}
+
+const DB = await singleton('DB', createDatabaseConnection);
+
+export { DB, schema };

@@ -25,6 +25,7 @@ class UserRepository {
     }
 
     static async firstWithAccounts({ id, email }: TFindUser) {
+
         const user = await DB.query.usersTable.findFirst({
             where: and(
                 id ? eq(usersTable.id, id) : undefined,
@@ -77,6 +78,9 @@ class UserRepository {
             email,
             password,
         });
+    }
+    static async insertRaw(user: TUserInsert) {
+        await DB.insert(usersTable).values(user);
     }
 
     static async update(

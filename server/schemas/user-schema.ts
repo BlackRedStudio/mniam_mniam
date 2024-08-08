@@ -1,35 +1,28 @@
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import {
-    boolean,
-    mysqlTable,
-    timestamp,
-    varchar,
-} from 'drizzle-orm/mysql-core';
+    integer,
+    sqliteTable,
+    text,
+} from 'drizzle-orm/sqlite-core';
 
 import { TUserRole } from '@/types/types';
 
 import { accountsTable, TUserProduct, userProductsTable } from '.';
 import { ticketsTable } from './ticket-schema';
 
-export const usersTable = mysqlTable('users', {
-    id: varchar('id', { length: 255 }).notNull().primaryKey(),
-    name: varchar('name', { length: 255 }),
-    email: varchar('email', { length: 255 }).notNull(),
-    password: varchar('password', { length: 255 }),
-    role: varchar('role', { length: 255 })
+export const usersTable = sqliteTable('users', {
+    id: text('id').notNull().$defaultFn(() => crypto.randomUUID()),
+    name: text('name'),
+    email: text('email').notNull(),
+    password: text('password'),
+    role: text('role')
         .$type<TUserRole>()
         .notNull()
         .default('user'),
-    emailVerified: timestamp('emailVerified', {
-        mode: 'date',
-        fsp: 3,
-    }).defaultNow(),
-    image: varchar('image', { length: 255 }),
-    darkMode: boolean('darkMode').default(false),
-    dateCreated: timestamp('dateCreated', {
-        mode: 'date',
-        fsp: 3,
-    }).defaultNow(),
+    emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }).default(sql`(CURRENT_TIMESTAMP)`),
+    image: text('image'),
+    darkMode: integer('darkMode', { mode: 'boolean' }).default(false),
+    dateCreated: integer('dateCreated', { mode: 'timestamp_ms' }).default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const usersRelations = relations(usersTable, ({ many }) => ({

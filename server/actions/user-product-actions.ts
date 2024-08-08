@@ -6,6 +6,9 @@ import OpenFoodAPIService from '@/server/services/OpenFoodAPIService';
 import { TUserProductStatus } from '@/types/types';
 import { productValidator } from '@/lib/validators/product-validator';
 import { userProductValidator } from '@/lib/validators/user-product-validator';
+import { DB } from "@/server/helpers/DB";
+import { and, eq, inArray } from "drizzle-orm";
+import { userProductsTable } from "@/server/schemas";
 
 import CriticalError from '../errors/CriticalError';
 import Error from '../errors/Error';
@@ -194,9 +197,21 @@ export async function getUserProductsAction(statuses: TUserProductStatus[]) {
     try {
         const session = await checkSession();
 
-        const userProductsList = await UserProductRepository.manyWithProduct({
-            userId: session.user.id,
-            statuses,
+        // const userProductsList = await UserProductRepository.manyWithProduct({
+        //     userId: session.user.id,
+        //     statuses,
+        // });
+        const userProductsList = await DB.query.userProductsTable.findMany({
+            where: and(
+                eq(userProductsTable.userId, session.user.id),
+                inArray(userProductsTable.status, ['visible', 'draftVisible'])
+            ),
+            with: {
+                product: true,
+            },
+            orderBy: (userProductsTable, { desc }) => [
+                desc(userProductsTable.dateUpdated),
+            ],
         });
 
         if (userProductsList.length === 0) {

@@ -69,6 +69,10 @@ class ProductRepository {
         return id;
     }
 
+    static async insertRaw(product: TProductInsert) {
+        await DB.insert(productsTable).values(product);
+    }
+
     static async delete(id: string) {
         await DB.delete(productsTable).where(eq(productsTable.id, id));
     }

@@ -8,11 +8,10 @@ dotenv.config({
 export default {
     schema: './server/schemas/*.ts',
     out: './drizzle',
-    driver: 'mysql2',
+    driver: 'turso',
+    dialect: 'sqlite',
     dbCredentials: {
-        host: process.env.DATABASE_HOST ?? '',
-        database: process.env.DATABASE_USERNAME ?? '',
-        user: process.env.DATABASE_USERNAME ?? '',
-        password: process.env.DATABASE_PASSWORD ?? '',
+        url: process.env.TURSO_URL!,
+        authToken: process.env.TURSO_AUTH_TOKEN!,
     },
 } satisfies Config;
