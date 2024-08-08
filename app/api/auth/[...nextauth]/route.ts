@@ -1,5 +1,5 @@
 import { DB } from '@/server/helpers/DB';
-import { DrizzleAdapter } from "@/server/helpers/DrizzleAdapter";
+import { DrizzleAdapter } from '@/server/helpers/DrizzleAdapter';
 import UserRepository from '@/server/repositories/UserRepository';
 import bcrypt from 'bcrypt';
 import NextAuth, { AuthOptions } from 'next-auth';
@@ -8,7 +8,9 @@ import GithubProvider, { GithubProfile } from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
 export const authOptions = {
+    /* eslint-disable */
     adapter: DrizzleAdapter(DB),
+    /* eslint-enable */
     pages: {
         signIn: '/',
     },
@@ -51,15 +53,11 @@ export const authOptions = {
             },
             async authorize(credentials) {
                 if (!credentials) return null;
-                let user = null;
-                try {
-                    user = await UserRepository.firstWithAccounts({
-                        email: credentials.email,
-                    });
-                } catch (e) {
-                    console.log(e);
-                }
-                
+
+                const user = await UserRepository.firstWithAccounts({
+                    email: credentials.email,
+                });
+
                 if (user && user.password) {
                     const passwordMatch = await bcrypt.compare(
                         credentials.password,
